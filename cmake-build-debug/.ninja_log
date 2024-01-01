@@ -1,3 +1,5 @@
 # ninja log v5
-0	36	1704123681072922998	CMakeFiles/SmartCalc_v1_0.dir/src/main.c.o	c9753a64fb702bce
-36	55	1704123681092922799	SmartCalc_v1_0	9d85d0e2207acdd0
+23	39	1704131072449779515	SmartCalc_v1_0	faf6c11a469a8519
+1	23	1704131072433779424	CMakeFiles/SmartCalc_v1_0.dir/src/main.c.o	c9753a64fb702bce
+2	25	1704130378878475728	CMakeFiles/SmartCalc_v1_0.dir/src/parser.c.o	d0c521803df5e5da
+0	31	1704130993209308461	CMakeFiles/SmartCalc_v1_0.dir/src/stack.c.o	642ceeaab817d51b

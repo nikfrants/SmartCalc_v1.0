@@ -8,13 +8,23 @@
      когда функция готова, мерджим в девелоп
  */
 
-
+#include "smart_calc.h"
 #include "stdio.h"
 
 int main() {
-    printf("Hello, World!\n");
+  printf("Hello, World!\n");
 
-    return 0;
+  stack st;
+  stackInit(&st);
+
+  push(&st, 1);
+
+  stackPrintByIndex(&st, 0);
+  int val = pop(&st);
+  printf("%d\n", val);
+  stackPrintByIndex(&st, 0);
+
+  return 0;
 }
-
+// codeium
 
