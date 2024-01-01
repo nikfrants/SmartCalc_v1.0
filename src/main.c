@@ -7,3 +7,14 @@
      делаешь от develop свою ветку, там работаешь,
      когда функция готова, мерджим в девелоп
  */
+
+
+#include "stdio.h"
+
+int main() {
+    printf("Hello, World!\n");
+
+    return 0;
+}
+
+
