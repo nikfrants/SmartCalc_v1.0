@@ -1,0 +1,121 @@
+        -:    0:Source:/home/nikolay/it/sch21/github/SmartCalc_v1.0/src/s21_smart_calc.c
+        -:    0:Graph:/home/nikolay/it/sch21/github/SmartCalc_v1.0/cmake-build-debug-coverage/CMakeFiles/SmartCalc_v1_0.dir/src/s21_smart_calc.c.gcno
+        -:    0:Data:/home/nikolay/it/sch21/github/SmartCalc_v1.0/cmake-build-debug-coverage/CMakeFiles/SmartCalc_v1_0.dir/src/s21_smart_calc.c.gcda
+        -:    0:Runs:1
+        -:    1://
+        -:    2:// Created by nikolay on 12/31/23.
+        -:    3://
+        -:    4:
+        -:    5:/*
+        -:    6:     ветка develop - всегда рабочая
+        -:    7:     делаешь от develop свою ветку, там работаешь,
+        -:    8:     когда функция готова, мерджим в девелоп
+        -:    9: */
+        -:   10:
+        -:   11:#include "smart_calc.h"
+        -:   12:#include "stdio.h"
+        -:   13:
+function main called 1 returned 100% blocks executed 97%
+        1:   14:int main() {
+        1:   15:  print("hi, ");
+        1:   15-block  0
+call    0 returned 1
+        -:   16:
+        -:   17:  stack st;
+        1:   18:  stackInit(&st);
+call    0 returned 1
+        1:   19:  push(&st, initData(1, 0, 0));
+call    0 returned 1
+call    1 returned 1
+        -:   20:
+        1:   21:  stackPrintByIndex(&st, 0);
+call    0 returned 1
+        1:   22:  stNode* val = pop(&st);
+call    0 returned 1
+        -:   23:
+        1:   24:  stackPrintValue(val->data, 0);
+call    0 returned 1
+        -:   25:
+        1:   26:  push(&st, initData(2, '(', 1));
+call    0 returned 1
+call    1 returned 1
+        -:   27:
+        1:   28:  stackPrintByIndex(&st, 0);
+call    0 returned 1
+        1:   29:  pop(&st);
+call    0 returned 1
+        -:   30:
+        1:   31:  push(&st, initData(3, '(', 0));
+call    0 returned 1
+call    1 returned 1
+        1:   32:  push(&st, initData(2, '(', 0));
+call    0 returned 1
+call    1 returned 1
+        1:   33:  push(&st, initData(1, '(', 0));
+call    0 returned 1
+call    1 returned 1
+        -:   34:
+        1:   35:  print("\n\n\n");
+call    0 returned 1
+        1:   36:  stackPrintAll(&st);
+call    0 returned 1
+        1:   37:  print("\n");
+call    0 returned 1
+        1:   38:  char s[9] = "sin(4)4+5";
+        -:   39:
+        1:   40:  float n = atof(s);
+        1:   41:  printf("n = %f", n);
+call    0 returned 1
+        1:   42:  parseData* newexpression = {NULL};
+        -:   43:  int size;
+        -:   44:  ;
+        1:   45:  print("\n\n\n");
+call    0 returned 1
+        -:   46:
+        1:   47:  newexpression = parser(s, &size);
+call    0 returned 1
+       10:   48:  for (int i = 0; i < size; ++i) {
+        9:   48-block  0
+       10:   48-block  1
+branch  0 taken 9
+branch  1 taken 1 (fallthrough)
+        9:   49:    if (newexpression[i].type == 1)
+        9:   49-block  0
+branch  0 taken 3 (fallthrough)
+branch  1 taken 6
+        3:   50:      printf(" %Lg ", newexpression[i].ldval);
+        3:   50-block  0
+call    0 returned 3
+        6:   51:    else if (newexpression[i].type == 2)
+        6:   51-block  0
+branch  0 taken 0 (fallthrough)
+branch  1 taken 6
+    #####:   52:      printf(" %f ", newexpression[i].fval);
+    %%%%%:   52-block  0
+call    0 never executed
+        6:   53:    else if (newexpression[i].type == 3)
+        6:   53-block  0
+branch  0 taken 3 (fallthrough)
+branch  1 taken 3
+        3:   54:      printf(" %c ", newexpression[i].operator);
+        3:   54-block  0
+call    0 returned 3
+        -:   55:    else
+        3:   56:      printf(" %s ", newexpression[i].func);
+        3:   56-block  0
+call    0 returned 3
+        -:   57:  }
+        1:   58:  freeStack(&st);
+        1:   58-block  0
+call    0 returned 1
+        1:   59:  free(newexpression);
+        1:   60:  return 0;
+        -:   61:}
+        -:   62:
+        -:   63:
+function print called 4 returned 100% blocks executed 100%
+        4:   64:void print(char * s) {
+        4:   65:  printf("%s\n", s);
+        4:   65-block  0
+call    0 returned 4
+        4:   66:}
