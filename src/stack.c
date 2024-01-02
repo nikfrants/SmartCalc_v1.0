@@ -9,60 +9,105 @@
 
 #include "smart_calc.h"
 
-int push(stack *st, int const val) {
-  allocate(st, 1);
-  st->data[st->size] = val;
-  st->size++;
-  return 0;
+int isEmpty(stack *st) { return st->stSize == 0; }
+void nodeInit(stNode *node, stData val) {
+  node->data.value = val.value;
+  node->data.operator= val.operator;
+  node->data.type = val.type;
+  node->next = NULL;
 }
 void stackInit(stack *st) {
-  st->head = 0;
-  st->size = 0;
-  st->alloc_size = 0;
-  st->data = NULL;
+  st->stSize = 0;
+  st->root = (stNode *)malloc(sizeof(stNode));
+  st->root->data = initData(0, 0, 0);
+  st->root->next = NULL;
 }
 
-int pop(stack *st) {
-  if (st->size > 0) {
-    st->size--;
-    allocate(st, 0);
-    return st->data[st->size];
-  }
-  return STACK_UNDERFLOW;
+stData initData(int val, char symbol, int type) {
+  stData data;
+  data.value = val;
+  data.operator= symbol;
+  data.type = type;
+  return data;
+}
+stNode *creatNode(stData data) {
+  stNode *tmp = (stNode *)malloc(sizeof(stNode));
+  tmp->data.value = data.value;
+  tmp->data.operator= data.operator;
+  tmp->data.type = data.type;
+  tmp->next = NULL;
+  return tmp;
 }
 
-// allocate memory if needed
-int allocate(stack *st, int const increase) {
-  if (increase == 1) {
-    if (st->size == STACK_MAX_SIZE) return STACK_OWERFLOW;
-    if (st->alloc_size == 0) {
-      st->data = (T *)calloc(REALLOC_SIZE, sizeof(T));
-      st->alloc_size = REALLOC_SIZE;
-      st->head = 0;
-    } else if (st->size == st->alloc_size) {
-      st->data =
-          (T *)realloc(st->data, (st->alloc_size + REALLOC_SIZE) * sizeof(T));
-      st->alloc_size += REALLOC_SIZE;
-    }
-
-    if (st->data != NULL) return 0;
-    return 1;
-  }
-  if (!increase && st->size + REALLOC_SIZE < st->alloc_size) {  // < или <= ?
-    st->data =
-        (T *)realloc(st->data, (st->alloc_size - REALLOC_SIZE) * sizeof(T));
-    st->alloc_size -= REALLOC_SIZE;
-  }
+int push(stack *st, stData val) {
+  stNode *new = (stNode *)malloc(sizeof(stNode));
+  nodeInit(new, val);
+  new->next = st->root;
+  st->root = new;
+  st->stSize++;
   return 0;
 }
 
-void stackPrintValue(const T value) { printf("%d", value); }
+stNode *pop(stack *st) {
+  if (st->stSize > 0) {
+    stNode *new = creatNode(st->root->data);
+    stNode *tmp = st->root;
+    st->root = st->root->next;
+    free(tmp);
+    st->stSize--;
+    return new;
+  }
+  return creatNode(initData(0, 0, STACK_UNDERFLOW));
+}
+stNode *top(const stack *st) {
+  if (st->stSize > 0) {
+    stNode *new = creatNode(st->root->data);
+    return new;
+  }
+  return creatNode(initData(0, 0, STACK_UNDERFLOW));
+}
+
+void freeStack(stack *st) {
+  stNode *temp = st->root;
+  while (temp->next != NULL) {
+    st->root = st->root->next;
+    free(temp);
+    temp = st->root;
+  }
+  free(temp);
+  free(st->root);
+  st->stSize = 0;
+}
+
+void stackPrintValue(const stData value, int useName) {
+  if (value.type == 0) {
+    if (useName)
+      print("N_");
+    printf("%Lg ", value.value);
+  }
+  if (value.type == 1) {
+    if (useName)
+      print("O_");
+    printf("%c ", value.operator);
+  }
+}
+
 int stackPrintByIndex(const stack *st, int index) {
-  if (index >= st->size) {
-    fprintf(stderr,"index out of range");
+  if (index >= st->stSize) {
+    fprintf(stderr, "index out of range");
     return 1;
   }
-
-  stackPrintValue(st->data[index]);
+  stNode *temp = st->root;
+  for (int i = 0; i < index - 1; ++i) {
+    temp->next = temp->next->next;
+  }
+  stackPrintValue(temp->data, 0);
   return 0;
+}
+void stackPrintAll(const stack *st) {
+  stNode *temp = st->root;
+  for (int i = 0; i < st->stSize; ++i) {
+    stackPrintValue(temp->data, 0);
+    temp = temp->next;
+  }
 }

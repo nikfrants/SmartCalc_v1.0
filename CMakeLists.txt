@@ -8,4 +8,6 @@ add_executable(SmartCalc_v1_0
         src/stack.c
         src/smart_calc.h
         src/parser.c
-        src/tests/stack.c)
+        src/tests/stack.c
+        src/tests/tests.h
+        src/get_elem_from_string.c)

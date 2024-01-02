@@ -12,22 +12,55 @@
 #define STACK_OWERFLOW -100
 #define STACK_UNDERFLOW -101
 
-typedef int T;
+
+#include <stdlib.h>
+// typedef int T;
+// typedef struct {
+//   int head;
+//   int size;
+//   int alloc_size;
+//   T *data; // и тут маллочить
+// } stack;
+//
+// typedef int tData;
+
+typedef struct parseData {
+  long double ldval; // type 1
+  float fval; // type 2
+  char operator; // type 3
+  char func[4]  ; // type 4
+  int lenth;
+  int type;
+} parseData;
+
+
+typedef struct sData {
+  long double value;
+  char operator;
+  int type;
+} stData;
+
+typedef struct stNode {
+  stData data;
+  struct stNode *next;
+} stNode;
 
 typedef struct {
-  int head;
-  int size;
-  int alloc_size;
-  T *data;
+  stNode *root;
+  size_t stSize;
 } stack;
 
+
+int push(stack *st, stData val);
+stNode* pop(stack *st);
+stNode *top(const stack *st);
+
+
 void stackInit(stack *st);
-int push(stack *st, T const val);
-int pop(stack *st);
-
-int allocate(stack *st, int const increase);
-
-
+stData initData(int val, char symbol, int type);
 void print(char *string);
-void stackPrintValue(const T value);
+void stackPrintValue(const stData value, int useName);
 int stackPrintByIndex(const stack *st, int index);
+void stackPrintAll(const stack *st);
+
+ parseData* parser(char* str,int *idx )  ;
