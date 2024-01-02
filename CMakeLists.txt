@@ -8,6 +8,9 @@ add_executable(SmartCalc_v1_0
         src/stack.c
         src/smart_calc.h
         src/parser.c
-        src/tests/stack.c
+        src/get_elem_from_string.c
         src/tests/tests.h
-        src/get_elem_from_string.c)
+        src/tests/test_stack.c
+)
+
+target_link_libraries(SmartCalc_v1_0 check m)

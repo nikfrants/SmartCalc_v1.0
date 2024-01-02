@@ -44,7 +44,7 @@ function initData called 6 returned 100% blocks executed 100%
         -:   32:}
 function creatNode called 2 returned 100% blocks executed 100%
         2:   33:stNode *creatNode(stData data) {
-        2:   34:  stNode *tmp = (stNode *)malloc(sizeof(stNode));
+        2:   34:  stNode *tmp = malloc(sizeof(stNode));
         2:   35:  tmp->data.value = data.value;
         2:   36:  tmp->data.operator= data.operator;
         2:   37:  tmp->data.type = data.type;
@@ -116,7 +116,7 @@ branch  1 taken 1 (fallthrough)
         3:   75-block  0
         -:   76:  }
         1:   77:  free(temp);
-        -:   78: // free(st->root);
+        -:   78:  // free(st->root);
         1:   79:  st->stSize = 0;
         1:   80:}
         -:   81:
@@ -126,70 +126,68 @@ function stackPrintValue called 6 returned 100% blocks executed 78%
         6:   83-block  0
 branch  0 taken 5 (fallthrough)
 branch  1 taken 1
-        5:   84:    if (useName)
+       5*:   84:    if (useName) print("N_");
         5:   84-block  0
 branch  0 taken 0 (fallthrough)
 branch  1 taken 5
-    #####:   85:      print("N_");
-    %%%%%:   85-block  0
-call    0 never executed
-        5:   86:    printf("%Lg ", value.value);
-        5:   86-block  0
+    %%%%%:   84-block  1
+call    2 never executed
+        5:   85:    printf("%Lg ", value.value);
+        5:   85-block  0
 call    0 returned 5
-        -:   87:  }
-        6:   88:  if (value.type == 1) {
-        6:   88-block  0
+        -:   86:  }
+        6:   87:  if (value.type == 1) {
+        6:   87-block  0
 branch  0 taken 1 (fallthrough)
 branch  1 taken 5
-        1:   89:    if (useName)
-        1:   89-block  0
+       1*:   88:    if (useName) print("O_");
+        1:   88-block  0
 branch  0 taken 0 (fallthrough)
 branch  1 taken 1
-    #####:   90:      print("O_");
-    %%%%%:   90-block  0
-call    0 never executed
-        1:   91:    printf("%c ", value.operator);
-        1:   91-block  0
+    %%%%%:   88-block  1
+call    2 never executed
+        1:   89:    printf("%c ", value.operator);
+        1:   89-block  0
 call    0 returned 1
-        -:   92:  }
-        6:   93:}
-        -:   94:
+        -:   90:  }
+        6:   91:}
+        -:   92:
 function stackPrintByIndex called 2 returned 100% blocks executed 67%
-        2:   95:int stackPrintByIndex(const stack *st, int index) {
-        2:   96:  if ((size_t)index >= st->stSize) {
-        2:   96-block  0
+        2:   93:int stackPrintByIndex(const stack *st, int index) {
+        2:   94:  if ((size_t)index >= st->stSize) {
+        2:   94-block  0
 branch  0 taken 0 (fallthrough)
 branch  1 taken 2
-    #####:   97:    fprintf(stderr, "index out of range");
-    %%%%%:   97-block  0
+    #####:   95:    fprintf(stderr, "index out of range");
+    %%%%%:   95-block  0
 call    0 never executed
-    #####:   98:    return 1;
-        -:   99:  }
-        2:  100:  stNode *temp = st->root;
-       2*:  101:  for (int i = 0; i < index - 1; ++i) {
-        2:  101-block  0
-        2:  101-block  1
+    #####:   96:    return 1;
+        -:   97:  }
+        2:   98:  stNode *temp = st->root;
+       2*:   99:  for (int i = 0; i < index - 1; ++i) {
+        2:   99-block  0
+        2:   99-block  1
 branch  0 taken 0
 branch  1 taken 2 (fallthrough)
-    #####:  102:    temp->next = temp->next->next;
-    %%%%%:  102-block  0
-        -:  103:  }
-        2:  104:  stackPrintValue(temp->data, 0);
-        2:  104-block  0
+    #####:  100:    temp->next = temp->next->next;
+    %%%%%:  100-block  0
+        -:  101:  }
+        2:  102:  stackPrintValue(temp->data, 0);
+        2:  102-block  0
 call    0 returned 2
-        2:  105:  return 0;
-        -:  106:}
+        2:  103:  return 0;
+        -:  104:}
 function stackPrintAll called 1 returned 100% blocks executed 100%
-        1:  107:void stackPrintAll(const stack *st) {
-        1:  108:  stNode *temp = st->root;
-        4:  109:  for (int i = 0; (size_t)i < st->stSize; ++i) {
-        1:  109-block  0
-        4:  109-block  1
+        1:  105:void stackPrintAll(const stack *st) {
+        1:  106:  stNode *temp = st->root;
+        4:  107:  for (int i = 0; (size_t)i < st->stSize; ++i) {
+        1:  107-block  0
+        4:  107-block  1
 branch  0 taken 3
 branch  1 taken 1 (fallthrough)
-        3:  110:    stackPrintValue(temp->data, 0);
-        3:  110-block  0
+        3:  108:    stackPrintValue(temp->data, 0);
+        3:  108-block  0
 call    0 returned 3
-        3:  111:    temp = temp->next;
-        -:  112:  }
-        1:  113:}
+        3:  109:    temp = temp->next;
+        -:  110:  }
+        1:  111:}

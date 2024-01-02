@@ -31,7 +31,7 @@ stData initData(int val, char symbol, int type) {
   return data;
 }
 stNode *creatNode(stData data) {
-  stNode *tmp = (stNode *)malloc(sizeof(stNode));
+  stNode *tmp = malloc(sizeof(stNode));
   tmp->data.value = data.value;
   tmp->data.operator= data.operator;
   tmp->data.type = data.type;
@@ -75,19 +75,17 @@ void freeStack(stack *st) {
     temp = st->root;
   }
   free(temp);
- // free(st->root);
+  // free(st->root);
   st->stSize = 0;
 }
 
 void stackPrintValue(const stData value, int useName) {
   if (value.type == 0) {
-    if (useName)
-      print("N_");
+    if (useName) print("N_");
     printf("%Lg ", value.value);
   }
   if (value.type == 1) {
-    if (useName)
-      print("O_");
+    if (useName) print("O_");
     printf("%c ", value.operator);
   }
 }

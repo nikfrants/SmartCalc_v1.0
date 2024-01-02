@@ -67,17 +67,17 @@ build CMakeFiles/SmartCalc_v1_0.dir/src/parser.c.o: C_COMPILER__SmartCalc_v1_0_u
   OBJECT_DIR = CMakeFiles/SmartCalc_v1_0.dir
   OBJECT_FILE_DIR = CMakeFiles/SmartCalc_v1_0.dir/src
 
-build CMakeFiles/SmartCalc_v1_0.dir/src/tests/stack.c.o: C_COMPILER__SmartCalc_v1_0_unscanned_Debug /home/nikolay/it/sch21/github/SmartCalc_v1.0/src/tests/stack.c || cmake_object_order_depends_target_SmartCalc_v1_0
-  DEP_FILE = CMakeFiles/SmartCalc_v1_0.dir/src/tests/stack.c.o.d
-  FLAGS = -g -std=gnu11 -fdiagnostics-color=always
-  OBJECT_DIR = CMakeFiles/SmartCalc_v1_0.dir
-  OBJECT_FILE_DIR = CMakeFiles/SmartCalc_v1_0.dir/src/tests
-
 build CMakeFiles/SmartCalc_v1_0.dir/src/get_elem_from_string.c.o: C_COMPILER__SmartCalc_v1_0_unscanned_Debug /home/nikolay/it/sch21/github/SmartCalc_v1.0/src/get_elem_from_string.c || cmake_object_order_depends_target_SmartCalc_v1_0
   DEP_FILE = CMakeFiles/SmartCalc_v1_0.dir/src/get_elem_from_string.c.o.d
   FLAGS = -g -std=gnu11 -fdiagnostics-color=always
   OBJECT_DIR = CMakeFiles/SmartCalc_v1_0.dir
   OBJECT_FILE_DIR = CMakeFiles/SmartCalc_v1_0.dir/src
+
+build CMakeFiles/SmartCalc_v1_0.dir/src/tests/test_stack.c.o: C_COMPILER__SmartCalc_v1_0_unscanned_Debug /home/nikolay/it/sch21/github/SmartCalc_v1.0/src/tests/test_stack.c || cmake_object_order_depends_target_SmartCalc_v1_0
+  DEP_FILE = CMakeFiles/SmartCalc_v1_0.dir/src/tests/test_stack.c.o.d
+  FLAGS = -g -std=gnu11 -fdiagnostics-color=always
+  OBJECT_DIR = CMakeFiles/SmartCalc_v1_0.dir
+  OBJECT_FILE_DIR = CMakeFiles/SmartCalc_v1_0.dir/src/tests
 
 
 # =============================================================================
@@ -87,8 +87,9 @@ build CMakeFiles/SmartCalc_v1_0.dir/src/get_elem_from_string.c.o: C_COMPILER__Sm
 #############################################
 # Link the executable SmartCalc_v1_0
 
-build SmartCalc_v1_0: C_EXECUTABLE_LINKER__SmartCalc_v1_0_Debug CMakeFiles/SmartCalc_v1_0.dir/src/s21_smart_calc.c.o CMakeFiles/SmartCalc_v1_0.dir/src/stack.c.o CMakeFiles/SmartCalc_v1_0.dir/src/parser.c.o CMakeFiles/SmartCalc_v1_0.dir/src/tests/stack.c.o CMakeFiles/SmartCalc_v1_0.dir/src/get_elem_from_string.c.o
+build SmartCalc_v1_0: C_EXECUTABLE_LINKER__SmartCalc_v1_0_Debug CMakeFiles/SmartCalc_v1_0.dir/src/s21_smart_calc.c.o CMakeFiles/SmartCalc_v1_0.dir/src/stack.c.o CMakeFiles/SmartCalc_v1_0.dir/src/parser.c.o CMakeFiles/SmartCalc_v1_0.dir/src/get_elem_from_string.c.o CMakeFiles/SmartCalc_v1_0.dir/src/tests/test_stack.c.o
   FLAGS = -g
+  LINK_LIBRARIES = -lcheck  -lm
   OBJECT_DIR = CMakeFiles/SmartCalc_v1_0.dir
   POST_BUILD = :
   PRE_LINK = :

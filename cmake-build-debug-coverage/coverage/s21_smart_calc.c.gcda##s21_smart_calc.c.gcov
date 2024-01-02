@@ -17,105 +17,107 @@
         -:   13:
 function main called 1 returned 100% blocks executed 97%
         1:   14:int main() {
-        1:   15:  print("hi, ");
+        1:   15:  print("hello, ");
         1:   15-block  0
 call    0 returned 1
-        -:   16:
-        -:   17:  stack st;
-        1:   18:  stackInit(&st);
+        1:   16:  print("hi, ");
 call    0 returned 1
-        1:   19:  push(&st, initData(1, 0, 0));
+        -:   17:
+        -:   18:  stack st;
+        1:   19:  stackInit(&st);
 call    0 returned 1
-call    1 returned 1
-        -:   20:
-        1:   21:  stackPrintByIndex(&st, 0);
-call    0 returned 1
-        1:   22:  stNode* val = pop(&st);
-call    0 returned 1
-        -:   23:
-        1:   24:  stackPrintValue(val->data, 0);
-call    0 returned 1
-        -:   25:
-        1:   26:  push(&st, initData(2, '(', 1));
+        1:   20:  push(&st, initData(1, 0, 0));
 call    0 returned 1
 call    1 returned 1
-        -:   27:
-        1:   28:  stackPrintByIndex(&st, 0);
+        -:   21:
+        1:   22:  stackPrintByIndex(&st, 0);
 call    0 returned 1
-        1:   29:  pop(&st);
+        1:   23:  stNode* val = pop(&st);
 call    0 returned 1
-        -:   30:
-        1:   31:  push(&st, initData(3, '(', 0));
+        -:   24:
+        1:   25:  stackPrintValue(val->data, 0);
 call    0 returned 1
-call    1 returned 1
-        1:   32:  push(&st, initData(2, '(', 0));
-call    0 returned 1
-call    1 returned 1
-        1:   33:  push(&st, initData(1, '(', 0));
+        -:   26:
+        1:   27:  push(&st, initData(2, '(', 1));
 call    0 returned 1
 call    1 returned 1
-        -:   34:
-        1:   35:  print("\n\n\n");
+        -:   28:
+        1:   29:  stackPrintByIndex(&st, 0);
 call    0 returned 1
-        1:   36:  stackPrintAll(&st);
+        1:   30:  stNode* val2 = pop(&st);
 call    0 returned 1
-        1:   37:  print("\n");
+        -:   31:
+        1:   32:  push(&st, initData(3, '(', 0));
 call    0 returned 1
-        1:   38:  char s[9] = "sin(4)4+5";
-        -:   39:
-        1:   40:  float n = atof(s);
-        1:   41:  printf("n = %f", n);
+call    1 returned 1
+        1:   33:  push(&st, initData(2, '(', 0));
 call    0 returned 1
-        1:   42:  parseData* newexpression = {NULL};
-        -:   43:  int size;
-        -:   44:  ;
-        1:   45:  print("\n\n\n");
+call    1 returned 1
+        1:   34:  push(&st, initData(1, '(', 0));
 call    0 returned 1
-        -:   46:
-        1:   47:  newexpression = parser(s, &size);
+call    1 returned 1
+        -:   35:
+        1:   36:  print("\n\n\n");
 call    0 returned 1
-       10:   48:  for (int i = 0; i < size; ++i) {
-        9:   48-block  0
-       10:   48-block  1
+        1:   37:  stackPrintAll(&st);
+call    0 returned 1
+        1:   38:  print("\n");
+call    0 returned 1
+        1:   39:  char s[9] = "sin(4)4+5";
+        -:   40:
+        1:   41:  float n = atof(s);
+        1:   42:  printf("n = %f", n);
+call    0 returned 1
+        1:   43:  parseData* newexpression = {NULL};
+        -:   44:  int size;
+        -:   45:  ;
+        1:   46:  print("\n\n\n");
+call    0 returned 1
+        -:   47:
+        1:   48:  newexpression = parser(s, &size);
+call    0 returned 1
+        -:   49:
+       10:   50:  for (int i = 0; i < size; ++i) {
+        9:   50-block  0
+       10:   50-block  1
 branch  0 taken 9
 branch  1 taken 1 (fallthrough)
-        9:   49:    if (newexpression[i].type == 1)
-        9:   49-block  0
+        9:   51:    if (newexpression[i].type == 1)
+        9:   51-block  0
 branch  0 taken 3 (fallthrough)
 branch  1 taken 6
-        3:   50:      printf(" %Lg ", newexpression[i].ldval);
-        3:   50-block  0
+        3:   52:      printf(" %Lg ", newexpression[i].ldval);
+        3:   52-block  0
 call    0 returned 3
-        6:   51:    else if (newexpression[i].type == 2)
-        6:   51-block  0
+        6:   53:    else if (newexpression[i].type == 2)
+        6:   53-block  0
 branch  0 taken 0 (fallthrough)
 branch  1 taken 6
-    #####:   52:      printf(" %f ", newexpression[i].fval);
-    %%%%%:   52-block  0
+    #####:   54:      printf(" %f ", newexpression[i].fval);
+    %%%%%:   54-block  0
 call    0 never executed
-        6:   53:    else if (newexpression[i].type == 3)
-        6:   53-block  0
+        6:   55:    else if (newexpression[i].type == 3)
+        6:   55-block  0
 branch  0 taken 3 (fallthrough)
 branch  1 taken 3
-        3:   54:      printf(" %c ", newexpression[i].operator);
-        3:   54-block  0
-call    0 returned 3
-        -:   55:    else
-        3:   56:      printf(" %s ", newexpression[i].func);
+        3:   56:      printf(" %c ", newexpression[i].operator);
         3:   56-block  0
 call    0 returned 3
-        -:   57:  }
-        1:   58:  freeStack(&st);
-        1:   58-block  0
+        -:   57:    else
+        3:   58:      printf(" %s ", newexpression[i].func);
+        3:   58-block  0
+call    0 returned 3
+        -:   59:  }
+        1:   60:  free(val2);
+        1:   61:  free(val);
+        1:   62:  freeStack(&st);
+        1:   62-block  0
 call    0 returned 1
-        1:   59:  free(newexpression);
-        1:   60:  return 0;
-        -:   61:}
-        -:   62:
-        -:   63:
-function print called 4 returned 100% blocks executed 100%
-        4:   64:void print(char * s) {
-        4:   65:  printf("%s\n", s);
-        4:   65-block  0
-call    0 returned 4
-        4:   66:}
+        1:   63:  free(newexpression);
+        1:   64:  return 0;
+        -:   65:}
+        -:   66:
+function print called 5 returned 100% blocks executed 100%
+        5:   67:void print(char* s) { printf("%s\n", s); }
+        5:   67-block  0
+call    0 returned 5

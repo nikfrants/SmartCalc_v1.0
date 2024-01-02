@@ -9,12 +9,12 @@
         -:    5:// parse string
         -:    6:// and return array of separeted elements
         -:    7:
-        -:    8:
-        -:    9:#include "smart_calc.h"
-        -:   10:#include "string.h"
+        -:    8:#include "smart_calc.h"
+        -:    9:#include "string.h"
 function isDigit called 5 returned 100% blocks executed 83%
-        5:   11:int isDigit(char* ch, parseData* currstr, int* parseidx, int *stringParseindex) {
-        5:   12:  if(*ch == '\000') {
+        5:   10:int isDigit(char* ch, parseData* currstr, int* parseidx,
+        -:   11:            int* stringParseindex) {
+        5:   12:  if (*ch == '\000') {
         5:   12-block  0
 branch  0 taken 0 (fallthrough)
 branch  1 taken 5
@@ -71,7 +71,7 @@ branch  1 taken 3
         3:   33-block  0
         -:   34:    }
         3:   35:    *stringParseindex += currstr[*parseidx].lenth;
-        3:   36:    ++*parseidx ;
+        3:   36:    ++*parseidx;
         3:   37:    return 1;
         3:   37-block  0
         -:   38:  }
@@ -79,12 +79,12 @@ branch  1 taken 3
         2:   39-block  0
         -:   40:}
 function isFunction called 5 returned 100% blocks executed 48%
-        5:   41:int isFunction(char* ch, parseData* currstr, int* parseidx, int * stringParseindex) {
-        5:   42:  if(*ch == '\000') {
-        5:   42-block  0
+        5:   41:int isFunction(char* ch, parseData* currstr, int* parseidx,
+        -:   42:               int* stringParseindex) {
+        5:   43:  if (*ch == '\000') {
+        5:   43-block  0
 branch  0 taken 1 (fallthrough)
 branch  1 taken 4
-        -:   43:
         1:   44:    return 0;
         1:   44-block  0
         -:   45:  }
@@ -191,84 +191,84 @@ branch  3 never executed
         3:   90-block  0
         -:   91:}
 function isOperator called 5 returned 100% blocks executed 100%
-        5:   92:int isOperator(char* ch, parseData* currstr, int* parseidx, int * stringParseindex) {
-        5:   93:  if(*ch == '\000') {
-        5:   93-block  0
+        5:   92:int isOperator(char* ch, parseData* currstr, int* parseidx,
+        -:   93:               int* stringParseindex) {
+        5:   94:  if (*ch == '\000') {
+        5:   94-block  0
 branch  0 taken 1 (fallthrough)
 branch  1 taken 4
-        1:   94:    return 0;
-        1:   94-block  0
-        -:   95:  }
-        4:   96:  currstr[*parseidx].lenth = 0;
-        4:   97:  if (*ch == '+' || *ch == '-' || *ch == '*' || *ch == '/' || *ch == '^' ||
-        4:   97-block  0
+        1:   95:    return 0;
+        1:   95-block  0
+        -:   96:  }
+        4:   97:  currstr[*parseidx].lenth = 0;
+        4:   98:  if (*ch == '+' || *ch == '-' || *ch == '*' || *ch == '/' || *ch == '^' ||
+        4:   98-block  0
 branch  0 taken 3 (fallthrough)
 branch  1 taken 1
-        3:   97-block  1
+        3:   98-block  1
 branch  2 taken 3 (fallthrough)
 branch  3 taken 0
-        3:   97-block  2
+        3:   98-block  2
 branch  4 taken 3 (fallthrough)
 branch  5 taken 0
-        3:   97-block  3
+        3:   98-block  3
 branch  6 taken 3 (fallthrough)
 branch  7 taken 0
-        3:   97-block  4
+        3:   98-block  4
 branch  8 taken 3 (fallthrough)
 branch  9 taken 0
-        3:   98:      *ch == '~' || *ch == '(' || *ch == ')') {
-        3:   98-block  0
+        3:   99:      *ch == '~' || *ch == '(' || *ch == ')') {
+        3:   99-block  0
 branch  0 taken 3 (fallthrough)
 branch  1 taken 0
-        3:   98-block  1
+        3:   99-block  1
 branch  2 taken 2 (fallthrough)
 branch  3 taken 1
-        2:   98-block  2
+        2:   99-block  2
 branch  4 taken 1 (fallthrough)
 branch  5 taken 1
-        3:   99:    currstr[*parseidx].operator= * ch;
-        3:  100:    currstr[*parseidx].type = 3;
-        3:  101:    ch = ch + 1;
-        3:  102:    currstr[*parseidx].lenth++;
-        3:  103:    *stringParseindex += currstr[*parseidx].lenth;
-        3:  104:    ++*parseidx;
-        3:  105:    return 1;
-        3:  105-block  0
-        -:  106:  }
-        1:  107:  return 0;
-        1:  107-block  0
-        -:  108:}
+        3:  100:    currstr[*parseidx].operator= * ch;
+        3:  101:    currstr[*parseidx].type = 3;
+        3:  102:    ch = ch + 1;
+        3:  103:    currstr[*parseidx].lenth++;
+        3:  104:    *stringParseindex += currstr[*parseidx].lenth;
+        3:  105:    ++*parseidx;
+        3:  106:    return 1;
+        3:  106-block  0
+        -:  107:  }
+        1:  108:  return 0;
+        1:  108-block  0
+        -:  109:}
 function parser called 1 returned 100% blocks executed 100%
-        1:  109:parseData* parser(char* str, int* stringParseindex) {
-        1:  110:  *stringParseindex = 0;
-        -:  111:
-        -:  112:  // char * str1 = (char*)malloc(strlen(str) * sizeof(char));
-        -:  113:  //  strcpy(str1,str);
-        1:  114:  parseData* data = malloc(100 * sizeof(parseData));
-        1:  115:  int parseidx = 0;
-        6:  116:  while ((long unsigned int)*stringParseindex < strlen(str)) {
-        1:  116-block  0
-        6:  116-block  1
+        1:  110:parseData* parser(char* str, int* stringParseindex) {
+        1:  111:  *stringParseindex = 0;
+        -:  112:
+        1:  113:  parseData* data = malloc(100 * sizeof(parseData));
+        1:  114:  int* numbers = malloc(100 * sizeof(int));
+        1:  115:  free(numbers);
+        -:  116:
+        1:  117:  int parseidx = 0;
+        6:  118:  while ((long unsigned int)*stringParseindex < strlen(str)) {
+        1:  118-block  0
+        6:  118-block  1
 branch  0 taken 5
 branch  1 taken 1 (fallthrough)
-        5:  117:    isDigit((str + *stringParseindex), data, &parseidx, stringParseindex);
-        5:  117-block  0
+        5:  119:    isDigit((str + *stringParseindex), data, &parseidx, stringParseindex);
+        5:  119-block  0
 call    0 returned 5
-        5:  118:    isOperator((str + *stringParseindex), data, &parseidx, stringParseindex);
+        5:  120:    isOperator((str + *stringParseindex), data, &parseidx, stringParseindex);
 call    0 returned 5
-        5:  119:    isFunction((str + *stringParseindex), data, &parseidx, stringParseindex);
+        5:  121:    isFunction((str + *stringParseindex), data, &parseidx, stringParseindex);
 call    0 returned 5
-        -:  120:  }
-        1:  121:  return data;
-        1:  121-block  0
-        -:  122:}
-        -:  123:
-        -:  124:
-        -:  125://           {'(', 0},
-        -:  126://           {'+', 1},
-        -:  127://           {'-', 1},
-        -:  128://           {'*', 2},
-        -:  129://           {'/', 2},
-        -:  130://           {'^', 3},
-        -:  131://           {'~', 4}	//	Унарный минус
-        -:  132:
+        -:  122:  }
+        1:  123:  return data;
+        1:  123-block  0
+        -:  124:}
+        -:  125:
+        -:  126://           {'(', 0},
+        -:  127://           {'+', 1},
+        -:  128://           {'-', 1},
+        -:  129://           {'*', 2},
+        -:  130://           {'/', 2},
+        -:  131://           {'^', 3},
+        -:  132://           {'~', 4}	//	Унарный минус

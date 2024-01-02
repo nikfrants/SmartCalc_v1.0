@@ -38,7 +38,7 @@ gcov_report: clean
 
 valgrind: clean test
 	valgrind $(VALGRIND_FLAGS) ./test
-	grep -n "ERROR SUMMARY" valgrind.txt
+	grep -n "leaks" valgrind.txt
 
 %.o: %.c
 	$(CC) $(CFLAGS) -c $< -o $@

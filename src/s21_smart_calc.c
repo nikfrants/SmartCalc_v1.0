@@ -12,6 +12,7 @@
 #include "stdio.h"
 
 int main() {
+  print("hello, ");
   print("hi, ");
 
   stack st;
@@ -26,7 +27,7 @@ int main() {
   push(&st, initData(2, '(', 1));
 
   stackPrintByIndex(&st, 0);
-  pop(&st);
+  stNode* val2 = pop(&st);
 
   push(&st, initData(3, '(', 0));
   push(&st, initData(2, '(', 0));
@@ -45,6 +46,7 @@ int main() {
   print("\n\n\n");
 
   newexpression = parser(s, &size);
+
   for (int i = 0; i < size; ++i) {
     if (newexpression[i].type == 1)
       printf(" %Lg ", newexpression[i].ldval);
@@ -55,12 +57,11 @@ int main() {
     else
       printf(" %s ", newexpression[i].func);
   }
+  free(val2);
+  free(val);
   freeStack(&st);
   free(newexpression);
   return 0;
 }
 
-
-void print(char * s) {
-  printf("%s\n", s);
-}
+void print(char* s) { printf("%s\n", s); }

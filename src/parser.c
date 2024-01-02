@@ -5,11 +5,11 @@
 // parse string
 // and return array of separeted elements
 
-
 #include "smart_calc.h"
 #include "string.h"
-int isDigit(char* ch, parseData* currstr, int* parseidx, int *stringParseindex) {
-  if(*ch == '\000') {
+int isDigit(char* ch, parseData* currstr, int* parseidx,
+            int* stringParseindex) {
+  if (*ch == '\000') {
     return 0;
   }
   currstr[*parseidx].lenth = 0;
@@ -33,14 +33,14 @@ int isDigit(char* ch, parseData* currstr, int* parseidx, int *stringParseindex) 
       currstr[*parseidx].type = 1;
     }
     *stringParseindex += currstr[*parseidx].lenth;
-    ++*parseidx ;
+    ++*parseidx;
     return 1;
   }
   return 0;
 }
-int isFunction(char* ch, parseData* currstr, int* parseidx, int * stringParseindex) {
-  if(*ch == '\000') {
-
+int isFunction(char* ch, parseData* currstr, int* parseidx,
+               int* stringParseindex) {
+  if (*ch == '\000') {
     return 0;
   }
   currstr[*parseidx].lenth = 0;
@@ -89,8 +89,9 @@ int isFunction(char* ch, parseData* currstr, int* parseidx, int * stringParseind
   }
   return 0;
 }
-int isOperator(char* ch, parseData* currstr, int* parseidx, int * stringParseindex) {
-  if(*ch == '\000') {
+int isOperator(char* ch, parseData* currstr, int* parseidx,
+               int* stringParseindex) {
+  if (*ch == '\000') {
     return 0;
   }
   currstr[*parseidx].lenth = 0;
@@ -109,9 +110,10 @@ int isOperator(char* ch, parseData* currstr, int* parseidx, int * stringParseind
 parseData* parser(char* str, int* stringParseindex) {
   *stringParseindex = 0;
 
-  // char * str1 = (char*)malloc(strlen(str) * sizeof(char));
-  //  strcpy(str1,str);
   parseData* data = malloc(100 * sizeof(parseData));
+  int* numbers = malloc(100 * sizeof(int));
+  free(numbers);
+
   int parseidx = 0;
   while ((long unsigned int)*stringParseindex < strlen(str)) {
     isDigit((str + *stringParseindex), data, &parseidx, stringParseindex);
@@ -121,7 +123,6 @@ parseData* parser(char* str, int* stringParseindex) {
   return data;
 }
 
-
 //           {'(', 0},
 //           {'+', 1},
 //           {'-', 1},
@@ -129,4 +130,3 @@ parseData* parser(char* str, int* stringParseindex) {
 //           {'/', 2},
 //           {'^', 3},
 //           {'~', 4}	//	Унарный минус
-
