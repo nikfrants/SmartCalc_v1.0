@@ -75,7 +75,7 @@ void freeStack(stack *st) {
     temp = st->root;
   }
   free(temp);
-  free(st->root);
+ // free(st->root);
   st->stSize = 0;
 }
 
@@ -93,7 +93,7 @@ void stackPrintValue(const stData value, int useName) {
 }
 
 int stackPrintByIndex(const stack *st, int index) {
-  if (index >= st->stSize) {
+  if ((size_t)index >= st->stSize) {
     fprintf(stderr, "index out of range");
     return 1;
   }
@@ -106,7 +106,7 @@ int stackPrintByIndex(const stack *st, int index) {
 }
 void stackPrintAll(const stack *st) {
   stNode *temp = st->root;
-  for (int i = 0; i < st->stSize; ++i) {
+  for (int i = 0; (size_t)i < st->stSize; ++i) {
     stackPrintValue(temp->data, 0);
     temp = temp->next;
   }

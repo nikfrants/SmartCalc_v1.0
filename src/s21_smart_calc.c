@@ -21,7 +21,7 @@ int main() {
   stackPrintByIndex(&st, 0);
   stNode* val = pop(&st);
 
-  stackPrintValue(val->data,0);
+  stackPrintValue(val->data, 0);
 
   push(&st, initData(2, '(', 1));
 
@@ -32,16 +32,16 @@ int main() {
   push(&st, initData(2, '(', 0));
   push(&st, initData(1, '(', 0));
 
-print("\n\n\n");
+  print("\n\n\n");
   stackPrintAll(&st);
   print("\n");
   char s[9] = "sin(4)4+5";
 
   float n = atof(s);
   printf("n = %f", n);
-  char expr[5] = "sin(1)";
-  parseData *newexpression = {NULL} ;
-  int size; ;
+  parseData* newexpression = {NULL};
+  int size;
+  ;
   print("\n\n\n");
 
   newexpression = parser(s, &size);
@@ -54,9 +54,9 @@ print("\n\n\n");
       printf(" %c ", newexpression[i].operator);
     else
       printf(" %s ", newexpression[i].func);
-
   }
- free(newexpression);
+  freeStack(&st);
+  free(newexpression);
   return 0;
 }
 

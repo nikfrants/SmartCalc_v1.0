@@ -57,6 +57,7 @@ stNode *top(const stack *st);
 
 
 void stackInit(stack *st);
+void freeStack(stack *st) ;
 stData initData(int val, char symbol, int type);
 void print(char *string);
 void stackPrintValue(const stData value, int useName);

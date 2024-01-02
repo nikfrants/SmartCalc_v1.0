@@ -13,12 +13,11 @@ int isDigit(char* ch, parseData* currstr, int* parseidx, int *stringParseindex) 
     return 0;
   }
   currstr[*parseidx].lenth = 0;
-  parseData* curr = currstr + *parseidx;
-  if (*ch >= '0' && *ch <= '9' || *ch == '.') {
+  if ((*ch >= '0' && *ch <= '9') || *ch == '.') {
     char string[300] = {'\0'};
     int flagfloat = 0;
     int idx1 = 0;
-    while (*ch >= '0' && *ch <= '9' || *ch == '.') {
+    while ((*ch >= '0' && *ch <= '9') || *ch == '.') {
       if (*ch == '.') flagfloat = 1;
       string[idx1] = *ch;
       ch++;
@@ -44,7 +43,6 @@ int isFunction(char* ch, parseData* currstr, int* parseidx, int * stringParseind
 
     return 0;
   }
-  parseData * curr = (currstr +  *parseidx);
   currstr[*parseidx].lenth = 0;
   if (*ch == 'c' || *ch == 's' || *ch == 't' || *ch == 'a' || *ch == 'l') {
     if (*ch == 'c') {
@@ -115,7 +113,7 @@ parseData* parser(char* str, int* stringParseindex) {
   //  strcpy(str1,str);
   parseData* data = malloc(100 * sizeof(parseData));
   int parseidx = 0;
-  while (*stringParseindex < strlen(str)) {
+  while ((long unsigned int)*stringParseindex < strlen(str)) {
     isDigit((str + *stringParseindex), data, &parseidx, stringParseindex);
     isOperator((str + *stringParseindex), data, &parseidx, stringParseindex);
     isFunction((str + *stringParseindex), data, &parseidx, stringParseindex);
