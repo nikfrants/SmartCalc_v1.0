@@ -13,6 +13,9 @@
 #define STACK_UNDERFLOW -101
 
 #include <stdlib.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include "string.h"
 
 // typedef int T;
 // typedef struct {
@@ -54,11 +57,12 @@ stNode *pop(stack *st);
 stNode *top(const stack *st);
 
 void stackInit(stack *st);
+stData initData(int val, char symbol, int type);
 void freeStack(stack *st);
 stData initData(int val, char symbol, int type);
 void print(char *string);
 void stackPrintValue(const stData value, int useName);
 int stackPrintByIndex(const stack *st, int index);
 void stackPrintAll(const stack *st);
-
+int isEmpty(stack *st);
 parseData *parser(char *str, int *idx);

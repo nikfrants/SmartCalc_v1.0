@@ -6,6 +6,9 @@ UNAME_S = $(shell uname -s)
 SRC_PROJECT = ${wildcard *.c}
 SRC_TEST = ${wildcard tests/*.c}
 
+SRC_PROJECT_REPORT = parser.c stack.c
+SRC_TEST_REPORT = tests/test.c tests/test_stack.c tests/test_parser.c
+
 OBJ_PROJECT = ${patsubst %.c,%.o,$(SRC_PROJECT)}
 OBJ_TEST = ${patsubst tests/%.c,tests/%.o,$(SRC_TEST)}
 
@@ -28,8 +31,13 @@ test: clean $(OBJ_PROJECT) $(OBJ_TEST)
 	$(CC) $(OBJ_PROJECT) $(OBJ_TEST) $(TEST_CHECK_F) -o test
 	./test
 
+
+#gcc -Wall -Werror -Wextra -std=c11 parser.c s21_smart_calc.c stack.c tests/test.c
+#tests/test_parser.c tests/test_stack.c
+#-lcheck -lsubunit -lm -lrt -lpthread --coverage -o test_coverage
+
 gcov_report: clean
-	$(CC) $(CFLAGS) $(SRC_PROJECT) $(SRC_TEST) $(TEST_CHECK_F) --coverage -o test_coverage
+	$(CC) $(CFLAGS) $(SRC_PROJECT_REPORT) $(SRC_TEST_REPORT) $(TEST_CHECK_F) --coverage -o test_coverage
 	./test_coverage
 	lcov -c -d . --output-file test_coverage.info
 	genhtml test_coverage.info --output-directory html_report
@@ -37,6 +45,7 @@ gcov_report: clean
 
 valgrind: clean test
 	valgrind $(VALGRIND_FLAGS) ./test
+	grep -n "ERROR SUMMARY" valgrind.txt
 	grep -n "leaks" valgrind.txt
 
 %.o: %.c

@@ -19,7 +19,8 @@ add_executable(Test_SmartCalc_v1_0
         src/stack.c
         src/smart_calc.h
         src/parser.c
-#        src/get_elem_from_string.c
+        src/tests/test_parser.c
+        #        src/get_elem_from_string.c
 )
 
 # Создаём тест

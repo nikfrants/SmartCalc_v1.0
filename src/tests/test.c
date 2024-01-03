@@ -13,10 +13,13 @@ void run_test(Suite *thesuit) {
 
 int main() {
   printf("================= TESTING =================\n\n");
-  Suite *s_1 = pushPop();  // Создание тестового кейса create_matrix
+  Suite *stack = Stack();
 
-  run_test(s_1);  // Запуск тестов из тестового кейса
 
+  Suite *parser = Parser();
+  run_test(stack);  // Запуск тестов из тестового кейса
+
+  run_test(parser);
   printf("================= END =================\n");
   return 0;
 }

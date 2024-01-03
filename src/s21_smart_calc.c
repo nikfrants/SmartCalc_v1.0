@@ -12,30 +12,8 @@
 #include "stdio.h"
 
 int main() {
+
   print("hello, ");
-  print("hi, ");
-
-  stack st;
-  stackInit(&st);
-  push(&st, initData(1, 0, 0));
-
-  stackPrintByIndex(&st, 0);
-  stNode* val = pop(&st);
-
-  stackPrintValue(val->data, 0);
-
-  push(&st, initData(2, '(', 1));
-
-  stackPrintByIndex(&st, 0);
-  stNode* val2 = pop(&st);
-
-  push(&st, initData(3, '(', 0));
-  push(&st, initData(2, '(', 0));
-  push(&st, initData(1, '(', 0));
-
-  print("\n\n\n");
-  stackPrintAll(&st);
-  print("\n");
   char s[9] = "sin(4)4+5";
 
   float n = atof(s);
@@ -57,10 +35,6 @@ int main() {
     else
       printf(" %s ", newexpression[i].func);
   }
-  free(val2);
-  free(val);
-  freeStack(&st);
   free(newexpression);
   return 0;
 }
-

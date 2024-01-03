@@ -10,6 +10,7 @@
 
 #include "../smart_calc.h"
 
-Suite *pushPop();
+Suite *Stack();
+Suite *Parser();
 
 #endif

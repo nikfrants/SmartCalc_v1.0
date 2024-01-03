@@ -6,7 +6,7 @@
 // and return array of separeted elements
 
 #include "smart_calc.h"
-#include "string.h"
+
 int isDigit(char* ch, parseData* currstr, int* parseidx,
             int* stringParseindex) {
   if (*ch == '\000') {
@@ -64,16 +64,16 @@ int isFunction(char* ch, parseData* currstr, int* parseidx,
       ch += 4;
     } else if (*(ch + 1) == 's') {
       strcpy(currstr[*parseidx].func, "asin");
-      currstr[*parseidx].lenth = 3;
-      ch += 3;
+      currstr[*parseidx].lenth = 4;
+      ch += 4;
     } else if (*(ch + 1) == 't') {
       strcpy(currstr[*parseidx].func, "atan");
-      currstr[*parseidx].lenth = 3;
-      ch += 3;
+      currstr[*parseidx].lenth = 4;
+      ch += 4;
     } else if (*(ch + 1) == 'q') {
       strcpy(currstr[*parseidx].func, "sqrt");
-      currstr[*parseidx].lenth = 3;
-      ch += 3;
+      currstr[*parseidx].lenth = 4;
+      ch += 4;
     } else if (*(ch + 1) == 'n') {
       strcpy(currstr[*parseidx].func, "ln");
       currstr[*parseidx].lenth = 2;
@@ -111,7 +111,6 @@ parseData* parser(char* str, int* stringParseindex) {
   *stringParseindex = 0;
 
   parseData* data = malloc(100 * sizeof(parseData));
-
 
   int parseidx = 0;
   while ((long unsigned int)*stringParseindex < strlen(str)) {
