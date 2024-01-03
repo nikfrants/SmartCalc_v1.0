@@ -10,6 +10,6 @@
 
 #include "../smart_calc.h"
 
-Suite *tStack();
+Suite *pushPop();
 
 #endif

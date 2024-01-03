@@ -1,3 +1,0 @@
-/home/nikolay/it/sch21/github/SmartCalc_v1.0/cmake-build-debug-coverage/CMakeFiles/SmartCalc_v1_0.dir
-/home/nikolay/it/sch21/github/SmartCalc_v1.0/cmake-build-debug-coverage/CMakeFiles/edit_cache.dir
-/home/nikolay/it/sch21/github/SmartCalc_v1.0/cmake-build-debug-coverage/CMakeFiles/rebuild_cache.dir

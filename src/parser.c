@@ -111,8 +111,7 @@ parseData* parser(char* str, int* stringParseindex) {
   *stringParseindex = 0;
 
   parseData* data = malloc(100 * sizeof(parseData));
-  int* numbers = malloc(100 * sizeof(int));
-  free(numbers);
+
 
   int parseidx = 0;
   while ((long unsigned int)*stringParseindex < strlen(str)) {

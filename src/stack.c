@@ -109,3 +109,5 @@ void stackPrintAll(const stack *st) {
     temp = temp->next;
   }
 }
+
+void print(char* s) { printf("%s\n", s); }

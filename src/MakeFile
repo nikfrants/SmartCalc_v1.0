@@ -17,7 +17,6 @@ endif
 ifeq ($(UNAME_S),Darwin)
 	TEST_CHECK_F= -lcheck
 	OPEN_CMD = open
-
 endif
 
 all: clean s21_smart_calc.a test

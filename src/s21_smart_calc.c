@@ -64,4 +64,3 @@ int main() {
   return 0;
 }
 
-void print(char* s) { printf("%s\n", s); }

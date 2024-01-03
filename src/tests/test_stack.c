@@ -3,9 +3,9 @@
 // Created by nikolay on 1/2/24.
 //
 
-#include "tests.h"
-
 #include <check.h>
+
+#include "test.h"
 
 //
 START_TEST(push_part_1) {
@@ -20,7 +20,7 @@ START_TEST(push_part_1) {
 }
 END_TEST
 
-Suite *calc_complements() {
+Suite *pushPop() {
   Suite *s = suite_create("pushPop");
   TCase *tc_create = tcase_create("pushPop");
   tcase_add_test(tc_create, push_part_1);
