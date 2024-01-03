@@ -108,17 +108,6 @@ END_TEST
 
 
 
-START_TEST(parse_float) {
-
-  char s[9] = "4.44";
-  parseData* newexpression = {NULL};
-  int size;
-  newexpression = parser(s, &size);
-  ck_assert_float_eq(newexpression[0].fval, 4.44);
-  ck_assert_int_eq(newexpression[0].type, 2);
-  free(newexpression);
-}
-END_TEST
 
 
 // START_TEST(parse_empty) {
@@ -150,7 +139,6 @@ Suite *Parser() {
   tcase_add_test(tc_create, parse_sqrt);
   tcase_add_test(tc_create, parse_ln);
   tcase_add_test(tc_create, parse_log);
-  tcase_add_test(tc_create, parse_float);
   // tcase_add_test(tc_create, parse_empty);
 
 

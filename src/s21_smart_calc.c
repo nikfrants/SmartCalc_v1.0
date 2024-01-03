@@ -8,7 +8,7 @@
      когда функция готова, мерджим в девелоп
  */
 
-#include "smart_calc.h"
+#include "stack.h"
 #include "stdio.h"
 
 int main() {
@@ -27,11 +27,9 @@ int main() {
 
   for (int i = 0; i < size; ++i) {
     if (newexpression[i].type == 1)
-      printf(" %Lg ", newexpression[i].ldval);
-    else if (newexpression[i].type == 2)
-      printf(" %f ", newexpression[i].fval);
+      printf(" %Lg ", newexpression[i].number);
     else if (newexpression[i].type == 3)
-      printf(" %c ", newexpression[i].operator);
+      printf(" %c ", newexpression[i].op);
     else
       printf(" %s ", newexpression[i].func);
   }

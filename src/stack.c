@@ -4,15 +4,18 @@
 
 // own implementation of stack
 
-
-#include "smart_calc.h"
+#include "stack.h"
 
 int isEmpty(stack *st) { return st->stSize == 0; }
-void initNode(stNode *node, stData val) {
-  node->data.value = val.value;
-  node->data.operator= val.operator;
+void initNode(stNode *node, parseData val) {
+  node->data.number = val.number;
+  node->data.op = val.op;
   node->data.type = val.type;
   node->next = NULL;
+
+  node->data.lenth = val.lenth;
+  node->data.priority = val.priority;
+  strcpy(node->data.func, val.func);
 }
 void stackInit(stack *st) {
   st->stSize = 0;
@@ -21,30 +24,36 @@ void stackInit(stack *st) {
   st->root->next = NULL;
 }
 
-stData initData(int val, char symbol, int type) {
-  stData data;
-  data.value = val;
-  data.operator= symbol;
+parseData initData(int val, char symbol, int type) {
+  parseData data;
+  data.number = val;
+  data.op = symbol;
   data.type = type;
+  data.lenth = 0;
+  data.priority = 0;
+  strcpy(data.func, "");
   return data;
 }
-stNode *creatNode(stData data) {
+stNode *creatNode(parseData data) {
   stNode *tmp = malloc(sizeof(stNode));
-  tmp->data.value = data.value;
-  tmp->data.operator= data.operator;
+  tmp->data.number = data.number;
+  tmp->data.op = data.op;
   tmp->data.type = data.type;
+  tmp->data.lenth = data.lenth;
+  tmp->data.priority = data.priority;
+  strcpy(tmp->data.func, data.func);
   tmp->next = NULL;
   return tmp;
 }
 
-int push(stack *st, stData val) {
+int push(stack *st, parseData val) {
   if (st->stSize == 0) {
-   initNode(st->root, val);// st->root
+    initNode(st->root, val);  // st->root
     st->stSize++;
     return 0;
   }
   stNode *new = creatNode(val);
-  //nodeInit(new, val);
+  // nodeInit(new, val);
   new->next = st->root;
   st->root = new;
   st->stSize++;
@@ -53,7 +62,7 @@ int push(stack *st, stData val) {
 
 stNode *pop(stack *st) {
   if (st->stSize > 0) {
-    stNode *new = creatNode(st->root->data); //st->root;//
+    stNode *new = creatNode(st->root->data);  // st->root;//
     stNode *tmp = st->root;
     st->root = st->root->next;
     free(tmp);
@@ -64,14 +73,14 @@ stNode *pop(stack *st) {
 }
 stNode *top(const stack *st) {
   if (st->stSize > 0) {
-    //stNode *new = creatNode(st->root->data);
+    // stNode *new = creatNode(st->root->data);
     return st->root;
   }
   return NULL;
 }
 
 void freeStack(stack *st) {
-  if(st->root != NULL) {
+  if (st->root != NULL) {
     stNode *temp = st->root;
     while (temp->next != NULL) {
       st->root = st->root->next;
@@ -79,19 +88,19 @@ void freeStack(stack *st) {
       temp = st->root;
     }
     free(temp);
-    //free(st->root);
+    // free(st->root);
     st->stSize = 0;
   }
 }
 
-void stackPrintValue(const stData value, int useName) {
+void stackPrintValue(const parseData value, int useName) {
   if (value.type == 0) {
     if (useName) print("N_");
-    printf("%Lg ", value.value);
+    printf("%Lg ", value.number);
   }
   if (value.type == 1) {
     if (useName) print("O_");
-    printf("%c ", value.operator);
+    printf("%c ", value.op);
   }
 }
 
@@ -101,7 +110,7 @@ int stackPrintByIndex(const stack *st, int index) {
     return 1;
   }
   stNode *temp = creatNode(st->root->data);
-  temp->next=st->root->next;
+  temp->next = st->root->next;
   for (int i = 0; i < index - 1; ++i) {
     temp->next = temp->next->next;
   }
@@ -111,7 +120,7 @@ int stackPrintByIndex(const stack *st, int index) {
 }
 void stackPrintAll(const stack *st) {
   stNode *temp = st->root;
-  for (int i = 0; temp!=NULL || (size_t)i < st->stSize; ++i) {
+  for (int i = 0; temp != NULL || (size_t)i < st->stSize; ++i) {
     stackPrintValue(temp->data, 0);
     temp = temp->next;
   }

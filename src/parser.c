@@ -5,7 +5,7 @@
 // parse string
 // and return array of separeted elements
 
-#include "smart_calc.h"
+#include "stack.h"
 
 int isDigit(char* ch, parseData* currstr, int* parseidx,
             int* stringParseindex) {
@@ -15,23 +15,18 @@ int isDigit(char* ch, parseData* currstr, int* parseidx,
   currstr[*parseidx].lenth = 0;
   if ((*ch >= '0' && *ch <= '9') || *ch == '.') {
     char string[300] = {'\0'};
-    int flagfloat = 0;
     int idx1 = 0;
     while ((*ch >= '0' && *ch <= '9') || *ch == '.') {
-      if (*ch == '.') flagfloat = 1;
       string[idx1] = *ch;
       ch++;
       currstr[*parseidx].lenth++;
       idx1++;
     }
     string[idx1] = '\0';
-    if (flagfloat) {
-      currstr[*parseidx].fval = atof(string);
-      currstr[*parseidx].type = 2;
-    } else {
-      currstr[*parseidx].ldval = atoll(string);
-      currstr[*parseidx].type = 1;
-    }
+    currstr[*parseidx].number = atoll(string);
+    currstr[*parseidx].type = 1;
+    currstr[*parseidx].priority =
+        -1;  // 0 //todo change to 0. shift numericto right
     *stringParseindex += currstr[*parseidx].lenth;
     ++*parseidx;
     return 1;
@@ -83,6 +78,7 @@ int isFunction(char* ch, parseData* currstr, int* parseidx,
       currstr[*parseidx].lenth = 3;
       ch += 3;
     }
+    currstr[*parseidx].priority = 5;
     *stringParseindex += currstr[*parseidx].lenth;
     ++*parseidx;
     return 1;
@@ -96,11 +92,37 @@ int isOperator(char* ch, parseData* currstr, int* parseidx,
   }
   currstr[*parseidx].lenth = 0;
   if (*ch == '+' || *ch == '-' || *ch == '*' || *ch == '/' || *ch == '^' ||
-      *ch == '~' || *ch == '(' || *ch == ')') {
-    currstr[*parseidx].operator= * ch;
+      *ch == '~' || *ch == 'm' || *ch == '(' || *ch == ')') {
+    int increaseIfMod = 0;
+    if (*ch == 'm') increaseIfMod = 2;
+    currstr[*parseidx].op = *ch;
     currstr[*parseidx].type = 3;
-    ch = ch + 1;
-    currstr[*parseidx].lenth++;
+    switch (*ch) {
+      case '(':
+        currstr[*parseidx].priority = 0;
+        break;
+      case '+':
+      case '-':
+        currstr[*parseidx].priority = 1;
+        break;
+      case '/':
+      case '*':
+        currstr[*parseidx].priority = 2;
+        break;
+      case '^':
+        currstr[*parseidx].priority = 3;
+        break;
+      case '~':
+        currstr[*parseidx].priority = 4;
+        break;
+      case 'm':
+        currstr[*parseidx].priority = 2;
+        break;
+      default:
+        currstr[*parseidx].priority = -2; // error?
+    }
+    ch = ch + 1 + increaseIfMod;
+    currstr[*parseidx].lenth += 1 + increaseIfMod;
     *stringParseindex += currstr[*parseidx].lenth;
     ++*parseidx;
     return 1;
@@ -109,9 +131,7 @@ int isOperator(char* ch, parseData* currstr, int* parseidx,
 }
 parseData* parser(char* str, int* stringParseindex) {
   *stringParseindex = 0;
-
   parseData* data = malloc(100 * sizeof(parseData));
-
   int parseidx = 0;
   while ((long unsigned int)*stringParseindex < strlen(str)) {
     isDigit((str + *stringParseindex), data, &parseidx, stringParseindex);
@@ -120,11 +140,3 @@ parseData* parser(char* str, int* stringParseindex) {
   }
   return data;
 }
-
-//           {'(', 0},
-//           {'+', 1},
-//           {'-', 1},
-//           {'*', 2},
-//           {'/', 2},
-//           {'^', 3},
-//           {'~', 4}	//	Унарный минус

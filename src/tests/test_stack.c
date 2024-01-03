@@ -13,7 +13,7 @@ START_TEST(push_1) {
   stackInit(&st);
   push(&st, initData(1, 0, 0));
   stNode *val = top(&st);
-  ck_assert_int_eq(val->data.value, 1);
+  ck_assert_int_eq(val->data.number, 1);
   ck_assert_int_eq(val->data.type, 0);
   freeStack(&st);
 }
@@ -53,7 +53,7 @@ START_TEST(top_1) {
   stNode * node1;
   stNode * node2;
   node1 = top(&st);
-  ck_assert_int_eq(node1->data.value, 1);
+  ck_assert_int_eq(node1->data.number, 1);
   node1 = pop(&st);
   node2 = top(&st);
   ck_assert_ptr_eq(node2,NULL);
@@ -67,8 +67,8 @@ END_TEST
 
 START_TEST(print_all_1) {
 
-  stData data1 = initData(1, 0, 0);
-  stData data2 = initData(1, 0, 1);
+  parseData data1 = initData(1, 0, 0);
+  parseData data2 = initData(1, 0, 1);
 
   stackPrintValue(data1,0);
   stackPrintValue(data1,1);

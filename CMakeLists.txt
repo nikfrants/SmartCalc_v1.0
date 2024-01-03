@@ -6,9 +6,10 @@ set(CMAKE_C_STANDARD 11)
 add_executable(SmartCalc_v1_0
         src/s21_smart_calc.c
         src/stack.c
-        src/smart_calc.h
+        src/stack.h
         src/parser.c
-#        src/get_elem_from_string.c
+        src/polish_notation.c
+        #        src/get_elem_from_string.c
 )
 
 # Определяем исполняемый файл для тестов
@@ -17,9 +18,10 @@ add_executable(Test_SmartCalc_v1_0
         src/tests/test.h
         src/tests/test_stack.c
         src/stack.c
-        src/smart_calc.h
+        src/stack.h
         src/parser.c
         src/tests/test_parser.c
+        src/polish_notation.c
         #        src/get_elem_from_string.c
 )
 
