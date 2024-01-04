@@ -71,43 +71,34 @@ int isFunction(char* ch, parseData* currstr, int* parseidx,
   }
   currstr[0].lenth = 0;
   if (*ch == 'c' || *ch == 's' || *ch == 't' || *ch == 'a' || *ch == 'l') {
-    if (*ch == 'c') {
+    if (*ch == 'c') {  // strncmp(ch, "cos", 3) == 0;
       strcpy(currstr[0].func, "cos");
-      currstr[0].lenth = 3;
-      ch += 3;
+      currstr[0].lenth = 3, ch += 3;
     } else if (*ch == 't') {
       strcpy(currstr[0].func, "tan");
-      currstr[0].lenth = 3;
-      ch += 3;
+      currstr[0].lenth = 3, ch += 3;
     } else if (*(ch + 1) == 'i') {
       strcpy(currstr[0].func, "sin");
-      currstr[0].lenth = 3;
-      ch = ch + 3;
+      currstr[0].lenth = 3, ch = ch + 3;
       //   ch += 3;
     } else if (*(ch + 1) == 'c') {
       strcpy(currstr[0].func, "acos");
-      currstr[0].lenth = 4;
-      ch += 4;
+      currstr[0].lenth = 4, ch += 4;
     } else if (*(ch + 1) == 's') {
       strcpy(currstr[0].func, "asin");
-      currstr[0].lenth = 4;
-      ch += 4;
+      currstr[0].lenth = 4, ch += 4;
     } else if (*(ch + 1) == 't') {
       strcpy(currstr[0].func, "atan");
-      currstr[0].lenth = 4;
-      ch += 4;
+      currstr[0].lenth = 4, ch += 4;
     } else if (*(ch + 1) == 'q') {
       strcpy(currstr[0].func, "sqrt");
-      currstr[0].lenth = 4;
-      ch += 4;
+      currstr[0].lenth = 4, ch += 4;
     } else if (*ch == 'l' && *(ch + 1) == 'n') {
       strcpy(currstr[0].func, "ln");
-      currstr[0].lenth = 2;
-      ch += 2;
+      currstr[0].lenth = 2, ch += 2;
     } else if (*ch == 'l' && *(ch + 1) == 'o') {
       strcpy(currstr[0].func, "log");
-      currstr[0].lenth = 3;
-      ch += 3;
+      currstr[0].lenth = 3, ch += 3;
     }
     currstr[0].priority = 5;
     currstr[0].type = 4;
