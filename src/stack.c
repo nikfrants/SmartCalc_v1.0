@@ -31,7 +31,7 @@ parseData initData(int val, char symbol, int type) {
   data.type = type;
   data.lenth = 0;
   data.priority = 0;
-  strcpy(data.func, "");
+  strcpy(data.func, "\000\000\000\000\000");
   return data;
 }
 stNode *creatNode(parseData data) {
@@ -50,7 +50,7 @@ int push(stack *st, parseData val) {
   if (st->stSize == 0) {
     initNode(st->root, val);  // st->root
     st->stSize++;
-    return 0;
+    return 1;
   }
   stNode *new = creatNode(val);
   // nodeInit(new, val);

@@ -48,7 +48,6 @@
 //
 // } parseData;
 
-
 //   // 1 2 2 3 3 4 5
 //   // 0 1 1 2 2 3 4
 //   // ( + - * / ^ ~
@@ -56,11 +55,12 @@
 //   // 2 - mod - 3
 //   // 5 - sin cos tan asin acos atan sqrt ln log - 6
 typedef struct parseData {
-  long double number;
-  char op;
+  long double number;  // type 1
+  char op;             // type 3 operator
   int type;
 
-  char func[4];
+  char func[5];     // type 4 func
+  char varName[5];  // type 5 variable
   int lenth;
   int priority;
 } parseData;
@@ -73,6 +73,11 @@ typedef struct stNode {
 typedef struct {
   stNode *root;
   size_t stSize;
+  // size_t variables[1000];
+  //  int variablesSize;
+  //  write  in variables[]  adresses of variables that stored in parsered
+  // array. impossible for now cos stack doesn't exist while we processing
+  // parsing
 } stack;
 
 int push(stack *st, parseData val);
@@ -87,5 +92,5 @@ void print(char *string);
 void stackPrintValue(const parseData value, int useName);
 int stackPrintByIndex(const stack *st, int index);
 void stackPrintAll(const stack *st);
-
+stack * evaluatePolishNotation(char* expression) ;
 parseData *parser(char *str, int *idx);

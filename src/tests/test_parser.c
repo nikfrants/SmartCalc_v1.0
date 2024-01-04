@@ -106,6 +106,99 @@ START_TEST(parse_log) {
 END_TEST
 
 
+START_TEST(parse_op_add) {
+  char s[9] = "1+1";
+  parseData* newexpression = {NULL};
+  int size;
+  newexpression = parser(s, &size);
+  ck_assert_int_eq(newexpression[1].op, '+');
+  free(newexpression);
+}
+END_TEST
+
+START_TEST(parse_op_sub) {
+  char s[9] = "1-1";
+  parseData* newexpression = {NULL};
+  int size;
+  newexpression = parser(s, &size);
+  ck_assert_int_eq(newexpression[1].op, '-');
+  free(newexpression);
+}
+END_TEST
+
+
+START_TEST(parse_op_mul) {
+  char s[9] = "1*1";
+  parseData* newexpression = {NULL};
+  int size;
+  newexpression = parser(s, &size);
+  ck_assert_int_eq(newexpression[1].op, '*');
+  free(newexpression);
+}
+END_TEST
+
+START_TEST(parse_op_div) {
+  char s[9] = "1/1";
+  parseData* newexpression = {NULL};
+  int size;
+  newexpression = parser(s, &size);
+  ck_assert_int_eq(newexpression[1].op, '/');
+  free(newexpression);
+}
+END_TEST
+
+
+START_TEST(parse_op_ex) {
+  char s[9] = "1^1";
+  parseData* newexpression = {NULL};
+  int size;
+  newexpression = parser(s, &size);
+  ck_assert_int_eq(newexpression[1].op, '^');
+  free(newexpression);
+}
+END_TEST
+
+
+START_TEST(parse_op_unary_sub) {
+  char s[9] = "1~1";
+  parseData* newexpression = {NULL};
+  int size;
+  newexpression = parser(s, &size);
+  ck_assert_int_eq(newexpression[1].op, '~');
+  free(newexpression);
+}
+END_TEST
+
+START_TEST(parse_op_mod) {
+  char s[9] = "1mod1";
+  parseData* newexpression = {NULL};
+  int size;
+  newexpression = parser(s, &size);
+  ck_assert_int_eq(newexpression[1].op, 'm');
+  free(newexpression);
+}
+END_TEST
+
+
+START_TEST(parse_op_open_paren) {
+  char s[9] = "1(1*2)";
+  parseData* newexpression = {NULL};
+  int size;
+  newexpression = parser(s, &size);
+  ck_assert_int_eq(newexpression[1].op, '(');
+  free(newexpression);
+}
+END_TEST
+
+START_TEST(parse_op_close_paren) {
+  char s[9] = "()";
+  parseData* newexpression = {NULL};
+  int size;
+  newexpression = parser(s, &size);
+  ck_assert_int_eq(newexpression[1].op, ')');
+  free(newexpression);
+}
+END_TEST
 
 
 
@@ -139,6 +232,18 @@ Suite *Parser() {
   tcase_add_test(tc_create, parse_sqrt);
   tcase_add_test(tc_create, parse_ln);
   tcase_add_test(tc_create, parse_log);
+
+  tcase_add_test(tc_create, parse_op_add);
+  tcase_add_test(tc_create, parse_op_sub);
+  tcase_add_test(tc_create, parse_op_mul);
+  tcase_add_test(tc_create, parse_op_div);
+  tcase_add_test(tc_create, parse_op_ex);
+  tcase_add_test(tc_create, parse_op_unary_sub);
+  tcase_add_test(tc_create, parse_op_mod);
+  tcase_add_test(tc_create, parse_op_open_paren);
+  tcase_add_test(tc_create, parse_op_close_paren);
+
+
   // tcase_add_test(tc_create, parse_empty);
 
 

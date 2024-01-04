@@ -8,7 +8,7 @@
 #include <check.h>
 #include <stdio.h>
 
-#include "..\stack.h"
+#include "../stack.h"
 
 Suite *Stack();
 Suite *Parser();
