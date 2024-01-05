@@ -22,36 +22,8 @@
 #define INCORRECT_EXPRESSION -102
 #include <stdio.h>
 #include <stdlib.h>
-
+#include <math.h>
 #include "string.h"
-
-// typedef int T;
-// typedef struct {
-//   int head;
-//   int size;
-//   int alloc_size;
-//   T *data; // и тут маллочить
-// } stack;
-//
-// typedef int tData;
-//
-// typedef struct parseData {
-//   long double ldval;  // type 1
-//
-//   char op;            // type 3 operator
-//   char func[4];       // type 4
-//   int lenth;
-//   int type;
-//   int priority;
-//   //todo shift numeric to one rifht
-//   // 1 2 2 3 3 4 5
-//   // 0 1 1 2 2 3 4
-//   // ( + - * / ^ ~
-//   //
-//   // 2 - mod - 3
-//   // 5 - sin cos tan asin acos atan sqrt ln log - 6
-//
-// } parseData;
 
 //   // 1 2 2 3 3 4 5
 //   // 0 1 1 2 2 3 4
@@ -73,10 +45,12 @@ typedef struct parseData {
 typedef struct stNode {
   parseData data;
   struct stNode *next;
+  struct stNode *prev;
 } stNode;
 
 typedef struct {
   stNode *root;
+  stNode *last;
   size_t stSize;
   // size_t variables[1000];
   //  int variablesSize;
@@ -90,11 +64,14 @@ stNode *pop(stack *st);
 stNode *top(const stack *st);
 int isEmpty(stack *st);
 void stackInit(stack *st);
-parseData initData(int val, char symbol, int type, int priority);
+void initNode(stNode *node, parseData val);
+parseData initData(long double val, char symbol, int type, int priority);
 void freeStack(stack *st);
 void print(char *string);
 void stackPrintValue(const parseData value, int useName);
 int stackPrintByIndex(const stack *st, int index);
 void stackPrintAll(const stack *st);
-stack  evaluatePolishNotation(char* expression) ;
+stack  evaluatePolishNotation(char* expression);
 parseData *parser(char *str, int *idx);
+
+long double calcPolishNotation(stack *data) ;

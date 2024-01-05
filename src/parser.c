@@ -37,8 +37,9 @@ int isDigit(char* ch, parseData* currstr, int* parseidx,
   if (*ch == '\000') {
     return 0;
   }
+
   currstr[0].lenth = 0;
-  if ((*ch >= '0' && *ch <= '9') || *ch == '.') {
+  if ((*ch >= '0' && *ch <= '9') || *ch == '.' && *parseidx > 0 && ((currstr[-1].type == TYPE_DIGIT))) {
     char string[300] = {'\0'};
     int flagfloat = 0;
     int idx1 = 0;
@@ -118,7 +119,7 @@ int isOperator(char* ch, parseData* currstr, int* parseidx,
     int increaseIfMod = 0;
     if (strncmp(ch, "mod", 3) == 0) increaseIfMod = 2;
     currstr[0].op = *ch;
-    currstr[0].type = 3;
+    currstr[0].type = TYPE_OPERATOR;
     switch (*ch) {
       case '(':
       case ')':
@@ -127,11 +128,17 @@ int isOperator(char* ch, parseData* currstr, int* parseidx,
         break;
       case '+':
       case '-':
-        currstr[0].priority = 1;
+        if (*parseidx > 0 && ((currstr[-1].type == TYPE_OPERATOR|| currstr[-1].type == TYPE_BRACKET) &&
+                              strchr("+p~-*/^(", currstr[-1].op)) ||
+            *parseidx == 0 && (*ch == '+' || *ch == '-')) {
+          currstr[0].op = *ch == '+' ? 'p' : '~';
+          currstr[0].priority = 4;
+        } else
+          currstr[0].priority = 1;
         break;
       case '/':
       case '*':
-      case 'm': // mod
+      case 'm':  // mod
         currstr[0].priority = 2;
         break;
       case '^':
@@ -192,7 +199,7 @@ int Other(char* ch, parseData* currstr, int* parseidx, int* stringParseindex) {
 }
 parseData* parser(char* str, int* strPrsidx) {
   *strPrsidx = 0;
-  parseData* data = malloc(100 * sizeof(parseData));
+  parseData* data = malloc(500 * sizeof(parseData));
   int prseidx = 0;
   while ((long unsigned int)*strPrsidx < strlen(str)) {
     int other = 0;

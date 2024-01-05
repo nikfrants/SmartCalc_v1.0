@@ -12,6 +12,7 @@ void initNode(stNode *node, parseData val) {
   node->data.op = val.op;
   node->data.type = val.type;
   node->next = NULL;
+  node->prev = NULL;
 
   node->data.lenth = val.lenth;
   node->data.priority = val.priority;
@@ -22,9 +23,10 @@ void stackInit(stack *st) {
   st->root = (stNode *)malloc(sizeof(stNode));
   st->root->data = initData(0, 0, 0, 0);
   st->root->next = NULL;
+  st->root->prev = NULL;
 }
 
-parseData initData(int val, char symbol, int type, int priority) {
+parseData initData(long double val, char symbol, int type, int priority) {
   parseData data;
   data.number = val;
   data.op = symbol;
@@ -43,19 +45,26 @@ stNode *creatNode(parseData data) {
   tmp->data.priority = data.priority;
   strcpy(tmp->data.func, data.func);
   tmp->next = NULL;
+  tmp->prev = NULL;
   return tmp;
 }
 
 int push(stack *st, parseData val) {
   if (st->stSize == 0 && st->root) {
-
     initNode(st->root, val);  // st->root
     st->stSize++;
+    st->last = st->root;
     return 1;
   }
   stNode *new = creatNode(val);
   // nodeInit(new, val);
-  new->next = st->root;
+  if (st->root != NULL) {
+    new->next = st->root;
+    st->root->prev = new;
+  }else {
+    st->last = new;
+  }
+
   st->root = new;
   st->stSize++;
   return 0;
@@ -63,13 +72,17 @@ int push(stack *st, parseData val) {
 
 stNode *pop(stack *st) {
   if (st->stSize > 0) {
+    // todo dont create node, return pointer to root
     stNode *new = creatNode(st->root->data);  // st->root;//
     stNode *tmp = st->root;
     st->root = st->root->next;
+    if (st->root)
+    st->root->prev = NULL;
     free(tmp);
     st->stSize--;
     return new;
-  }
+  }else
+    st->last == 0;
   return NULL;
 }
 stNode *top(const stack *st) {
@@ -135,15 +148,18 @@ int stackPrintByIndex(const stack *st, int index) {
   return 0;
 }
 void stackPrintAll(const stack *st) {
-  stack reversedSt;
-  stackInit(&reversedSt);
-  while (st->stSize)
-    push(&reversedSt, pop(st)->data);
-  stNode* temp = reversedSt.root;
-  for (int i = 0; temp != NULL || (size_t)i < reversedSt.stSize; ++i) {
+//  stack reversedSt;
+ // stackInit(&reversedSt);
+  stNode* temp = st->last;
+ // while (st->stSize) push(&reversedSt, pop(st)->data);
+  while ( temp != NULL) {
     stackPrintValue(temp->data, 0);
-    temp = temp->next;
+    temp = temp->prev;
   }
+  // for (int i = 0; temp != NULL || (size_t)i < reversedSt.stSize; ++i) {
+  //   stackPrintValue(temp->data, 0);
+  //   temp = temp->next;
+  // }
 }
 
 void print(char *s) { printf("%s\n", s); }

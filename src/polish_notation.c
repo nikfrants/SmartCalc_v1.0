@@ -21,15 +21,13 @@ stack evaluatePolishNotation(char* expression) {
       push(&polishNotation, inputStr[strIndex]);
       // initData(inputStr[strIndex].number, 0, 1,-1)
       ++strIndex;
-    }
-    //==2==// Если Функция или открывающая скобка -> в стек
+    }  //==2==// Если Функция или открывающая скобка -> в стек
     if (strIndex < size && (inputStr[strIndex].type == TYPE_FUNCTION ||
                             inputStr[strIndex].type == TYPE_BRACKET &&
                                 inputStr[strIndex].op == '(')) {
       push(&processed, inputStr[strIndex]);
       ++strIndex;
-    }
-    /*==3==// Разделитель аргументов функции (например, запятая):
+    }   /*==3==// Разделитель аргументов функции (например, запятая):
     // Перекладываем операторы из стека в выходную очередь пока лексемой на
     // вершине стека не станет открывающая скобка. Если в стеке не окажется
     // открывающей скобки - в выражении допущена ошибка.
@@ -83,6 +81,7 @@ stack evaluatePolishNotation(char* expression) {
       //    ++strIndex;
       //  }
       }
+
       //==5.2==// Удаляем из стека открывающую скобку.
       if (processed.root != NULL)// &&
      //     top(&processed)->data.type == TYPE_BRACKET &&
@@ -126,6 +125,8 @@ stack evaluatePolishNotation(char* expression) {
     }
 
   }
+  freeStack(&processed);
+  free(inputStr);
   return polishNotation;
 }
 

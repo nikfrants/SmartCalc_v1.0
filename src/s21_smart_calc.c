@@ -13,75 +13,47 @@
 #define ARR_SIZE 100
 void printParsedData(parseData* data, int size);
 
-  void shiftArray(char *arr, int start, int end, int shift, int direction) {
-    if (direction == 1) {  // Сдвиг вправо
-      for (int i = end; i >= start; i--) {
-        arr[i + shift] = arr[i];
-      }
-    } else if (direction == 0) {  // Сдвиг влево
-      for (int i = start; i <= end; i++) {
-        arr[i] = arr[i+shift];
-      }
-    } else {
-      printf("Неверное направление сдвига. Используйте 0 для сдвига влево или 1 для сдвига вправо.\n");
+void shiftArray(char* arr, int start, int end, int shift, int direction) {
+  if (direction == 1) {  // Сдвиг вправо
+    for (int i = end; i >= start; i--) {
+      arr[i + shift] = arr[i];
     }
+  } else if (direction == 0) {  // Сдвиг влево
+    for (int i = start; i <= end; i++) {
+      arr[i] = arr[i + shift];
+    }
+  } else {
+    printf(
+        "Неверное направление сдвига. Используйте 0 для сдвига влево или 1 для "
+        "сдвига вправо.\n");
   }
-
+}
 
 int main() {
   print("hi\n");
   // char s[9] = "sin(4)*4";
-  // char s[30] = "2mod4*88.348+12";
-    int arrsize = 100;
-  char s[ARR_SIZE] = "sin(+4.24)*--sin(1)*tan(2.421)*-tan(1)* 1245";
-    /*
-      крайние случаи обработки некорректной строки
-       минус
-    1    вначале строки - поставить между скобкой и минусом 0:  "-3*2(3)" - "0-3*2(3)"
-    2    минус после скобки - поставить перед ним 0:  "3*2(-3)" - "3*2(0-3)"
-    3    двойной минус - заменить на +: "3*2--3" - "3*2+3"
-      плюс
-    4    двойной плюс - заменить на один плюс: "3++2+2" - "3+2"
-    5    плюс между - * / и функцией - убрать: "3-+sin(2)" - "3-sin(2)"
-    6    плюс после скобки - убрать: "3*(+2)" - "3*(2)"
+ //  char s[30] = "2mod4*88.348+12"; // correct
+  int arrsize = 100;
+ // char s[ARR_SIZE] = "2/cos(pi/2)"; // nan - correct
+   //char s[100] = "sin(+4.24)*--sin(1)*tan(2.421)*-tan(1)* 1245"; // correct
+//
+ // char s[100] =  "sin(4.24 )*(-(-sin(1 )))*tan(2.421 )*(-tan(1 ))*1245"; correct
+ //
+  //char s[100] =  "*2"; // ToDo incorrect
+ // char s[100] =  "((2)"; // ToDo incorrect
+//  char s[200] =  "15/(7-(1+1))*3-(2+(1+1))*15/(7-(200+1))*3-(2+(1+1))*(15/(7-(1+1))*3-(2+(1+1))+15/(7-(1+1))*3-(2+(1+1)))";correct
 
-    */
-  if(s[0] == '-') {
-    shiftArray(s, 0, arrsize-1, 1,1);
-    s[0]='0';
-  }
-    for(int i = 0; i < arrsize-1;++i) {
-      if(s[i] == '-' && s[i+1] == '-') { // -- = +
-        shiftArray(s, i, arrsize-1, 1,0);
-        s[i] = '+';
-        i--;
-      }
-    }
-    for(int i = 0; i < arrsize-1;++i) {
-      if(s[i] == '+' && s[i+1] == '+') {
-        shiftArray(s, i, arrsize-1, 1,0);
-        i--;
-      }
-    }
 
-    if(s[0] == '+') {
-      shiftArray(s, 0, arrsize-1, 1,1);
-      s[0]='0';
-    }
-    for(int i = 0; i < arrsize-1; i++) {
-      if (s[i] == '(' && s[i+1] == '-') {
-        shiftArray(s, i, arrsize-1, 1,1);
-        s[i+1] = '0';
-      }
-    }
-
+  // char s[200] = "(2.1*(2)";
+//  char s[200] = "2*(*)*2";// ToDo incorrect
+  char s[200] = "2/cos(pi/2)";
   parseData* newexpression = {NULL};
   int size;
   newexpression = parser(s, &size);
   if (newexpression[0].type == INCORRECT_EXPRESSION)
     fprintf(stderr, "incorrect expression error");
   print("data:");
-  printf(s);
+  print(s);
 
   print("\nparsed data:\n");
   printParsedData(newexpression, size);
@@ -89,7 +61,18 @@ int main() {
   stack notation;
   notation = evaluatePolishNotation(s);
   stackPrintAll(&notation);
+  stack reversed;
+  stackInit(&reversed);
+  // reverse &notation to &reversed
+  while (notation.stSize) push(&reversed, pop(&notation)->data);
+  print("\nreversed\n");
+  stackPrintAll(&reversed);
+  print("\n");
+  long double ans = calcPolishNotation (&reversed);
   // free(&notation);
+  printf("\nresult = %.8LF", ans);
+  freeStack(&notation);
+  freeStack(&reversed);
   free(newexpression);
   return 0;
 }

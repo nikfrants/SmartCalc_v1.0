@@ -9,6 +9,8 @@ add_executable(SmartCalc_v1_0
         src/stack.h
         src/parser.c
         src/polish_notation.c
+        src/calc_polish_n.c
+        src/check_parsed_str.c
         #        src/get_elem_from_string.c
 )
 
@@ -30,3 +32,4 @@ add_test(NAME smartcalc_tests COMMAND Test_SmartCalc_v1_0)
 
 # Связываем библиотеку check и libm с исполняемым файлом тестов
 target_link_libraries(Test_SmartCalc_v1_0 check subunit m)
+target_link_libraries(SmartCalc_v1_0  m)
