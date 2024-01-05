@@ -73,34 +73,33 @@ int isFunction(char* ch, parseData* currstr, int* parseidx,
   if (*ch == 'c' || *ch == 's' || *ch == 't' || *ch == 'a' || *ch == 'l') {
     if (*ch == 'c') {  // strncmp(ch, "cos", 3) == 0;
       strcpy(currstr[0].func, "cos");
-      currstr[0].lenth = 3, ch += 3;
+      currstr[0].lenth = 3;
     } else if (*ch == 't') {
       strcpy(currstr[0].func, "tan");
-      currstr[0].lenth = 3, ch += 3;
+      currstr[0].lenth = 3;
     } else if (*(ch + 1) == 'i') {
       strcpy(currstr[0].func, "sin");
-      currstr[0].lenth = 3, ch = ch + 3;
-      //   ch += 3;
+      currstr[0].lenth = 3;
     } else if (*(ch + 1) == 'c') {
       strcpy(currstr[0].func, "acos");
-      currstr[0].lenth = 4, ch += 4;
+      currstr[0].lenth = 4;
     } else if (*(ch + 1) == 's') {
       strcpy(currstr[0].func, "asin");
-      currstr[0].lenth = 4, ch += 4;
+      currstr[0].lenth = 4;
     } else if (*(ch + 1) == 't') {
       strcpy(currstr[0].func, "atan");
-      currstr[0].lenth = 4, ch += 4;
+      currstr[0].lenth = 4;
     } else if (*(ch + 1) == 'q') {
       strcpy(currstr[0].func, "sqrt");
-      currstr[0].lenth = 4, ch += 4;
+      currstr[0].lenth = 4;
     } else if (*ch == 'l' && *(ch + 1) == 'n') {
       strcpy(currstr[0].func, "ln");
-      currstr[0].lenth = 2, ch += 2;
+      currstr[0].lenth = 2;
     } else if (*ch == 'l' && *(ch + 1) == 'o') {
       strcpy(currstr[0].func, "log");
-      currstr[0].lenth = 3, ch += 3;
+      currstr[0].lenth = 3;
     }
-    currstr[0].priority = 5;
+    currstr[0].priority = 4;
     currstr[0].type = 4;
     *stringParseindex += currstr[0].lenth;
     ++*parseidx;
@@ -117,12 +116,14 @@ int isOperator(char* ch, parseData* currstr, int* parseidx,
   if (*ch == '+' || *ch == '-' || *ch == '*' || *ch == '/' || *ch == '^' ||
       *ch == '~' || *ch == 'm' || *ch == '(' || *ch == ')') {
     int increaseIfMod = 0;
-    if (*ch == 'm') increaseIfMod = 2;
+    if (strncmp(ch, "mod", 3) == 0) increaseIfMod = 2;
     currstr[0].op = *ch;
     currstr[0].type = 3;
     switch (*ch) {
       case '(':
+      case ')':
         currstr[0].priority = 0;
+        currstr[0].type = TYPE_BRACKET;
         break;
       case '+':
       case '-':
@@ -130,6 +131,7 @@ int isOperator(char* ch, parseData* currstr, int* parseidx,
         break;
       case '/':
       case '*':
+      case 'm': // mod
         currstr[0].priority = 2;
         break;
       case '^':
@@ -138,13 +140,10 @@ int isOperator(char* ch, parseData* currstr, int* parseidx,
       case '~':
         currstr[0].priority = 4;
         break;
-      case 'm':
-        currstr[0].priority = 2;
-        break;
       default:
         currstr[0].priority = -2;  // error?
+        break;
     }
-    ch = ch + 1 + increaseIfMod;
     currstr[0].lenth += 1 + increaseIfMod;
     *stringParseindex += currstr[0].lenth;
     ++*parseidx;
@@ -180,7 +179,6 @@ int Other(char* ch, parseData* currstr, int* parseidx, int* stringParseindex) {
                          *(ch + index) >= 'A' && *(ch + index) <= 'Z');
          ++index)
       currstr->varName[index] = *(ch + index);
-
     currstr[0].type = 5;
     currstr[0].number = 0;
     currstr[0].lenth = index;
@@ -188,9 +186,9 @@ int Other(char* ch, parseData* currstr, int* parseidx, int* stringParseindex) {
     ++*parseidx;
     return 0;
   }
-  // todo
+  // todo Done
   //   else incorrect expression  error
-  return 1;
+  return -1;
 }
 parseData* parser(char* str, int* strPrsidx) {
   *strPrsidx = 0;
@@ -202,7 +200,12 @@ parseData* parser(char* str, int* strPrsidx) {
     other += isOperator(str + *strPrsidx, data + prseidx, &prseidx, strPrsidx);
     other += isFunction(str + *strPrsidx, data + prseidx, &prseidx, strPrsidx);
     if (other == 3)
-      Other(str + *strPrsidx, data + prseidx, &prseidx, strPrsidx);
+      other = Other(str + *strPrsidx, data + prseidx, &prseidx, strPrsidx);
+    if (other == -1) {
+      data[0].type = INCORRECT_EXPRESSION;
+      return data;
+    }
   }
+  *strPrsidx = prseidx;
   return data;
 }

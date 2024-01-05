@@ -20,17 +20,17 @@ void initNode(stNode *node, parseData val) {
 void stackInit(stack *st) {
   st->stSize = 0;
   st->root = (stNode *)malloc(sizeof(stNode));
-  st->root->data = initData(0, 0, 0);
+  st->root->data = initData(0, 0, 0, 0);
   st->root->next = NULL;
 }
 
-parseData initData(int val, char symbol, int type) {
+parseData initData(int val, char symbol, int type, int priority) {
   parseData data;
   data.number = val;
   data.op = symbol;
   data.type = type;
   data.lenth = 0;
-  data.priority = 0;
+  data.priority = priority;
   strcpy(data.func, "\000\000\000\000\000");
   return data;
 }
@@ -47,7 +47,8 @@ stNode *creatNode(parseData data) {
 }
 
 int push(stack *st, parseData val) {
-  if (st->stSize == 0) {
+  if (st->stSize == 0 && st->root) {
+
     initNode(st->root, val);  // st->root
     st->stSize++;
     return 1;
@@ -95,12 +96,27 @@ void freeStack(stack *st) {
 
 void stackPrintValue(const parseData value, int useName) {
   if (value.type == 0) {
-    if (useName) print("N_");
+    if (useName) print("T0Numr_");
     printf("%Lg ", value.number);
   }
   if (value.type == 1) {
-    if (useName) print("O_");
+    if (useName) print("T1undefined_");
+    printf("%Lg ", value.number);
+  }
+  if (value.type == 2) {
+    if (useName) print("T2undefined_");
+  } /* printf("%Lg ", value.number);*/
+  if (value.type == 3) {
+    if (useName) print("T3op_");
     printf("%c ", value.op);
+  }
+  if (value.type == 4) {
+    if (useName) print("T4Func_");
+    printf("%s ", value.func);
+  }
+  if (value.type == 5) {
+    if (useName) print("T5Var_");
+    printf("%s ", value.varName);
   }
 }
 
@@ -119,8 +135,12 @@ int stackPrintByIndex(const stack *st, int index) {
   return 0;
 }
 void stackPrintAll(const stack *st) {
-  stNode *temp = st->root;
-  for (int i = 0; temp != NULL || (size_t)i < st->stSize; ++i) {
+  stack reversedSt;
+  stackInit(&reversedSt);
+  while (st->stSize)
+    push(&reversedSt, pop(st)->data);
+  stNode* temp = reversedSt.root;
+  for (int i = 0; temp != NULL || (size_t)i < reversedSt.stSize; ++i) {
     stackPrintValue(temp->data, 0);
     temp = temp->next;
   }

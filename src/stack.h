@@ -12,9 +12,14 @@
 #define STACK_OWERFLOW -100
 #define STACK_UNDERFLOW -101
 
-#define TYPE_FUNCTION 5
+#define TYPE_DIGIT 1
+#define TYPE_FUNCTION 4
 #define TYPE_OPERATOR 3
+#define TYPE_BRACKET 2
+#define TYPE_VARIABLE 5
 
+#define E_POLISH_NOTATION -200
+#define INCORRECT_EXPRESSION -102
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -85,12 +90,11 @@ stNode *pop(stack *st);
 stNode *top(const stack *st);
 int isEmpty(stack *st);
 void stackInit(stack *st);
-parseData initData(int val, char symbol, int type);
+parseData initData(int val, char symbol, int type, int priority);
 void freeStack(stack *st);
-parseData initData(int val, char symbol, int type);
 void print(char *string);
 void stackPrintValue(const parseData value, int useName);
 int stackPrintByIndex(const stack *st, int index);
 void stackPrintAll(const stack *st);
-stack * evaluatePolishNotation(char* expression) ;
+stack  evaluatePolishNotation(char* expression) ;
 parseData *parser(char *str, int *idx);
