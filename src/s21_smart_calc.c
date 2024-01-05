@@ -15,23 +15,39 @@ void printParsedData(parseData* data, int size);
 
 // функция которая сдвигает массив на данное число элементов в данную сторону
 
-void shiftArray(int* arr, int size, int shift, int direction) {
-  if (direction == -1) {
-    shift = -shift;
+
+  void shiftArray(char *arr, int start, int end, int shift, int direction) {
+    if (direction == 1) {  // Сдвиг вправо
+      for (int i = end; i >= start; i--) {
+        arr[i + shift] = arr[i];
+      }
+    } else if (direction == 0) {  // Сдвиг влево
+      for (int i = start; i <= end; i++) {
+        arr[i - shift] = arr[i];
+      }
+    } else {
+      printf("Неверное направление сдвига. Используйте 0 для сдвига влево или 1 для сдвига вправо.\n");
+    }
   }
 
-  for (int i = 0; i < shift; i++) {
-    memmove(&arr[i], &arr[i + shift], (size - i - shift) * sizeof(int));
-  }
-}
 
 int main() {
   print("hi\n");
   // char s[9] = "sin(4)*4";
   // char s[30] = "2mod4*88.348+12";
-  char s[20] = "1+2+3+4";
-  // char s[9] = "(.)(.)"; ( 0 ) ( 0 ) is it correct?
-  shiftArray(s, 20, 1, 1);
+  char s[20] = "sin(30)";
+
+  if(s[0] == '-') {
+    shiftArray(s, 0, 19, 1,1);
+    s[0]='0';
+  }
+    for(int i = 0; i < 19; i++) {
+      if (s[i] == '(' && s[i+1] == '-') {
+        shiftArray(s, i, 19, 1,1);
+        s[i+1] = '0';
+      }
+    }
+
   parseData* newexpression = {NULL};
   int size;
   newexpression = parser(s, &size);
