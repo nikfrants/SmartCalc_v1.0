@@ -20,10 +20,11 @@ void initNode(stNode *node, parseData val) {
 }
 void stackInit(stack *st) {
   st->stSize = 0;
-  st->root = (stNode *)malloc(sizeof(stNode));
-  st->root->data = initData(0, 0, 0, 0);
-  st->root->next = NULL;
-  st->root->prev = NULL;
+  st->root = NULL;
+  ;  //(stNode *)malloc(sizeof(stNode));
+     // st->root->data = initData(0, 0, 0, 0);
+     // st->root->next = NULL;
+  //  st->root->prev = NULL;
 }
 
 parseData initData(long double val, char symbol, int type, int priority) {
@@ -50,18 +51,18 @@ stNode *creatNode(parseData data) {
 }
 
 int push(stack *st, parseData val) {
-  if (st->stSize == 0 && st->root) {
-    initNode(st->root, val);  // st->root
-    st->stSize++;
-    st->last = st->root;
-    return 1;
-  }
+  // if (st->stSize == 0 && st->root) {
+  //   initNode(st->root, val);  // st->root
+  //   st->stSize++;
+  //   st->last = st->root;
+  //   return 1;
+  // }
   stNode *new = creatNode(val);
   // nodeInit(new, val);
   if (st->root != NULL) {
     new->next = st->root;
     st->root->prev = new;
-  }else {
+  } else {
     st->last = new;
   }
 
@@ -76,13 +77,12 @@ stNode *pop(stack *st) {
     stNode *new = creatNode(st->root->data);  // st->root;//
     stNode *tmp = st->root;
     st->root = st->root->next;
-    if (st->root)
-    st->root->prev = NULL;
+    if (st->root) st->root->prev = NULL;
     free(tmp);
     st->stSize--;
     return new;
-  }else
-    st->last == 0;
+  }
+  st->last == 0;
   return NULL;
 }
 stNode *top(const stack *st) {
@@ -148,11 +148,11 @@ int stackPrintByIndex(const stack *st, int index) {
   return 0;
 }
 void stackPrintAll(const stack *st) {
-//  stack reversedSt;
- // stackInit(&reversedSt);
-  stNode* temp = st->last;
- // while (st->stSize) push(&reversedSt, pop(st)->data);
-  while ( temp != NULL) {
+  //  stack reversedSt;
+  // stackInit(&reversedSt);
+  stNode *temp = st->last;
+  // while (st->stSize) push(&reversedSt, pop(st)->data);
+  while (temp != NULL) {
     stackPrintValue(temp->data, 0);
     temp = temp->prev;
   }
