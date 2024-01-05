@@ -23,7 +23,7 @@ void printParsedData(parseData* data, int size);
       }
     } else if (direction == 0) {  // Сдвиг влево
       for (int i = start; i <= end; i++) {
-        arr[i - shift] = arr[i];
+        arr[i] = arr[i+shift];
       }
     } else {
       printf("Неверное направление сдвига. Используйте 0 для сдвига влево или 1 для сдвига вправо.\n");
@@ -35,12 +35,30 @@ int main() {
   print("hi\n");
   // char s[9] = "sin(4)*4";
   // char s[30] = "2mod4*88.348+12";
-  char s[20] = "sin(30)";
+  char s[20] = "sin(--+30)";
 
   if(s[0] == '-') {
     shiftArray(s, 0, 19, 1,1);
     s[0]='0';
   }
+    for(int i = 0; i < 19;++i) {
+      if(s[i] == '-' && s[i+1] == '-') { // -- = +
+        shiftArray(s, i, 19, 1,0);
+        s[i] = '+';
+        i--;
+      }
+    }
+    for(int i = 0; i < 19;++i) {
+      if(s[i] == '+' && s[i+1] == '+') {
+        shiftArray(s, i, 19, 1,0);
+        i--;
+      }
+    }
+
+    if(s[0] == '+') {
+      shiftArray(s, 0, 19, 1,1);
+      s[0]='0';
+    }
     for(int i = 0; i < 19; i++) {
       if (s[i] == '(' && s[i+1] == '-') {
         shiftArray(s, i, 19, 1,1);
