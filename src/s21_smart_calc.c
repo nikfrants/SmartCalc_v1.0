@@ -31,21 +31,45 @@ void shiftArray(char* arr, int start, int end, int shift, int direction) {
 
 int main() {
   print("hi\n");
+  // stack st;
+  // stackInit(&st);
+  // stack st2;
+  // stackInit(&st2);
+  // stNode* node;
+  // push(&st, createNode(initData(1, 0, 0, 0)));
+  // push(&st, createNode(initData(2, 0, 0, 0)));
+  // push(&st, createNode(initData(2, 0, 0, 0)));
+  // push(&st, createNode(initData(2, 0, 0, 0)));
+  // node = pop(&st);
+  // push(&st2, createNode(node->data));
+  // free(node);
+  // node = pop(&st);
+  // push(&st2, createNode(node->data));
+  // free(node);
+  // node = pop(&st);
+  // push(&st2, createNode(node->data));
+  // free(node);
+  //
+  // freeStack(&st);
+  // freeStack(&st2);
+  // return 0;
   // char s[9] = "sin(4)*4";
- //  char s[30] = "2mod4*88.348+12"; // correct
-  int arrsize = 100;
- // char s[ARR_SIZE] = "2/cos(pi/2)"; // nan - correct
-   //char s[100] = "sin(+4.24)*--sin(1)*tan(2.421)*-tan(1)* 1245"; // correct
-//
- // char s[100] =  "sin(4.24 )*(-(-sin(1 )))*tan(2.421 )*(-tan(1 ))*1245"; correct
- //
-  //char s[100] =  "*2"; // ToDo incorrect
- // char s[100] =  "((2)"; // ToDo incorrect
-  // char s[200] =  "15/(7-(1+1))*3-(2+(1+1))*15/(7-(200+1))*3-(2+(1+1))*(15/(7-(1+1))*3-(2+(1+1))+15/(7-(1+1))*3-(2+(1+1)))"; //correct
-
+  //  char s[30] = "2mod4*88.348+12"; // correct
+  // int arrsize = 100;
+  // char s[ARR_SIZE] = "2/cos(pi/2)"; // nan - correct
+  // char s[100] = "sin(+4.24)*--sin(1)*tan(2.421)*-tan(1)* 1245"; // correct
+  //
+  // char s[100] =  "sin(4.24 )*(-(-sin(1 )))*tan(2.421 )*(-tan(1 ))*1245";
+  // correct
+  //
+  // char s[100] =  "*2"; // ToDo incorrect
+  // char s[100] =  "((2)"; // ToDo incorrect
+  // char s[200] =
+  // "15/(7-(1+1))*3-(2+(1+1))*15/(7-(200+1))*3-(2+(1+1))*(15/(7-(1+1))*3-(2+(1+1))+15/(7-(1+1))*3-(2+(1+1)))";
+  // //correct
 
   // char s[200] = "(2.1*(2)";
-//  char s[200] = "2*(*)*2";// ToDo incorrect
+  //  char s[200] = "2*(*)*2";// ToDo incorrect
   char s[200] = "2/cos(pi/2)";
   parseData* newexpression = {NULL};
   int size;
@@ -64,32 +88,27 @@ int main() {
   stack reversed;
   stackInit(&reversed);
   // reverse &notation to &reversed
-  stNode * temp;
-  while (notation.stSize) push(&reversed,createNode( pop(&notation)->data));
+  //  stNode * temp;
+  stNode* emp ;
+
+  while (notation.stSize) {
+
+    stNode* temp1 = createNode((emp = pop(&notation))->data);
+    push(&reversed, temp1);
+    free(emp);
+  };
   // if(temp)
   //   free(temp);
   print("\nreversed\n");
   stackPrintAll(&reversed);
   print("\n");
-  long double ans = calcPolishNotation (&reversed);
+  long double ans = calcPolishNotation(&reversed);
   // free(&notation);
   printf("\nresult = %.8LF", ans);
   freeStack(&notation);
   freeStack(&reversed);
   free(newexpression);
+
   return 0;
 }
 
-void printParsedData(parseData* data, int size) {
-  for (int i = 0; i < size; ++i) {
-    if (data[i].type == TYPE_DIGIT) printf("%Lg ", data[i].number);
-    if (data[i].type == TYPE_BRACKET)
-      printf("%c ", data[i].op);
-    else if (data[i].type == TYPE_OPERATOR)
-      printf("%c ", data[i].op);
-    else if (data[i].type == TYPE_FUNCTION)
-      printf("%s ", data[i].func);
-    else if (data[i].type == TYPE_VARIABLE)
-      printf("%s ", data[i].varName);
-  }
-}

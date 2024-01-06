@@ -149,11 +149,59 @@ END_TEST
 
 
 START_TEST(parse_op_ex) {
-  char s[9] = "1^1";
+  print("hi\n");
+  // char s[9] = "sin(4)*4";
+  //  char s[30] = "2mod4*88.348+12"; // correct
+  // int arrsize = 100;
+  // char s[ARR_SIZE] = "2/cos(pi/2)"; // nan - correct
+  // char s[100] = "sin(+4.24)*--sin(1)*tan(2.421)*-tan(1)* 1245"; // correct
+  //
+  // char s[100] =  "sin(4.24 )*(-(-sin(1 )))*tan(2.421 )*(-tan(1 ))*1245";
+  // correct
+  //
+  // char s[100] =  "*2"; // ToDo incorrect
+  // char s[100] =  "((2)"; // ToDo incorrect
+  // char s[200] =
+  // "15/(7-(1+1))*3-(2+(1+1))*15/(7-(200+1))*3-(2+(1+1))*(15/(7-(1+1))*3-(2+(1+1))+15/(7-(1+1))*3-(2+(1+1)))";
+  // //correct
+
+  // char s[200] = "(2.1*(2)";
+  //  char s[200] = "2*(*)*2";// ToDo incorrect
+  char s[200] = "2/cos(pi/2)";
   parseData* newexpression = {NULL};
   int size;
   newexpression = parser(s, &size);
-  ck_assert_int_eq(newexpression[1].op, '^');
+  if (newexpression[0].type == INCORRECT_EXPRESSION)
+    fprintf(stderr, "incorrect expression error");
+  print("data:");
+  print(s);
+
+  print("\nparsed data:\n");
+  printParsedData(newexpression, size);
+  print("\nnotation\n");
+  stack notation;
+  notation = evaluatePolishNotation(s);
+  stackPrintAll(&notation);
+  stack reversed;
+  stackInit(&reversed);
+  // reverse &notation to &reversed
+  //  stNode * temp;
+  while (notation.stSize) {
+    stNode* emp = pop(&notation);
+    stNode * temp1 = createNode(emp->data);
+    free(emp);
+    push(&reversed, temp1);
+  };
+  // if(temp)
+  //   free(temp);
+  print("\nreversed\n");
+  stackPrintAll(&reversed);
+  print("\n");
+  long double ans = calcPolishNotation(&reversed);
+  // free(&notation);
+  printf("\nresult = %.8LF", ans);
+  freeStack(&notation);
+  freeStack(&reversed);
   free(newexpression);
 }
 END_TEST

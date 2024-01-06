@@ -6,7 +6,8 @@
 #define SMART_CALC_H
 
 #endif  // SMART_CALC_H
-
+#define E 2.7182818284590452354
+#define PI  3.1415926535897932384
 #define REALLOC_SIZE 10
 #define STACK_MAX_SIZE 1000
 #define STACK_OWERFLOW -100
@@ -75,4 +76,6 @@ void stackPrintAll(const stack *st);
 stack  evaluatePolishNotation(char* expression);
 parseData *parser(char *str, int *idx);
 
+long double calcPolishNotation(stack *data) ;
+void printParsedData(parseData* data, int size);
 long double calcPolishNotation(stack *data) ;

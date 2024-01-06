@@ -11,7 +11,7 @@ stack evaluatePolishNotation(char* expression) {
   int strIndex = 0;
   int size = 0;
   stNode* temp;
-  parseData temp1;
+  // parseData * temp1;
   stack polishNotation;
   stackInit(&polishNotation);
   stack processed;
@@ -19,41 +19,47 @@ stack evaluatePolishNotation(char* expression) {
   parseData* inputStr = parser(expression, &size);
   while (strIndex < size) {
     if (inputStr[strIndex].type == TYPE_DIGIT) {
-      push(&polishNotation,createNode( inputStr[strIndex]));
+      push(&polishNotation, createNode(inputStr[strIndex]));
       ++strIndex;
     }
     if (strIndex < size && (inputStr[strIndex].type == TYPE_FUNCTION ||
-                            inputStr[strIndex].type == TYPE_BRACKET &&
-                                inputStr[strIndex].op == '(')) {
-      push(&processed,  createNode( inputStr[strIndex]));
+                            (inputStr[strIndex].type == TYPE_BRACKET &&
+                                inputStr[strIndex].op == '('))) {
+      push(&processed, createNode(inputStr[strIndex]));
       ++strIndex;
     }
     if (strIndex < size && inputStr[strIndex].type == TYPE_OPERATOR) {
       while (processed.stSize &&
              (top(&processed)->data.priority > inputStr[strIndex].priority ||
-              top(&processed)->data.priority == inputStr[strIndex].priority &&
-                  is_left_associative(inputStr[strIndex].op))) {
+          (top(&processed)->data.priority == inputStr[strIndex].priority &&
+               is_left_associative(inputStr[strIndex].op)))) {
         push(&polishNotation, createNode((temp = pop(&processed))->data));
+        if(temp)
+          free(temp);
       }
-      push(&processed,createNode( inputStr[strIndex]));
+      push(&processed, createNode(inputStr[strIndex]));
       ++strIndex;
     }
-    if (strIndex < size &&
-        (inputStr[strIndex].type == TYPE_BRACKET &&
-         inputStr[strIndex].op == ')')) {
+    if (strIndex < size && (inputStr[strIndex].type == TYPE_BRACKET &&
+                            inputStr[strIndex].op == ')')) {
       while (processed.root != NULL &&
              top(&processed)->data.type != TYPE_BRACKET &&
-             top(&processed)->data.op !=
-                 '(') {
-        push(&polishNotation, createNode(pop(&processed)->data));
+             top(&processed)->data.op != '(') {
+        temp = pop(&processed);
+        push(&polishNotation, createNode(temp->data));
+        free(temp);
       }
       if (processed.root != NULL) {
-        pop(&processed);++strIndex;
+        temp = pop(&processed);
+        free(temp);
+        ++strIndex;
       }
       if (inputStr[strIndex].type == TYPE_FUNCTION) {
-        push(&polishNotation, createNode(pop(&processed)->data));
+        push(&polishNotation,  createNode((temp=pop(&processed))->data));
+        if(temp)
+          free(temp);
         ++strIndex;
-      } // todo describe errors
+      }  // todo describe errors
     }
   }
   if (strIndex == size) {
@@ -63,8 +69,10 @@ stack evaluatePolishNotation(char* expression) {
            top(&processed)->data.op == '(')) {
         polishNotation.root->data.type = E_POLISH_NOTATION;
         return polishNotation;  // todo describe errors
-      } push(&polishNotation, createNode(pop(&processed)->data));
-
+      }
+      push(&polishNotation, createNode((temp=pop(&processed))->data));
+      if(temp)
+        free(temp);
     }
   }
 
@@ -92,7 +100,7 @@ stack evaluatePolishNotation(char* expression) {
 // 2 - mod
 // 5 - sin cos tan asin acos atan sqrt ln log
 
-/* else if (parsedExpr[i].type == 2)
+ else if (parsedExpr[i].type == 2)
     //   push(&st, initData(parsedExpr[i].fval, 0, 2));
     // else if (parsedExpr[i].type == 3)
     //   push(&st, initData(0, parsedExpr[i].op, 3));

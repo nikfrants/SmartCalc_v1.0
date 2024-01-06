@@ -50,7 +50,21 @@ stNode *createNode(parseData data) {
   return tmp;
 }
 
+// int push(stack *st, stNode *node) {
+//   if (st->root != NULL) {
+//     node->next = st->root;
+//     st->root->prev = node;
+//   } else {
+//     st->last = node;
+//   }
+//   st->root = node;
+//   st->root->prev = NULL;
+//   st->stSize++;
+//   return 0;
+// }
 int push(stack *st, stNode *node) {
+  // stNode * new = malloc(sizeof(stNode));
+  // initNode(new,node->data);
   if (st->root != NULL) {
     node->next = st->root;
     st->root->prev = node;
@@ -58,31 +72,22 @@ int push(stack *st, stNode *node) {
     st->last = node;
   }
   st->root = node;
-  st->root->prev = NULL;
+  node->prev = NULL; // Установим prev непосредственно в новом узле, а не через st->root
   st->stSize++;
   return 0;
 }
 
+
 stNode *pop(stack *st) {
   if (st->root != NULL) {
     stNode *nodetoreturn = st->root;
-    //  initNode(&nodetoreturn, st->root);
-
     if (st->root->next) st->root = st->root->next;
-    // free(st->root);
     // todo dont create node, return pointer to root
-    // stNode *new ;//= creatNode(st->root->data);  // st->root;//
-    // new = st->root;
-    // stNode *tmp = st->root;
-    // st->root = st->root->next;
-    // if (st->root) st->root->prev = NULL;
-    // free(tmp);
     st->stSize--;
     nodetoreturn->next = NULL;
     nodetoreturn->prev = NULL;
     return nodetoreturn;
   }
-  // st->last == 0;
   return NULL;
 }
 stNode *top(const stack *st) {
@@ -177,7 +182,7 @@ void stackPrintAll(const stack *st) {
   stNode *temp = st->last;
   // while (st->stSize) push(&reversedSt, pop(st)->data);
   int i = 0;
-  while (i < st->stSize) {
+  while ((size_t)i < st->stSize) {
     stackPrintValue(temp->data, 0);
     temp = temp->prev;
     ++i;
@@ -189,3 +194,17 @@ void stackPrintAll(const stack *st) {
 }
 
 void print(char *s) { printf("%s\n", s); }
+
+void printParsedData(parseData* data, int size) {
+  for (int i = 0; i < size; ++i) {
+    if (data[i].type == TYPE_DIGIT) printf("%Lg ", data[i].number);
+    if (data[i].type == TYPE_BRACKET)
+      printf("%c ", data[i].op);
+    else if (data[i].type == TYPE_OPERATOR)
+      printf("%c ", data[i].op);
+    else if (data[i].type == TYPE_FUNCTION)
+      printf("%s ", data[i].func);
+    else if (data[i].type == TYPE_VARIABLE)
+      printf("%s ", data[i].varName);
+  }
+}

@@ -39,7 +39,8 @@ int isDigit(char* ch, parseData* currstr, int* parseidx,
   }
 
   currstr[0].lenth = 0;
-  if ((*ch >= '0' && *ch <= '9') || *ch == '.' && *parseidx > 0 && ((currstr[-1].type == TYPE_DIGIT))) {
+  if ((*ch >= '0' && *ch <= '9') ||
+      (*ch == '.' && *parseidx > 0 && currstr[-1].type == TYPE_DIGIT)) {
     char string[300] = {'\0'};
     int flagfloat = 0;
     int idx1 = 0;
@@ -128,9 +129,10 @@ int isOperator(char* ch, parseData* currstr, int* parseidx,
         break;
       case '+':
       case '-':
-        if (*parseidx > 0 && ((currstr[-1].type == TYPE_OPERATOR|| currstr[-1].type == TYPE_BRACKET) &&
-                              strchr("+p~-*/^(", currstr[-1].op)) ||
-            *parseidx == 0 && (*ch == '+' || *ch == '-')) {
+        if (*parseidx > 0 && (((*parseidx == 0 && (*ch == '+' || *ch == '-')) ||
+                               currstr[-1].type == TYPE_OPERATOR ||
+                               currstr[-1].type == TYPE_BRACKET) &&
+                              strchr("+p~-*/^(", currstr[-1].op))) {
           currstr[0].op = *ch == '+' ? 'p' : '~';
           currstr[0].priority = 4;
         } else
@@ -168,22 +170,22 @@ int Other(char* ch, parseData* currstr, int* parseidx, int* stringParseindex) {
   }
   if (*ch == 'e') {
     currstr[0].type = 1;
-    currstr[0].number = M_E;
+    currstr[0].number = E;
     *stringParseindex += 1;
     ++*parseidx;
     return 0;
   }
   if (*ch == 'p' && *(ch + 1) == 'i') {
     currstr[0].type = 1;
-    currstr[0].number = M_PI;
+    currstr[0].number = PI;
     *stringParseindex += 2;
     ++*parseidx;
     return 0;
   }
-  if (*ch > 'a' && *ch < 'z' || *ch > 'A' && *ch < 'Z') {
+  if ((*ch > 'a' && *ch < 'z') || (*ch > 'A' && *ch < 'Z')) {
     int index = 0;
-    for (; index < 5 && (*(ch + index) >= 'a' && *(ch + index) <= 'z' ||
-                         *(ch + index) >= 'A' && *(ch + index) <= 'Z');
+    for (; index < 5 && ((*(ch + index) >= 'a' && *(ch + index) <= 'z') ||
+                         (*(ch + index) >= 'A' && *(ch + index) <= 'Z'));
          ++index)
       currstr->varName[index] = *(ch + index);
     currstr[0].type = 5;

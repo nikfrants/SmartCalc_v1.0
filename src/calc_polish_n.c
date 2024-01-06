@@ -7,19 +7,24 @@ long double calcDigits(parseData *data, long double a, long double b);
 long double calcPolishNotation(stack *data) {  // ToDo leaks
   stack ans;
   stackInit(&ans);
+  stNode *temp;
   stNode *a = NULL;   // ToDo leaks
   stNode *b = NULL;   // ToDo leaks
   stNode *op = NULL;  // ToDo leaks
   long double calc = NAN;
   while (top(data)) {
     if (data->root->data.type == TYPE_DIGIT) {
-      push(&ans, pop(data));
+
+      push(&ans, createNode((temp = pop(data))->data));
+      free(temp);
     } else {
+      if (b) free(b);
       b = pop(&ans);
+      if (op) free(op);
+      if (a) free(a);
       op = pop(data);
       if (op->data.op != '\000' && strchr("+-*/^m", op->data.op)) a = pop(&ans);
       if (a == NULL) {
-        if (a) free(a);
         if (b) free(b);
         if (op) free(op);
         return NAN;
@@ -35,9 +40,9 @@ long double calcPolishNotation(stack *data) {  // ToDo leaks
       push(&ans, createNode(initData(calc, op->data.op, TYPE_DIGIT, 0)));
     }
   }
-  // if (a) free(a);    // ToDo leaks
-  // if (b) free(b);    // ToDo leaks
-  // if (op) free(op);  // ToDo leaks
+  if (a) free(a);    // ToDo leaks
+  if (b) free(b);    // ToDo leaks
+  if (op) free(op);  // ToDo leaks
   long double answer = ans.root->data.number;
   freeStack(&ans);
   return answer;

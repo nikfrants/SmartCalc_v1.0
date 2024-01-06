@@ -4,7 +4,7 @@
 
 #include "stack.h"
 
-int check_parsed_str(stack* st) {}
+// int check_parsed_str(stack* st) {}
 
 int check_brackets(stack* st) {
   stNode* curr = st->root;
@@ -26,10 +26,10 @@ int check_operations(stack* st) {
   while (curr->next != NULL) {
     if (curr->data.type == TYPE_OPERATOR &&
         curr->next->data.type == TYPE_OPERATOR &&
-        (curr->data.op == '*' && curr->next->data.op == '*' ||
-         curr->data.op == '/' && curr->next->data.op == '/' ||
-         curr->data.op == '^' && curr->next->data.op == '^' ||
-         curr->data.op == 'm' && curr->next->data.op == 'm')) {
+        ((curr->data.op == '*' && curr->next->data.op == '*') ||
+         (curr->data.op == '/' && curr->next->data.op == '/') ||
+         (curr->data.op == '^' && curr->next->data.op == '^') ||
+         (curr->data.op == 'm' && curr->next->data.op == 'm'))) {
       return 1; // ToDo pass error nearbody operators * / ^ m
     }
     curr = curr->next;

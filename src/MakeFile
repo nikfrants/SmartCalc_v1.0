@@ -9,6 +9,9 @@ SRC_TEST = ${wildcard tests/*.c}
 SRC_PROJECT_REPORT = parser.c stack.c
 SRC_TEST_REPORT = tests/test.c tests/test_stack.c tests/test_parser.c
 
+VALGR_PROJECT = parser.c stack.c polish_notation.c calc_polish_n.c
+VALGR_REPORT = tests/test.c tests/test_stack.c tests/test_parser.c
+
 OBJ_PROJECT = ${patsubst %.c,%.o,$(SRC_PROJECT)}
 OBJ_TEST = ${patsubst tests/%.c,tests/%.o,$(SRC_TEST)}
 
@@ -28,7 +31,7 @@ s21_smart_calc.a: $(OBJ_PROJECT)
 	ar rcs s21_smart_calc.a $(OBJ_PROJECT)
 
 test: clean $(OBJ_PROJECT) $(OBJ_TEST)
-	$(CC) $(OBJ_PROJECT) $(OBJ_TEST) $(TEST_CHECK_F) -o test
+	$(CC) $(VALGR_PROJECT) $(VALGR_REPORT) $(TEST_CHECK_F) -o test
 	./test
 
 
