@@ -59,11 +59,12 @@ typedef struct {
   // parsing
 } stack;
 
-int push(stack *st, parseData val);
+int push(stack *st, stNode *node);
 stNode *pop(stack *st);
 stNode *top(const stack *st);
 int isEmpty(stack *st);
 void stackInit(stack *st);
+stNode *createNode(parseData data);
 void initNode(stNode *node, parseData val);
 parseData initData(long double val, char symbol, int type, int priority);
 void freeStack(stack *st);

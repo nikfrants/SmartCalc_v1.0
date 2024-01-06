@@ -17,124 +17,57 @@ stack evaluatePolishNotation(char* expression) {
   stack processed;
   stackInit(&processed);
   parseData* inputStr = parser(expression, &size);
-  while (strIndex < size) {  //==1==//   // Если Число -> в ответ
+  while (strIndex < size) {
     if (inputStr[strIndex].type == TYPE_DIGIT) {
-      push(&polishNotation,
-           inputStr[strIndex]);  // initData(inputStr[strIndex].number, 0, 1,-1)
+      push(&polishNotation,createNode( inputStr[strIndex]));
       ++strIndex;
-    }  //==2==// Если Функция или открывающая скобка -> в стек
+    }
     if (strIndex < size && (inputStr[strIndex].type == TYPE_FUNCTION ||
                             inputStr[strIndex].type == TYPE_BRACKET &&
                                 inputStr[strIndex].op == '(')) {
-      push(&processed, inputStr[strIndex]);
+      push(&processed,  createNode( inputStr[strIndex]));
       ++strIndex;
-    }                                                                  /*
-                                                                   //==3==// Разделитель аргументов функции (например, запятая):
-                                                                   // Перекладываем операторы из стека в выходную очередь пока лексемой на
-                                                                   // вершине стека не станет открывающая скобка. Если в стеке не окажется
-                                                                   // открывающей скобки - в выражении допущена ошибка.
-                                                                   // todo described above
-                                                                   // --------------
-                                                                   // else if (parsedExpr[i].type == 3 && parsedExpr[i].op == ',') {
-                                                                   //   while (top(&processed)->data.type != 3) {
-                                                                   //     push(&output, pop(&processed)->data);
-                                                                   //   }
-                                                                   // }
-                                                                   //----------------
-                                                                   // if(inputStr[strIndex].type == TYPE_OPERATOR && inputStr[strIndex].op ==
-                                                                   // ',') {
-                                                                   //   while(top(&processed)->data.type != TYPE_OPERATOR ||
-                                                                   //   top(&processed)->data.op != '(') {
-                                                                   //     push(&polishNotation, pop(&processed)->data);
-                                                                   //   }
-                                                                   //   push(&processed, inputStr[strIndex]);
-                                                                   //   ++strIndex;
-                                                                   // } Оператор (O1):
-
-                                                                   // Если Оператор (O1):
-                                                                   //==4==//*/
-    if (strIndex < size && inputStr[strIndex].type == TYPE_OPERATOR) { /*
-      //==4.1==// Пока присутствует на вершине стека лексема-оператор (O2)
-      //        чей приоритет выше приоритета O1,
-      //        либо при равенстве приоритетов O1 является левоассоциативным:*/
+    }
+    if (strIndex < size && inputStr[strIndex].type == TYPE_OPERATOR) {
       while (processed.stSize &&
              (top(&processed)->data.priority > inputStr[strIndex].priority ||
               top(&processed)->data.priority == inputStr[strIndex].priority &&
-                  is_left_associative(inputStr[strIndex].op))) { /*
-         //==4.1.1==// Перекладываем O2 из стека в выходную очередь */
-        push(&polishNotation, (temp = pop(&processed))->data);
-        if (temp)
-          free(temp); /*
-//  ++strIndex;*/
-      }               /*
-                     //==4.2==// Помещаем O1 в стек*/
-      push(&processed, inputStr[strIndex]);
+                  is_left_associative(inputStr[strIndex].op))) {
+        push(&polishNotation, createNode((temp = pop(&processed))->data));
+      }
+      push(&processed,createNode( inputStr[strIndex]));
       ++strIndex;
-    } /*
-     //==5==// Если Закрывающая скобка:*/
+    }
     if (strIndex < size &&
         (inputStr[strIndex].type == TYPE_BRACKET &&
-         inputStr[strIndex].op == ')')) { /*
-//==5.1==// Пока лексема на вершине стека не станет открывающей скобкой,*/
+         inputStr[strIndex].op == ')')) {
       while (processed.root != NULL &&
              top(&processed)->data.type != TYPE_BRACKET &&
              top(&processed)->data.op !=
-                 '(') { /*
-//==5.1==// перекладываем лексемы-операторы из стека в выходную очередь.
-// if (top(&processed)->data.type == TYPE_OPERATOR) {*/
-        push(&polishNotation, (temp = pop(&processed))->data);
-        if (temp != NULL)
-          free(temp);             /*
-     //    ++strIndex;
-     //  }*/
-      }                           /*
-
-                                 //==5.2==// Удаляем из стека открывающую скобку.*/
-      if (processed.root != NULL) /*// &&
-      //     top(&processed)->data.type == TYPE_BRACKET &&
-        //   top(&processed)->data.op == '(')*/
-      {
-        if (temp != NULL) free(temp);
-        temp = pop(&processed);
+                 '(') {
+        push(&polishNotation, createNode(pop(&processed)->data));
+      }
+      if (processed.root != NULL) {
+        pop(&processed);++strIndex;
+      }
+      if (inputStr[strIndex].type == TYPE_FUNCTION) {
+        push(&polishNotation, createNode(pop(&processed)->data));
         ++strIndex;
-      }                                               /*
-                                                     //==5.3==//   Если лексема на вершине стека — функция*/
-      if (inputStr[strIndex].type == TYPE_FUNCTION) { /*
-         //==5.3==// , перекладываем её в выходную очередь.*/
-        push(&polishNotation, (temp = pop(&processed))->data);
-        ++strIndex;
-      }/*
-      //==5.4==// Если стек закончился до того, как была встречена открывающая
-      //      скобка - в выражении содержится ошибка
-      // if (processed.stSize == 0) {
-      //   polishNotation.root->data.type = E_POLISH_NOTATION;
-      //   return polishNotation;
-      // }*/  // todo describe errors
+      } // todo describe errors
     }
-  }                                /*
-                                  //==6==//
-                                  // Если во входной строке больше не осталось лексем:*/
-  if (strIndex == size) {          /*
-              //==6.1==//
-              // Пока есть операторы в стеке:*/
-    while (processed.stSize > 0) { /*
-       //==6.1.1==//
-       //   Если на вершине стека скобка - в выражении допущена ошибка.*/
+  }
+  if (strIndex == size) {
+    while (processed.stSize > 0) {
       if (top(&processed)->data.type == TYPE_BRACKET &&
           (top(&processed)->data.op == ')' ||
            top(&processed)->data.op == '(')) {
         polishNotation.root->data.type = E_POLISH_NOTATION;
         return polishNotation;  // todo describe errors
-      }                         /*
-                               //==6.1.2==//
-                               //  Перекладываем оператор из стека в выходную очередь*/
-      push(&polishNotation, (temp = pop(&processed))->data);
-      if (temp != NULL) free(temp);
-      /*
-      // ++strIndex;*/
+      } push(&polishNotation, createNode(pop(&processed)->data));
+
     }
   }
-  if (temp != NULL) free(temp);
+
   freeStack(&processed);
   free(inputStr);
   return polishNotation;

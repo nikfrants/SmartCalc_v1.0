@@ -13,7 +13,7 @@ long double calcPolishNotation(stack *data) {  // ToDo leaks
   long double calc = NAN;
   while (top(data)) {
     if (data->root->data.type == TYPE_DIGIT) {
-      push(&ans, pop(data)->data);
+      push(&ans, pop(data));
     } else {
       b = pop(&ans);
       op = pop(data);
@@ -32,7 +32,7 @@ long double calcPolishNotation(stack *data) {  // ToDo leaks
         return 1;
       };  // ToDo pass erorr incorrect calculation
       if (calc > 0 && calc < 1.0e-16) calc = 0;
-      push(&ans, initData(calc, op->data.op, TYPE_DIGIT, 0));
+      push(&ans, createNode(initData(calc, op->data.op, TYPE_DIGIT, 0)));
     }
   }
   // if (a) free(a);    // ToDo leaks

@@ -41,7 +41,7 @@ int main() {
  //
   //char s[100] =  "*2"; // ToDo incorrect
  // char s[100] =  "((2)"; // ToDo incorrect
-//  char s[200] =  "15/(7-(1+1))*3-(2+(1+1))*15/(7-(200+1))*3-(2+(1+1))*(15/(7-(1+1))*3-(2+(1+1))+15/(7-(1+1))*3-(2+(1+1)))";correct
+  // char s[200] =  "15/(7-(1+1))*3-(2+(1+1))*15/(7-(200+1))*3-(2+(1+1))*(15/(7-(1+1))*3-(2+(1+1))+15/(7-(1+1))*3-(2+(1+1)))"; //correct
 
 
   // char s[200] = "(2.1*(2)";
@@ -64,7 +64,10 @@ int main() {
   stack reversed;
   stackInit(&reversed);
   // reverse &notation to &reversed
-  while (notation.stSize) push(&reversed, pop(&notation)->data);
+  stNode * temp;
+  while (notation.stSize) push(&reversed,createNode( pop(&notation)->data));
+  // if(temp)
+  //   free(temp);
   print("\nreversed\n");
   stackPrintAll(&reversed);
   print("\n");
