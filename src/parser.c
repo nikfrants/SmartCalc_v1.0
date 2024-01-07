@@ -72,7 +72,12 @@ int isFunction(char* ch, parseData* currstr, int* parseidx,
     return 0;
   }
   currstr[0].lenth = 0;
-  if (*ch == 'c' || *ch == 's' || *ch == 't' || *ch == 'a' || *ch == 'l') {
+  ////
+  if (strncmp(ch, "cos", 3) == 0 || strncmp(ch, "sin", 3) == 0 ||
+      strncmp(ch, "tan", 3) == 0 || strncmp(ch, "acos", 4) == 0 ||
+      strncmp(ch, "asin", 4) == 0 || strncmp(ch, "atan", 4) == 0 ||
+      strncmp(ch, "sqrt", 4) == 0 || strncmp(ch, "ln", 2) == 0 ||
+      strncmp(ch, "log", 3) == 0) {
     if (*ch == 'c') {  // strncmp(ch, "cos", 3) == 0;
       strcpy(currstr[0].func, "cos");
       currstr[0].lenth = 3;
@@ -186,7 +191,7 @@ int Other(char* ch, parseData* currstr, int* parseidx, int* stringParseindex) {
     ++*parseidx;
     return 0;
   }
-  if ((*ch > 'a' && *ch < 'z') || (*ch > 'A' && *ch < 'Z')) {
+  if ((*ch >= 'a' && *ch <= 'z') || (*ch >= 'A' && *ch <= 'Z')) {
     int index = 0;
     for (; index < 5 && ((*(ch + index) >= 'a' && *(ch + index) <= 'z') ||
                          (*(ch + index) >= 'A' && *(ch + index) <= 'Z'));

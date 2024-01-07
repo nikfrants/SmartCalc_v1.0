@@ -44,12 +44,14 @@ calc_s new_calc_s(long double n, int err) {
 }
 
 calc_s calcPolishNotation(stack *data) {
-  // struct variables varsArray[100] = {0};
-  // int variablesSize = 0;
-  // varsArray = getListVariables(data, varsArray, &variablesSize);
-  // if (variablesSize > 0) {
-  //   askVariables(varsArray, variablesSize);
-  // }
+  struct variables varsArray[100] = {0};
+  int arrsize = 0;
+  variables* arr;
+  arr = searchVariable(data, varsArray, &arrsize);
+  if (arrsize >= 0) {
+    arr = askVariables(arr, arrsize);
+    fillvariables(data, arr, arrsize);
+  }
   stack ans;
   calc_s calc;
   stackInit(&ans);
@@ -60,7 +62,7 @@ calc_s calcPolishNotation(stack *data) {
         data->root->data.type == TYPE_VARIABLE) {
       if (data->root->data.type == TYPE_VARIABLE) {
         parseData temp = pop(data);
-             temp.number = get_variable(temp.varName);
+        //  temp.number = get_variable(temp.varName);
         temp.type = TYPE_DIGIT;
         temp.priority = -1;
         push(&ans, temp);
@@ -143,6 +145,68 @@ calc_s calcPolishNotation(stack *data) {
 //   }
 //   return array;
 // }
+
+int var_in_array(variables array[], char *name) {
+  for (int i = 0; i < 100; ++i) {
+    if (strcmp(array[i].name, name) == 0) {
+      return 1;
+    }
+  }
+  return 0;
+}
+variables*  askVariables(variables array[], int size) {
+  for (int i = 0; i <= size; ++i) {
+    long double var = get_variable(array[i].name);
+    for (int j = 0; array[i].adress[j] != 0; ++j) {
+      array[i].value = var;
+    }
+  }
+  return array;
+}
+
+void fillvariables(stack *st, variables array[], int size) {
+  for (int i = 0; i <= size; ++i) {
+    for (int j = 0; array[i].adress[j] != 0; ++j) {
+      *array[i].adress[j] = array[i].value;
+    }
+  }
+}
+
+variables* searchVariable(stack *st, variables array[],int *arrayindex) {
+  /*
+  search in stack new variable name
+      if name not in variable arrays
+        add it and
+        search in stack this variable adress by name
+        if matched
+           add it to array.adress[i]
+  */
+  stNode *temp = st->root;
+   *arrayindex = -1;
+  int addressidx = 0;
+  while (temp != NULL) {
+    if (temp->data.type == TYPE_VARIABLE) {
+      if (!var_in_array(array, temp->data.varName)) {
+        ++*arrayindex;
+        stNode *searchvar = temp;
+        strcpy(array[*arrayindex].name, temp->data.varName);
+        addressidx = 0;
+        while (searchvar != NULL) {
+          if (searchvar->data.type == TYPE_VARIABLE &&
+              strcmp(array[*arrayindex].name, searchvar->data.varName) == 0) {
+            array[*arrayindex].adress[addressidx] = &searchvar->data.number;
+            ++addressidx;
+          }
+        searchvar = searchvar->next;
+      }
+    }
+  }
+
+  temp = temp->next;
+}
+return array;
+}
+
 long double get_variable(char *name) {
   long double var;
   printf("input variable %s = ", name);

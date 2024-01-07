@@ -22,10 +22,6 @@ void initNode(stNode *node, parseData val) {
 void stackInit(stack *st) {
   st->stSize = 0;
   st->root = NULL;
-  ;  //(stNode *)malloc(sizeof(stNode));
-     // st->root->data = initData(0, 0, 0, 0);
-     // st->root->next = NULL;
-  //  st->root->prev = NULL;
 }
 
 parseData initData(long double val, char symbol, int type, int priority) {
@@ -61,18 +57,6 @@ stNode *createNode(parseData data) {
   return tmp;
 }
 
-// int push(stack *st, stNode *node) {
-//   if (st->root != NULL) {
-//     node->next = st->root;
-//     st->root->prev = node;
-//   } else {
-//     st->last = node;
-//   }
-//   st->root = node;
-//   st->root->prev = NULL;
-//   st->stSize++;
-//   return 0;
-// }
 int push(stack *st, parseData data) {
   stNode *node = malloc(sizeof(stNode));
   initNode(node, data);
@@ -121,30 +105,6 @@ void freeStack(stack *st) {
   st->last = NULL;
   st->stSize = 0;
 }
-// void freeStack(stack *st) {
-//   stNode *ptr = st->root;
-//
-//   while (ptr) {
-//     stNode *next = ptr->next;
-//     free(ptr);
-//     ptr = next;
-//   }
-//
-//   st->root = NULL;
-
-// if (st->root != NULL) {
-//   stNode *temp = st->root;
-//   while (temp->next != NULL) {
-//     st->root = st->root->next;
-//     free(temp);
-//     temp = st->root;
-//   }
-//   if(temp)
-//    free(temp);
-//   // free(st->root);
-//   st->stSize = 0;
-// }
-// }
 
 void stackPrintValue(const parseData value, int useName) {
   if (value.type == 0) {
@@ -194,7 +154,6 @@ void stackPrintAll(const stack *st) {
     temp = temp->prev;
     ++i;
   }
-
 }
 
 void print(char *s) { printf("%s\n", s); }

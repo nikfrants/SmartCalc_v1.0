@@ -140,4 +140,10 @@ int check_digits_in_str(char *str);
 int check_digits_near_dot(char *str);
 // variables getListVariables(stack *st, variables array[][], int *size);
 // void askVariables(variables * array, int size);
+
+
 long double get_variable(char* name);
+void fillvariables(stack *st, variables array[], int size) ;
+variables*  askVariables(variables array[], int size);
+int var_in_array(variables array[], char *name);
+variables* searchVariable(stack *st, variables array[],int *arrayindex);

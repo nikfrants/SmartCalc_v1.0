@@ -15,7 +15,7 @@
 
 int main() {
   print("hi\n");
-  char s[200] = "name+y";
+  char s[200] = "a*a+b+c";
   parseData* newexpression = {NULL};
   int size;
   newexpression = parser(s, &size);
