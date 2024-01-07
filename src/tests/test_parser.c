@@ -197,7 +197,7 @@ START_TEST(parse_op_ex) {
   print("\nreversed\n");
   stackPrintAll(&reversed);
   print("\n");
-  long double ans = toPolishNotation(&reversed);
+  long double ans = calcPolishNotation(&reversed);
   // free(&notation);
   printf("\nresult = %.8LF", ans);
   freeStack(&notation);

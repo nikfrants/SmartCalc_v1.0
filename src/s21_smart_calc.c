@@ -15,47 +15,7 @@
 
 int main() {
   print("hi\n");
-  // stack st;
-  // stackInit(&st);
-  // stack st2;
-  // stackInit(&st2);
-  // stNode* node;
-  // push(&st, createNode(initData(1, 0, 0, 0)));
-  // push(&st, createNode(initData(2, 0, 0, 0)));
-  // push(&st, createNode(initData(2, 0, 0, 0)));
-  // push(&st, createNode(initData(2, 0, 0, 0)));
-  // node = pop(&st);
-  // push(&st2, createNode(node->data));
-  // free(node);
-  // node = pop(&st);
-  // push(&st2, createNode(node->data));
-  // free(node);
-  // node = pop(&st);
-  // push(&st2, createNode(node->data));
-  // free(node);
-  //
-  // freeStack(&st);
-  // freeStack(&st2);
-  // return 0;
-  // char s[9] = "sin(4)*4";
-  //  char s[30] = "2mod4*88.348+12"; // correct
-  // int arrsize = 100;
-  // char s[ARR_SIZE] = "2/cos(pi/2)"; // nan - correct
-  // char s[100] = "sin(+4.24)*--sin(1)*tan(2.421)*-tan(1)* 1245"; // correct
-  //
-  // char s[100] =  "sin(4.24 )*(-(-sin(1 )))*tan(2.421 )*(-tan(1 ))*1245";
-  // correct
-  //
-  // char s[100] =  "*2"; // ToDo incorrect
-  // char s[100] =  "((2)"; // ToDo incorrect
-  // char s[200] =
-  // "15/(7-(1+1))*3-(2+(1+1))*15/(7-(200+1))*3-(2+(1+1))*(15/(7-(1+1))*3-(2+(1+1))+15/(7-(1+1))*3-(2+(1+1)))";
-  // //correct
-
-  // char s[200] = "(2.1*(2)";
-  //  char s[200] = "2*(*)*2";// ToDo incorrect
-  // char s[200] = "2/cos(pi/2)";
-  char s[200] = "2/cos(pi/2)";
+  char s[200] = "name+y";
   parseData* newexpression = {NULL};
   int size;
   newexpression = parser(s, &size);
@@ -79,7 +39,7 @@ int main() {
     print(errorDescription(error));
     return 0;
   }
-  error = check_digits_in_str(s);
+//  error = check_digits_in_str(s);
   if (error < -100) {
     print(errorDescription(error));
     return 0;
@@ -109,7 +69,7 @@ int main() {
   stackPrintAll(&reversed);
   print("\n");
 
-  calc_s ans = toPolishNotation(&reversed);
+  calc_s ans = calcPolishNotation(&reversed);
   // free(&notation);
   printf("\nresult: %.15LF\nerror - %s", ans.n, errorDescription( ans.e));
 

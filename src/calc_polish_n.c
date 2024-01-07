@@ -42,15 +42,30 @@ calc_s new_calc_s(long double n, int err) {
   calc.e = err;
   return calc;
 }
-calc_s toPolishNotation(stack *data) {
+
+calc_s calcPolishNotation(stack *data) {
+  // struct variables varsArray[100] = {0};
+  // int variablesSize = 0;
+  // varsArray = getListVariables(data, varsArray, &variablesSize);
+  // if (variablesSize > 0) {
+  //   askVariables(varsArray, variablesSize);
+  // }
   stack ans;
   calc_s calc;
   stackInit(&ans);
   parseData a, b, op;
   // long double calc = NAN;
   while (top(data)) {
-    if (data->root->data.type == TYPE_DIGIT) {
-      push(&ans, pop(data));
+    if (data->root->data.type == TYPE_DIGIT ||
+        data->root->data.type == TYPE_VARIABLE) {
+      if (data->root->data.type == TYPE_VARIABLE) {
+        parseData temp = pop(data);
+             temp.number = get_variable(temp.varName);
+        temp.type = TYPE_DIGIT;
+        temp.priority = -1;
+        push(&ans, temp);
+      } else
+        push(&ans, pop(data));
     } else {
       b = pop(&ans);
       op = pop(data);
@@ -72,6 +87,64 @@ calc_s toPolishNotation(stack *data) {
   const calc_s answer = new_calc_s(top(&ans)->data.number, 0);
   freeStack(&ans);
   return answer;
+}
+// void searchVariable(stack *st, variables array[], int index) {
+//   stNode *temp = st->last;
+//   int stackindex = 0;
+//   int arrindex = 0;
+//   while ((size_t)stackindex < st->stSize) {
+//     if (temp->data.type == TYPE_VARIABLE) {
+//       stNode *searchvar = temp;
+//       strcpy( array[arrindex].name, temp->data.varName);
+//       if (strcmp(array[arrindex].name, temp->data.varName) == 0) {
+//         int adrressindex = 0;
+//         while (searchvar->prev != NULL) {
+//           if (strcmp(array[arrindex].name, searchvar->data.varName) == 0) {
+//             array[arrindex].adress[adrressindex] = &temp->data.number;
+//             adrressindex++;
+//           }
+//         }
+//       }
+//     }
+//
+//     temp = temp->prev;
+//     ++stackindex;
+//   }
+// }
+// void askVariables(variables array[][], int size) {
+//   for (int i = 0; i < size; ++i) {
+//     long double var = get_variable(array[i][0].name);
+//
+//     strcpy(array[i][0].name, "");
+//   }
+// }
+// void fillvariables(stack *st, variables *array, int size) {
+//   stNode *temp = st->last;
+//   for (int i = 0; i < size; ++i) {
+//     for (int j = 0; array(i * j) > 0; ++j) {
+//       *array(i * j).adress = array->value;
+//     }
+//   }
+// }
+// variables getListVariables(stack *st, variables array[][], int *size) {
+//   stNode *temp = st->last;
+//   int i = 0;
+//   *size = 0;
+//   while ((size_t)i < st->stSize) {
+//     if (temp->data.type == TYPE_VARIABLE) {
+//       strcpy(array[*size][].name, temp->data.varName);
+//       ++*size;
+//     }
+//     temp = temp->prev;
+//     ++i;
+//   }
+//   return array;
+// }
+long double get_variable(char *name) {
+  long double var;
+  printf("input variable %s = ", name);
+  scanf("%Lf", &var);
+  return var;
 }
 calc_s calcDigits(parseData *data, calc_s a, calc_s b) {
   calc_s ans;

@@ -8,15 +8,12 @@ int is_left_associative(char op) {
 }
 // polish notation implementation on c
 stack evaluatePolishNotation(char* expression) {
-  int strIndex = 0;
-  int size = 0;
-  stack polishNotation;
-  stackInit(&polishNotation);
-  stack processed;
-  stackInit(&processed);
+  int strIndex = 0, size = 0;
+  stack polishNotation, processed;
+  stackInit(&polishNotation), stackInit(&processed);
   parseData* inputStr = parser(expression, &size);
   while (strIndex < size) {
-    if (inputStr[strIndex].type == TYPE_DIGIT) {
+    if (inputStr[strIndex].type == TYPE_DIGIT || inputStr[strIndex].type == TYPE_VARIABLE) {
       push(&polishNotation, inputStr[strIndex]);
       ++strIndex;
     }
@@ -33,24 +30,20 @@ stack evaluatePolishNotation(char* expression) {
                   is_left_associative(inputStr[strIndex].op))) {
         push(&polishNotation, pop(&processed));
       }
-      push(&processed, inputStr[strIndex]);
-      ++strIndex;
+      push(&processed, inputStr[strIndex]), ++strIndex;
     }
-    if (strIndex < size &&
-        (inputStr[strIndex].type == TYPE_BRACKET &&
-         inputStr[strIndex].op == ')')) {
+    if (strIndex < size && (inputStr[strIndex].type == TYPE_BRACKET &&
+                            inputStr[strIndex].op == ')')) {
       while (processed.root != NULL &&
              top(&processed)->data.type != TYPE_BRACKET &&
-             top(&processed)->data.op !=
-                 '(') {
+             top(&processed)->data.op != '(') {
         push(&polishNotation, pop(&processed));
       }
       if (processed.root != NULL) {
-        pop(&processed); ++strIndex;
+        pop(&processed), ++strIndex;
       }
       if (inputStr[strIndex].type == TYPE_FUNCTION) {
-        push(&polishNotation, pop(&processed));
-        ++strIndex;
+        push(&polishNotation, pop(&processed)), ++strIndex;
       }
     }
   }
@@ -65,8 +58,6 @@ stack evaluatePolishNotation(char* expression) {
       push(&polishNotation, pop(&processed));
     }
   }
-
-  freeStack(&processed);
-  free(inputStr);
+  freeStack(&processed), free(inputStr);
   return polishNotation;
 }

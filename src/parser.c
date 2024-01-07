@@ -129,6 +129,10 @@ int isOperator(char* ch, parseData* currstr, int* parseidx,
         break;
       case '+':
       case '-':
+        if (*parseidx == 0 && ((*ch == '+' || *ch == '-'))) {
+          currstr[0].op = *ch == '+' ? 'p' : '~';
+          currstr[0].priority = 4;
+        }
         if (*parseidx > 0 && (((*parseidx == 0 && (*ch == '+' || *ch == '-')) ||
                                currstr[-1].type == TYPE_OPERATOR ||
                                currstr[-1].type == TYPE_BRACKET) &&
@@ -190,6 +194,7 @@ int Other(char* ch, parseData* currstr, int* parseidx, int* stringParseindex) {
       currstr->varName[index] = *(ch + index);
     currstr[0].type = 5;
     currstr[0].number = 0;
+    currstr[0].priority = -1;
     currstr[0].lenth = index;
     *stringParseindex += currstr[0].lenth;
     ++*parseidx;

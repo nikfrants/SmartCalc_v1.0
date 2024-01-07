@@ -17,6 +17,7 @@ void initNode(stNode *node, parseData val) {
   node->data.lenth = val.lenth;
   node->data.priority = val.priority;
   strcpy(node->data.func, val.func);
+  strcpy(node->data.varName, val.varName);
 }
 void stackInit(stack *st) {
   st->stSize = 0;
@@ -186,20 +187,14 @@ int stackPrintByIndex(const stack *st, int index) {
   return 0;
 }
 void stackPrintAll(const stack *st) {
-  //  stack reversedSt;
-  // stackInit(&reversedSt);
   stNode *temp = st->last;
-  // while (st->stSize) push(&reversedSt, pop(st)->data);
   int i = 0;
   while ((size_t)i < st->stSize) {
     stackPrintValue(temp->data, 0);
     temp = temp->prev;
     ++i;
   }
-  // for (int i = 0; temp != NULL || (size_t)i < reversedSt.stSize; ++i) {
-  //   stackPrintValue(temp->data, 0);
-  //   temp = temp->next;
-  // }
+
 }
 
 void print(char *s) { printf("%s\n", s); }

@@ -76,6 +76,12 @@ typedef struct calc_s {
   long double n;
   int e;
 } calc_s;
+typedef struct variables {
+  char name[5];
+  long double value;
+  long double *adress[10];
+
+} variables;
 
 typedef struct parseData {
   long double number;  // type 1
@@ -104,7 +110,7 @@ typedef struct {
   // array. impossible for now cos stack doesn't exist while we processing
   // parsing
 } stack;
-
+long double get_variable();
 int push(stack *st, parseData data);
 parseData pop(stack *st);
 stNode *top(const stack *st);
@@ -121,7 +127,7 @@ void stackPrintAll(const stack *st);
 stack evaluatePolishNotation(char *expression);
 parseData *parser(char *str, int *idx);
 
-calc_s toPolishNotation(stack *data);
+calc_s calcPolishNotation(stack *data);
 void printParsedData(parseData *data, int size);
 calc_s calcDigits(parseData *data, calc_s a, calc_s b);
 calc_s new_calc_s(long double n, int err);
@@ -132,3 +138,6 @@ calc_s calcDigitsOp(parseData *data, calc_s a, calc_s b);
 calc_s calcDigitsFunc(parseData *data, calc_s a, calc_s b);
 int check_digits_in_str(char *str);
 int check_digits_near_dot(char *str);
+// variables getListVariables(stack *st, variables array[][], int *size);
+// void askVariables(variables * array, int size);
+long double get_variable(char* name);
