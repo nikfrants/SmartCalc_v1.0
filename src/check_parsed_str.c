@@ -6,36 +6,89 @@
 
 // int check_parsed_str(stack* st) {}
 
-int check_brackets(stack* st) {
-  stNode* curr = st->root;
+int check_brackets(parseData* data, int size) {
   int balance = 0;
-  while (curr != NULL) {
-    if (curr->data.type == TYPE_BRACKET && curr->data.op == '(') {
+  for (int idx = 0; idx < size; ++idx) {
+    if (data[idx].type == TYPE_BRACKET && data[idx].op == '(') {
       balance++;
-    } else if (curr->data.type == TYPE_BRACKET && curr->data.op == ')') {
+    } else if (data[idx].type == TYPE_BRACKET && data[idx].op == ')') {
       balance--;
     }
-    if (balance < 0) return 1; // ToDo pass error incorrect brackets sequence
-    curr = curr->next;
+    if (balance < 0)
+      return E_INCORRECT_BRACKETS_SEQUENE;
   }
-  return 0;
+  if (balance != 0) return E_INCORRECT_BRACKETS_SEQUENE;
+  return E_NO_ERRORS;
 }
 
-int check_operations(stack* st) {
-  stNode* curr = st->root;
-  while (curr->next != NULL) {
-    if (curr->data.type == TYPE_OPERATOR &&
-        curr->next->data.type == TYPE_OPERATOR &&
-        ((curr->data.op == '*' && curr->next->data.op == '*') ||
-         (curr->data.op == '/' && curr->next->data.op == '/') ||
-         (curr->data.op == '^' && curr->next->data.op == '^') ||
-         (curr->data.op == 'm' && curr->next->data.op == 'm'))) {
-      return 1; // ToDo pass error nearbody operators * / ^ m
+int check_operations(parseData* data, int size) {
+  if ((data[size - 1].type == TYPE_OPERATOR || data[0].type == TYPE_OPERATOR) &&
+      data[size - 1].op == 'm')
+    return E_MOD_HAS_ONE_NUMBERS;
+  for (int idx = 0; idx < size; ++idx) {
+    if (data[idx].type == TYPE_OPERATOR &&
+        data[idx + 1].type == TYPE_OPERATOR) {
+      if (data[idx].op == '*' && data[idx + 1].op == '*')
+        return E_TWO_MULTIPLES_NEARBODY;
+      if (data[idx].op == '^' && data[idx + 1].op == '^')
+        return E_TWO_POW_NEARBODY;
+      if (data[idx].op == '/' && data[idx + 1].op == '/')
+        return E_TWO_DIVISION_NEARBODY;
+      if (data[idx].op == 'm' && data[idx + 1].op == 'm')
+        return E_TWO_MOD_NEARBODY;
+    }  // return E_TWO_OPERATORS_NEARBODY;
+    if (data[idx].type == TYPE_FUNCTION &&
+        data[idx + 1].type == TYPE_FUNCTION) {
+      return E_TWO_FUNCTIONS_NEARBODY;
     }
-    curr = curr->next;
   }
-
-
-  return 0;
+  return E_NO_ERRORS;
 }
-
+int check_digits_near_dot(char* str) {
+  char* str1 = str;
+  ;
+  while (*(str1 + 1)) {
+    if (*str1 == '.' && *(str1 + 1) == '.') return E_TWO_DOT_NEARBODY;
+    str1++;
+  }
+  str++;
+  while (*(str + 1)) {
+    if (*str == '.' && ((*(str - 1) < '0' || *(str - 1) > '9') ||
+                        (*(str + 1) < '0' || *(str + 1) > '9')))
+      return E_NO_DIGITS_NEAR_DOT;
+    str++;
+  }
+  return E_NO_ERRORS;
+}
+int check_digits_in_str(char* str) {
+  int flag_numbers_exist = 0;
+  int flag_operators_exist = 0;
+  int flag_funcs_exist = 0;
+  char* str1 = str;
+  while (*str1) {
+    if (*str1 >= '0' && *str1 <= '9') {
+      flag_numbers_exist = 1;
+      break;
+    }
+    str1++;
+  }
+  str1 = str;
+  while (*str1) {
+    if (strchr("+p~-*/^", *str1)!=NULL) {
+      flag_operators_exist = 1;
+      break;
+    }
+    str1++;
+  }
+  str1 = str;
+  while (*str1) {
+    if (strstr(str, "sincostanlogasinacosatansqrtln") != NULL) {
+      flag_funcs_exist = 1;
+      break;
+    }
+    str1++;
+  }
+  if (!flag_numbers_exist) return E_NO_DIGITS_IN_STR;
+  if (!flag_operators_exist && !flag_funcs_exist) return E_ONLY_DIGITS_EXIST;
+  return E_NO_ERRORS;
+}

@@ -11,23 +11,7 @@
 #include "stack.h"
 #include "stdio.h"
 #define ARR_SIZE 100
-void printParsedData(parseData* data, int size);
 
-void shiftArray(char* arr, int start, int end, int shift, int direction) {
-  if (direction == 1) {  // Сдвиг вправо
-    for (int i = end; i >= start; i--) {
-      arr[i + shift] = arr[i];
-    }
-  } else if (direction == 0) {  // Сдвиг влево
-    for (int i = start; i <= end; i++) {
-      arr[i] = arr[i + shift];
-    }
-  } else {
-    printf(
-        "Неверное направление сдвига. Используйте 0 для сдвига влево или 1 для "
-        "сдвига вправо.\n");
-  }
-}
 
 int main() {
   print("hi\n");
@@ -70,41 +54,65 @@ int main() {
 
   // char s[200] = "(2.1*(2)";
   //  char s[200] = "2*(*)*2";// ToDo incorrect
+  // char s[200] = "2/cos(pi/2)";
   char s[200] = "2/cos(pi/2)";
   parseData* newexpression = {NULL};
   int size;
   newexpression = parser(s, &size);
-  if (newexpression[0].type == INCORRECT_EXPRESSION)
+  if (newexpression[0].type == E_INCORRECT_EXPRESSION) {
     fprintf(stderr, "incorrect expression error");
+    return 0;
+  }
   print("data:");
   print(s);
-
   print("\nparsed data:\n");
   printParsedData(newexpression, size);
   print("\nnotation\n");
+
+  int error = check_brackets(newexpression, size);
+  if (error < -100) {
+    print(errorDescription(error));
+    return 0;
+  }
+  error = check_operations(newexpression, size);
+  if (error < -100) {
+    print(errorDescription(error));
+    return 0;
+  }
+  error = check_digits_in_str(s);
+  if (error < -100) {
+    print(errorDescription(error));
+    return 0;
+  }
+  error = check_digits_near_dot(s);
+  if (error < -100) {
+    print(errorDescription(error));
+    return 0;
+  }
+
   stack notation;
   notation = evaluatePolishNotation(s);
   stackPrintAll(&notation);
   stack reversed;
   stackInit(&reversed);
+  print("\n");
   // reverse &notation to &reversed
   //  stNode * temp;
-  stNode* emp ;
+  // reverse notatnion
 
   while (notation.stSize) {
-
-    stNode* temp1 = createNode((emp = pop(&notation))->data);
-    push(&reversed, temp1);
-    free(emp);
+    push(&reversed, pop(&notation));
   };
   // if(temp)
   //   free(temp);
   print("\nreversed\n");
   stackPrintAll(&reversed);
   print("\n");
-  long double ans = calcPolishNotation(&reversed);
+
+  calc_s ans = toPolishNotation(&reversed);
   // free(&notation);
-  printf("\nresult = %.8LF", ans);
+  printf("\nresult: %.15LF\nerror - %s", ans.n, errorDescription( ans.e));
+
   freeStack(&notation);
   freeStack(&reversed);
   free(newexpression);

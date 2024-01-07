@@ -35,7 +35,17 @@ parseData initData(long double val, char symbol, int type, int priority) {
   data.lenth = 0;
   data.priority = priority;
   strcpy(data.func, "\000\000\000\000\000");
+  strcpy(data.varName, "\000\000\000\000\000");
   return data;
+}
+void copyData(parseData *var, parseData data) {
+  var->number = data.number;
+  var->op = data.op;
+  var->type = data.type;
+  var->lenth = data.lenth;
+  var->priority = data.priority;
+  strcpy(var->func, data.func);
+  strcpy(var->varName, data.varName);
 }
 stNode *createNode(parseData data) {
   stNode *tmp = malloc(sizeof(stNode));
@@ -62,9 +72,10 @@ stNode *createNode(parseData data) {
 //   st->stSize++;
 //   return 0;
 // }
-int push(stack *st, stNode *node) {
-  // stNode * new = malloc(sizeof(stNode));
-  // initNode(new,node->data);
+int push(stack *st, parseData data) {
+  stNode *node = malloc(sizeof(stNode));
+  initNode(node, data);
+
   if (st->root != NULL) {
     node->next = st->root;
     st->root->prev = node;
@@ -72,23 +83,21 @@ int push(stack *st, stNode *node) {
     st->last = node;
   }
   st->root = node;
-  node->prev = NULL; // Установим prev непосредственно в новом узле, а не через st->root
   st->stSize++;
   return 0;
 }
 
-
-stNode *pop(stack *st) {
+parseData pop(stack *st) {
   if (st->root != NULL) {
-    stNode *nodetoreturn = st->root;
-    if (st->root->next) st->root = st->root->next;
-    // todo dont create node, return pointer to root
+    parseData returndata;
+    copyData(&returndata, st->root->data);
+    stNode *tmp = st->root;
+    st->root = st->root->next;
+    free(tmp);
     st->stSize--;
-    nodetoreturn->next = NULL;
-    nodetoreturn->prev = NULL;
-    return nodetoreturn;
+    return returndata;
   }
-  return NULL;
+  return initData(0, 0, E_STACK_UNDERFLOW, -10);
 }
 stNode *top(const stack *st) {
   if (st->stSize > 0) {
@@ -122,18 +131,18 @@ void freeStack(stack *st) {
 //
 //   st->root = NULL;
 
-  // if (st->root != NULL) {
-  //   stNode *temp = st->root;
-  //   while (temp->next != NULL) {
-  //     st->root = st->root->next;
-  //     free(temp);
-  //     temp = st->root;
-  //   }
-  //   if(temp)
-  //    free(temp);
-  //   // free(st->root);
-  //   st->stSize = 0;
-  // }
+// if (st->root != NULL) {
+//   stNode *temp = st->root;
+//   while (temp->next != NULL) {
+//     st->root = st->root->next;
+//     free(temp);
+//     temp = st->root;
+//   }
+//   if(temp)
+//    free(temp);
+//   // free(st->root);
+//   st->stSize = 0;
+// }
 // }
 
 void stackPrintValue(const parseData value, int useName) {
@@ -143,7 +152,7 @@ void stackPrintValue(const parseData value, int useName) {
   }
   if (value.type == 1) {
     if (useName) print("T1undefined_");
-    printf("%Lg ", value.number);
+    printf("%0.40Lg ", value.number);
   }
   if (value.type == 2) {
     if (useName) print("T2undefined_");
@@ -195,7 +204,7 @@ void stackPrintAll(const stack *st) {
 
 void print(char *s) { printf("%s\n", s); }
 
-void printParsedData(parseData* data, int size) {
+void printParsedData(parseData *data, int size) {
   for (int i = 0; i < size; ++i) {
     if (data[i].type == TYPE_DIGIT) printf("%Lg ", data[i].number);
     if (data[i].type == TYPE_BRACKET)

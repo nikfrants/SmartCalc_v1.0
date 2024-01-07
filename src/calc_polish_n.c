@@ -2,91 +2,128 @@
 // Created by nikolay on 1/5/24.
 //
 #include "stack.h"
-long double calcDigits(parseData *data, long double a, long double b);
 
-long double calcPolishNotation(stack *data) {  // ToDo leaks
+const char *errortexts[] = {
+    "No errors",                                                     // 0
+    "Stack overflow",                                                // 1
+    "Stack underflow",                                               // 2
+    "Division by zero",                                              // 3
+    "Encountered zero inside tangent function",                      // 4
+    "Negative argument inside natural logarithm function",           // 5
+    "Negative argument inside base 10 logarithm function",           // 6
+    "Negative argument inside square root function",                 // 7
+    "Value not in the domain of arccosine function",                 // 8
+    "Value not in the domain of arcsine function",                   // 9
+    "Encountered unknown or unsupported operation",                  // 10
+    "Incorrect polish notation",                                     // 11
+    "Expected operation but got digit while processing expression",  // 12
+    "Function does not exist",                                       // 13
+    "Error during conversion to Polish notation",                    // 14
+    "Expression is incorrect",                                       // 15
+    "Two operators near each other",                                 // 16
+    "Two functions near each other",                                 // 17
+    "Incorrect brackets sequence",                                   // 18
+    "Two multiples near each other",                                 // 19
+    "Two powers near each other",                                    // 20
+    "Two divisions near each other",                                 // 21
+    "Two mod near each other",                                       // 22
+    "Two dots near each other",                                      // 23
+    "Mod has one numbers",                                           // 24
+    "No digits in str",                                              // 25
+    "No digits near dot",                                            // 26
+    "Only digits in str"                                             // 27
+};
+
+calc_s calcDigits(parseData *data, calc_s a, calc_s b);
+
+calc_s new_calc_s(long double n, int err) {
+  calc_s calc;
+  calc.n = n;
+  calc.e = err;
+  return calc;
+}
+calc_s toPolishNotation(stack *data) {
   stack ans;
+  calc_s calc;
   stackInit(&ans);
-  stNode *temp;
-  stNode *a = NULL;   // ToDo leaks
-  stNode *b = NULL;   // ToDo leaks
-  stNode *op = NULL;  // ToDo leaks
-  long double calc = NAN;
+  parseData a, b, op;
+  // long double calc = NAN;
   while (top(data)) {
     if (data->root->data.type == TYPE_DIGIT) {
-
-      push(&ans, createNode((temp = pop(data))->data));
-      free(temp);
+      push(&ans, pop(data));
     } else {
-      if (b) free(b);
       b = pop(&ans);
-      if (op) free(op);
-      if (a) free(a);
       op = pop(data);
-      if (op->data.op != '\000' && strchr("+-*/^m", op->data.op)) a = pop(&ans);
-      if (a == NULL) {
-        if (b) free(b);
-        if (op) free(op);
-        return NAN;
-      };  // ToDo pass erorr incorrect polish notation
-      calc = calcDigits(&op->data, a->data.number, b->data.number);
-      if (calc == NAN) {
-        if (a) free(a);
-        if (b) free(b);
-        if (op) free(op);
-        return 1;
-      };  // ToDo pass erorr incorrect calculation
-      if (calc > 0 && calc < 1.0e-16) calc = 0;
-      push(&ans, createNode(initData(calc, op->data.op, TYPE_DIGIT, 0)));
+      if (op.op != '\000' && strchr("+-*/^m", op.op))
+        a = pop(&ans);
+      else
+        a = initData(NAN, 0, 0, 0);
+      if (a.type == E_STACK_UNDERFLOW)
+        return new_calc_s(NAN, E_INCORRECT_POLISH_NOTATION);
+
+      calc = calcDigits(&op, new_calc_s(a.number, 0), new_calc_s(b.number, 0));
+
+      if (isnan(calc.n)) return calc;
+      if (calc.n > -ROUND && calc.n < ROUND) calc.n = 0;
+      push(&ans, initData(calc.n, op.op, TYPE_DIGIT, 0));
     }
   }
-  if (a) free(a);    // ToDo leaks
-  if (b) free(b);    // ToDo leaks
-  if (op) free(op);  // ToDo leaks
-  long double answer = ans.root->data.number;
+
+  const calc_s answer = new_calc_s(top(&ans)->data.number, 0);
   freeStack(&ans);
   return answer;
 }
+calc_s calcDigits(parseData *data, calc_s a, calc_s b) {
+  calc_s ans;
+  if (data->type == TYPE_OPERATOR) return calcDigitsOp(data, a, b);
+  if (data->type == TYPE_FUNCTION) return calcDigitsFunc(data, a, b);
+  return new_calc_s(NAN, E_EXPECTED_OPERATION_GOT_DIGIT);
+}
+calc_s calcDigitsOp(parseData *data, calc_s a, calc_s b) {
+  calc_s ans;
+  if (data->op == '+') return new_calc_s(a.n + b.n, 0);
+  if (data->op == '-') return new_calc_s(a.n - b.n, 0);
+  if (data->op == '*') return new_calc_s(a.n * b.n, 0);
+  if (data->op == '/')
+    return b.n != 0 ? new_calc_s(a.n / b.n, 0) : new_calc_s(NAN, E_DIV_BY_ZERO);
+  if (data->op == '^') return new_calc_s(powl(a.n, b.n), 0);
+  if (data->op == 'm')
+    return b.n != 0 ? new_calc_s(fmodl(a.n, b.n), 0)
+                    : new_calc_s(NAN, E_DIV_BY_ZERO);
+  if (data->op == '~') return new_calc_s(-b.n, 0);
+  if (data->op == 'p') return new_calc_s(+b.n, 0);
+  return new_calc_s(NAN, E_UNEXIST_OPERATION);
+}
+calc_s calcDigitsFunc(parseData *data, calc_s a, calc_s b) {
+  calc_s ans;
 
-long double calcDigits(parseData *data, long double a, long double b) {
-  if (data->type == TYPE_OPERATOR) {
-    if (data->op == '+')
-      return a + b;
-    else if (data->op == '-')
-      return a - b;
-    else if (data->op == '*')
-      return a * b;
-    else if (data->op == '/')
-      return b != 0 ? a / b : NAN;
-    else if (data->op == '^')
-      return pow(a, b);
-    else if (data->op == 'm')
-      return b != 0 ? fmodl(a, b) : NAN;
-    else if (data->op == '~')
-      return -b;
-    else if (data->op == 'p')
-      return b;
+  if (strncmp(data->func, "cos", 3) == 0) {
+    return new_calc_s(cosl(b.n), 0);
+  } else if (strncmp(data->func, "sin", 3) == 0) {
+    return new_calc_s(sinl(b.n), 0);
+  } else if (strncmp(data->func, "asin", 4) == 0) {
+    return fabsl(b.n) <= 1 ? new_calc_s(asinl(b.n), 0)
+                           : new_calc_s(NAN, E_NOT_IN_SCOPE_ASIN);
+  } else if (strncmp(data->func, "acos", 4) == 0) {
+    return fabsl(b.n) <= 1 ? new_calc_s(acosl(b.n), 0)
+                           : new_calc_s(NAN, E_NOT_IN_SCOPE_ACOS);
+  } else if (strncmp(data->func, "tan", 3) == 0) {
+    return cosl(b.n) != 0 ? new_calc_s(tanl(b.n), 0)
+                          : new_calc_s(NAN, E_DIV_BY_ZERO);
+  } else if (strncmp(data->func, "ln", 2) == 0) {
+    return b.n >= 0 ? new_calc_s(logl(b.n), 0) : new_calc_s(NAN, E_NERATIVE_LN);
+  } else if (strncmp(data->func, "log", 3) == 0) {
+    return b.n >= 0 ? new_calc_s(log10l(b.n), 0)
+                    : new_calc_s(NAN, E_NERATIVE_LOG10);
+  } else if (strncmp(data->func, "sqrt", 4) == 0) {
+    return b.n >= 0 ? new_calc_s(sqrtl(b.n), 0)
+                    : new_calc_s(NAN, E_NERATIVE_SQRT);
   }
-  if (data->type == TYPE_FUNCTION) {
-    if (strncmp(data->func, "cos", 3) == 0) {
-      return cos(b);
-    } else if (strncmp(data->func, "sin", 3) == 0) {
-      return sin(b);
-    } else if (strncmp(data->func, "asin", 4) == 0) {
-      return fabsl(b) <= 1 ? asin(b) : NAN;
-    } else if (strncmp(data->func, "acos", 4) == 0) {
-      return fabsl(b) <= 1 ? acos(b) : NAN;
-    } else if (strncmp(data->func, "tan", 3) == 0) {
-      return cos(b) != 0 ? tan(b) : NAN;
-    } else if (strncmp(data->func, "exp", 3) == 0) {
-      return exp(b);
-    } else if (strncmp(data->func, "ln", 2) == 0) {
-      return b >= 0 ? logl(b) : NAN;
-    } else if (strncmp(data->func, "log", 3) == 0) {
-      return b >= 0 ? log10l(b) : NAN;
-    } else if (strncmp(data->func, "sqrt", 4) == 0) {
-      return sqrt(b);
-    }
-  }
-  return NAN;
+  // } else if (strncmp(data->func, "exp", 3) == 0) {
+  //   return expl(b);
+  return new_calc_s(NAN, E_UNEXIST_FUNCTION);
+}
+char *errorDescription(int error) {
+  int code = -error - 100;
+  return errortexts[code];
 }

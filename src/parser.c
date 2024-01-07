@@ -211,7 +211,7 @@ parseData* parser(char* str, int* strPrsidx) {
     if (other == 3)
       other = Other(str + *strPrsidx, data + prseidx, &prseidx, strPrsidx);
     if (other == -1) {
-      data[0].type = INCORRECT_EXPRESSION;
+      data[0].type = E_INCORRECT_EXPRESSION;
       return data;
     }
   }
