@@ -133,6 +133,7 @@ void stackPrintValue(const parseData value, int useName) {
 }
 
 int stackPrintByIndex(const stack *st, int index) {
+  // ToDo without createNode
   if ((size_t)index >= st->stSize) {
     fprintf(stderr, "index out of range");
     return 1;

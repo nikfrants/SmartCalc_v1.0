@@ -14,33 +14,23 @@
 
 int main() {
   print("hi\n");
-  int size;
-  char s[200] = "--acos(0.234)* - 2";
-  parseData* newexpression = {NULL};
-  newexpression = parser(s, &size);
-  // print("data:");
-  // print(s);
-  // print("\nparsed data:\n");
-  // printParsedData(newexpression, size);
-  // print("\nnotation\n");
-  int error = check(newexpression, size, s);
-  if (error != E_NO_ERRORS) printf("Error - %s", errorDescription(error));
 
+  int size, error;
+  char s[200] = "--acos(0.234)* - e ++ sin(+4.24)*--sin(1)*tan(2.421)*-tan(1)* a+pimodb+2/1+ln(10)+log(1)";
+  parseData* newexpression = {NULL};
+
+  newexpression = parser(s, &size);
+  error = check(newexpression, size, s);
+  if (error != E_NO_ERRORS) {
+    printf("Error - %s", errorDescription(error));
+    return error;
+  }
   stack notation, reversed;
   stackInit(&notation), stackInit(&reversed);
   notation = evaluatePolishNotation(s);
-  // stackPrintAll(&notation);
-  // print("\n");
-  while (notation.stSize) {
-    push(&reversed, pop(&notation));
-  }
-  // print("\nreversed\n");
-  // stackPrintAll(&reversed);
-  // print("\n");
-
+  while (notation.stSize) push(&reversed, pop(&notation));
   calc_s ans = calcPolishNotation(&reversed);
   printf("\nresult: %.15LF\nerror - %s", ans.n, errorDescription(ans.e));
-
 
   freeStack(&notation);
   freeStack(&reversed);
