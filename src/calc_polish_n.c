@@ -88,6 +88,9 @@ calc_s calcPolishNotation(stack *data) {
   freeStack(&ans);
   return answer;
 }
+
+// Todo DONE      multiple variables
+// Todo           multiple repeated variables
 // void searchVariable(stack *st, variables array[], int index) {
 //   stNode *temp = st->last;
 //   int stackindex = 0;
