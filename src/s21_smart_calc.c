@@ -15,7 +15,7 @@
 
 int main() {
   print("hi\n");
-  char s[200] = "a*a+b+c";
+  char s[200] = "a+b";
   parseData* newexpression = {NULL};
   int size;
   newexpression = parser(s, &size);
@@ -28,7 +28,6 @@ int main() {
   print("\nparsed data:\n");
   printParsedData(newexpression, size);
   print("\nnotation\n");
-
   int error = check_brackets(newexpression, size);
   if (error < -100) {
     print(errorDescription(error));
@@ -39,7 +38,7 @@ int main() {
     print(errorDescription(error));
     return 0;
   }
-//  error = check_digits_in_str(s);
+  error = check_digits_in_str(s);
   if (error < -100) {
     print(errorDescription(error));
     return 0;

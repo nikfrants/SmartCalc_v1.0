@@ -86,7 +86,7 @@ calc_s calcPolishNotation(stack *data) {
     }
   }
 
-  const calc_s answer = new_calc_s(top(&ans)->data.number, 0);
+  const calc_s answer = new_calc_s(top(&ans)->data.number, -100);
   freeStack(&ans);
   return answer;
 }

@@ -66,7 +66,8 @@ int check_digits_in_str(char* str) {
   int flag_funcs_exist = 0;
   char* str1 = str;
   while (*str1) {
-    if (*str1 >= '0' && *str1 <= '9') {
+    if (*str1 >= '0' && *str1 <= '9' || *str1 >= 'a' && *str1 <= 'z' || *str1 >= 'A' && *str1 <= 'Z') {
+
       flag_numbers_exist = 1;
       break;
     }
