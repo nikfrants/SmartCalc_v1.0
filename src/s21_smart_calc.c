@@ -15,13 +15,13 @@
 
 int main() {
   print("hi\n");
-  char s[200] = "a+b";
+  char s[200] = "--acos(0.234)* - 2";
   parseData* newexpression = {NULL};
   int size;
   newexpression = parser(s, &size);
   if (newexpression[0].type == E_INCORRECT_EXPRESSION) {
     fprintf(stderr, "incorrect expression error");
-    return 0;
+    return E_INCORRECT_EXPRESSION;
   }
   print("data:");
   print(s);
@@ -31,22 +31,22 @@ int main() {
   int error = check_brackets(newexpression, size);
   if (error < -100) {
     print(errorDescription(error));
-    return 0;
+    return error;
   }
   error = check_operations(newexpression, size);
   if (error < -100) {
     print(errorDescription(error));
-    return 0;
+    return error;
   }
   error = check_digits_in_str(s);
   if (error < -100) {
     print(errorDescription(error));
-    return 0;
+    return error;
   }
   error = check_digits_near_dot(s);
   if (error < -100) {
     print(errorDescription(error));
-    return 0;
+    return error;
   }
 
   stack notation;
