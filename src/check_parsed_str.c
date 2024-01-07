@@ -6,6 +6,22 @@
 
 // int check_parsed_str(stack* st) {}
 
+int check(parseData* data, int size, char* str) {
+  if (data[0].type == E_INCORRECT_EXPRESSION) {
+    return E_INCORRECT_EXPRESSION;
+  }
+  int error = E_NO_ERRORS;
+  error = check_brackets(data, size) ;
+  if ( error !=E_NO_ERRORS) return error;
+  error = check_operations(data, size) ;
+  if ( error !=E_NO_ERRORS) return error;
+  error = check_digits_near_dot(str) ;
+  if ( error !=E_NO_ERRORS) return error;
+  error = check_digits_in_str(str) ;
+  if ( error !=E_NO_ERRORS) return error;
+  return error;
+}
+
 int check_brackets(parseData* data, int size) {
   int balance = 0;
   for (int idx = 0; idx < size; ++idx) {

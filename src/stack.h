@@ -147,3 +147,4 @@ void fillvariables(stack *st, variables array[], int size) ;
 variables*  askVariables(variables array[], int size);
 int var_in_array(variables array[], char *name);
 variables* searchVariable(stack *st, variables array[],int *arrayindex);
+int check(parseData* data, int size, char* str);

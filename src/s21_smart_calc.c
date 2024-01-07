@@ -12,65 +12,35 @@
 #include "stdio.h"
 #define ARR_SIZE 100
 
-
 int main() {
   print("hi\n");
+  int size;
   char s[200] = "--acos(0.234)* - 2";
   parseData* newexpression = {NULL};
-  int size;
   newexpression = parser(s, &size);
-  if (newexpression[0].type == E_INCORRECT_EXPRESSION) {
-    fprintf(stderr, "incorrect expression error");
-    return E_INCORRECT_EXPRESSION;
-  }
-  print("data:");
-  print(s);
-  print("\nparsed data:\n");
-  printParsedData(newexpression, size);
-  print("\nnotation\n");
-  int error = check_brackets(newexpression, size);
-  if (error < -100) {
-    print(errorDescription(error));
-    return error;
-  }
-  error = check_operations(newexpression, size);
-  if (error < -100) {
-    print(errorDescription(error));
-    return error;
-  }
-  error = check_digits_in_str(s);
-  if (error < -100) {
-    print(errorDescription(error));
-    return error;
-  }
-  error = check_digits_near_dot(s);
-  if (error < -100) {
-    print(errorDescription(error));
-    return error;
-  }
+  // print("data:");
+  // print(s);
+  // print("\nparsed data:\n");
+  // printParsedData(newexpression, size);
+  // print("\nnotation\n");
+  int error = check(newexpression, size, s);
+  if (error != E_NO_ERRORS) printf("Error - %s", errorDescription(error));
 
-  stack notation;
+  stack notation, reversed;
+  stackInit(&notation), stackInit(&reversed);
   notation = evaluatePolishNotation(s);
-  stackPrintAll(&notation);
-  stack reversed;
-  stackInit(&reversed);
-  print("\n");
-  // reverse &notation to &reversed
-  //  stNode * temp;
-  // reverse notatnion
-
+  // stackPrintAll(&notation);
+  // print("\n");
   while (notation.stSize) {
     push(&reversed, pop(&notation));
-  };
-  // if(temp)
-  //   free(temp);
-  print("\nreversed\n");
-  stackPrintAll(&reversed);
-  print("\n");
+  }
+  // print("\nreversed\n");
+  // stackPrintAll(&reversed);
+  // print("\n");
 
   calc_s ans = calcPolishNotation(&reversed);
-  // free(&notation);
-  printf("\nresult: %.15LF\nerror - %s", ans.n, errorDescription( ans.e));
+  printf("\nresult: %.15LF\nerror - %s", ans.n, errorDescription(ans.e));
+
 
   freeStack(&notation);
   freeStack(&reversed);
