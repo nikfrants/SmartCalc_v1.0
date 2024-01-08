@@ -84,7 +84,7 @@ parseData pop(stack *st) {
   }
   return initData(0, 0, E_STACK_UNDERFLOW, -10);
 }
-stNode *top(const stack *st) {
+stNode *top(const stack *st) { // Todo top return parseData as
   if (st->stSize > 0) {
     // stNode *new = creatNode(st->root->data);
     return st->root;
@@ -171,4 +171,32 @@ void printParsedData(parseData *data, int size) {
     else if (data[i].type == TYPE_VARIABLE)
       printf("%s ", data[i].varName);
   }
+}
+
+char *notationToString(char s[]) {
+  stack notation, reversed;
+  stackInit(&notation);
+  notation = evaluatePolishNotation(s);
+  static char str[1000] = {0};
+  stNode *temp = notation.last;
+  for (int i = 0; temp; ++i) {
+    char buf[150];
+      if (temp->data.type == TYPE_DIGIT)
+        if (fmodl(temp->data.number, (int)temp->data.number) == 0)
+          sprintf(buf, "%.0LF", temp->data.number);
+        else
+          sprintf(buf, "%.2LF", temp->data.number);
+    if (temp->data.type == TYPE_FUNCTION) sprintf(buf, "%s", temp->data.func);
+    if (temp->data.type == TYPE_VARIABLE)
+      sprintf(buf, "%s", temp->data.varName);
+    if (temp->data.type == TYPE_OPERATOR)
+      sprintf(buf, "%c", temp->data.op);
+    // strcpy(&str[i], buf);
+    str[i - 1] = ' ';
+    for (int j = 0; buf[j]; ++j, ++i) str[i] = buf[j];
+
+    temp = temp->prev;
+  }
+  freeStack(&notation);
+  return str;
 }

@@ -171,7 +171,7 @@ START_TEST(parse_op_ex) {
   parseData* newexpression = {NULL};
   int size;
   newexpression = parser(s, &size);
-  if (newexpression[0].type == INCORRECT_EXPRESSION)
+  if (newexpression[0].type == E_INCORRECT_EXPRESSION)
     fprintf(stderr, "incorrect expression error");
   print("data:");
   print(s);
@@ -187,9 +187,8 @@ START_TEST(parse_op_ex) {
   // reverse &notation to &reversed
   //  stNode * temp;
   while (notation.stSize) {
-    stNode* emp = pop(&notation);
-    stNode * temp1 = createNode(emp->data);
-    free(emp);
+    parseData emp = pop(&notation);
+    parseData temp1 = emp;
     push(&reversed, temp1);
   };
   // if(temp)
@@ -197,9 +196,9 @@ START_TEST(parse_op_ex) {
   print("\nreversed\n");
   stackPrintAll(&reversed);
   print("\n");
-  long double ans = calcPolishNotation(&reversed);
+  calc_s ans = calcPolishNotation(&reversed);
   // free(&notation);
-  printf("\nresult = %.8LF", ans);
+  printf("\nresult = %.8LF", ans.n);
   freeStack(&notation);
   freeStack(&reversed);
   free(newexpression);

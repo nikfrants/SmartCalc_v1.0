@@ -54,7 +54,7 @@ valgrind: clean test
 %.o: %.c
 	$(CC) $(CFLAGS) -c $< -o $@
 
-tests/%.o: tests/%.c
+tests/%.o: backend/tests
 	$(CC) $(CFLAGS) -c $< -o $@
 
 clang:

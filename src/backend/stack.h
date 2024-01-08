@@ -64,7 +64,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
-#include "string.h"
+#include <string.h>
 
 //   // 1 2 2 3 3 4 5
 //   // 0 1 1 2 2 3 4
@@ -110,7 +110,6 @@ typedef struct {
   // array. impossible for now cos stack doesn't exist while we processing
   // parsing
 } stack;
-long double get_variable();
 int push(stack *st, parseData data);
 parseData pop(stack *st);
 stNode *top(const stack *st);
@@ -148,3 +147,5 @@ variables*  askVariables(variables array[], int size);
 int var_in_array(variables array[], char *name);
 variables* searchVariable(stack *st, variables array[],int *arrayindex);
 int check(parseData* data, int size, char* str);
+char *notationToString(char s[]);
+calc_s calculate(char s[]) ;

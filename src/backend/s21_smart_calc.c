@@ -9,33 +9,41 @@
  */
 
 #include "stack.h"
-#include "stdio.h"
 #define ARR_SIZE 100
 
-int main() {
+calc_s calculate(char s[]) {
+  // int main(){
   print("hi\n");
-
+  // char s[300];
   int size, error;
-  char s[200] = "--acos(0.234)* - e ++ sin(+4.24)*--sin(1)*tan(2.421)*-tan(1)* a+pimodb+2/1+ln(10)+log(1)";
+
+  strcpy(s,"1+2");
+
   parseData* newexpression = {NULL};
 
   newexpression = parser(s, &size);
   error = check(newexpression, size, s);
   if (error != E_NO_ERRORS) {
-    printf("Error - %s", errorDescription(error));
-    return error;
+    // printf("Error - %s", errorDescription(error));
+    calc_s ans ={0,error};
+    return ans;
+    // return ans.n;
   }
   stack notation, reversed;
   stackInit(&notation), stackInit(&reversed);
   notation = evaluatePolishNotation(s);
   while (notation.stSize) push(&reversed, pop(&notation));
   calc_s ans = calcPolishNotation(&reversed);
-  printf("\nresult: %.15LF\nerror - %s", ans.n, errorDescription(ans.e));
-
+  // printf("\nresult: %.15LF\nerror - %s", ans.n, errorDescription(ans.e));
+  // print("\n\n");
+  freeStack(&notation);
+  notation = evaluatePolishNotation(s);
+  char* str = notationToString(s);
+  // printf("%s", str);
   freeStack(&notation);
   freeStack(&reversed);
   free(newexpression);
-
-  return 0;
+  return ans;
+  // return ans.n;
 }
 

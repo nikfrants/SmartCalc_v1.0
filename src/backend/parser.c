@@ -5,7 +5,6 @@
 // parse string
 // and return array of separeted elements
 
-#include <math.h>
 
 #include "stack.h"
 
