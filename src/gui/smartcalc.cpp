@@ -1,11 +1,11 @@
-#include "gui/smartcalc.h"
+#include "smartcalc.h"
 #include "./ui_smartcalc.h"
 
 
 #ifndef CHEADER_H_INCLUDED
 #define CHEADER_H_INCLUDED
 extern "C" {
-#include "backend/stack.h"
+#include "../backend/stack.h"
 }
 #endif
 

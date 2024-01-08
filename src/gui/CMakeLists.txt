@@ -7,44 +7,45 @@ set(CMAKE_INCLUDE_CURRENT_DIR ON)
 set(CMAKE_AUTOUIC ON)
 set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTORCC ON)
+
 set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 find_package(QT NAMES Qt6 Qt5 COMPONENTS Widgets PrintSupport REQUIRED)
 find_package(Qt${QT_VERSION_MAJOR} COMPONENTS Widgets PrintSupport REQUIRED)
 set (TEST_PART
-        backend/tests/test.h
-        backend/tests/test.c
-        backend/tests/test_parser.c
-        backend/tests/test_stack.c
+        ../backend/tests/test.h
+        ../backend/tests/test.c
+        ../backend/tests/test_parser.c
+        ../backend/tests/test_stack.c
 )
 set(BACK_LIB
-        backend/calc_polish_n.c
-        backend/s21_smart_calc.c
-        backend/check_parsed_str.c
-        backend/parser.c
-        backend/polish_notation.c
-        backend/stack.c
-        backend/stack.h
+        ../backend/calc_polish_n.c
+        ../backend/s21_smart_calc.c
+        ../backend/check_parsed_str.c
+        ../backend/parser.c
+        ../backend/polish_notation.c
+        ../backend/stack.c
+        ../backend/stack.h
 )
 
 set(PROJECT_SOURCES
-        main.cpp
-        gui/smartcalc.cpp
-        gui/smartcalc.h
-        gui/smartcalc.ui
-        gui/qcustomplot.h
-        gui/qcustomplot.cpp
+        ../main.cpp
+        smartcalc.cpp
+        smartcalc.h
+        smartcalc.ui
+        qcustomplot.h
+        qcustomplot.cpp
 
 )
 
 set(BACK_LIB
-        backend/calc_polish_n.c
-        backend/s21_smart_calc.c
-        backend/check_parsed_str.c
-        backend/parser.c
-        backend/polish_notation.c
-        backend/stack.c
-        backend/stack.h
+        ../backend/calc_polish_n.c
+        ../backend/s21_smart_calc.c
+        ../backend/check_parsed_str.c
+        ../backend/parser.c
+        ../backend/polish_notation.c
+        ../backend/stack.c
+        ../backend/stack.h
 )
 add_library(calc_polish STATIC ${BACK_LIB} )
 target_link_libraries(calc_polish subunit m)
@@ -59,7 +60,7 @@ target_link_libraries(calc_polish subunit m)
 #)
 #
 add_executable(Only_Back
-        ${BACK_LIB} backend/s21_smart_calc_back.c
+        ${BACK_LIB} ../backend/s21_smart_calc_back.c
 )
 add_executable(Back_test
         ${TEST_PART}  ${BACK_LIB}
