@@ -2,6 +2,36 @@
 // Created by nikolay on 1/3/24.
 //
 #include "stack.h"
+
+
+char * getPolish(char s[]) {
+  int size, error;
+
+  // strcpy(s,s);
+
+  parseData* newexpression = {NULL};
+
+  newexpression = parser(s, &size);
+  error = check(newexpression, size, s);
+  if (error != E_NO_ERRORS) {
+    // printf("Error - %s", errorDescription(error));
+    calc_s ans ={0,error};
+    return errorDescription(ans.e);
+    // return ans.n;
+  }
+  stack notation, reversed;
+  stackInit(&notation), stackInit(&reversed);
+  notation = evaluatePolishNotation(s);
+  while (notation.stSize) push(&reversed, pop(&notation));
+
+  char* str = notationToString(s);
+
+  // printf("%s", str);
+  freeStack(&notation);
+  freeStack(&reversed);
+  free(newexpression);
+  return str;
+}
 int is_left_associative(char op) {
   if (op && (op == '^' || op == '~')) return 0;
   return 1;

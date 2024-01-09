@@ -190,7 +190,7 @@ int Other(char* ch, parseData* currstr, int* parseidx, int* stringParseindex) {
     ++*parseidx;
     return 0;
   }
-  if ((*ch >= 'a' && *ch <= 'z') || (*ch >= 'A' && *ch <= 'Z')) {
+  if ((*ch >= 'x' && *ch <= 'z') ){//|| (*ch >= 'A' && *ch <= 'Z')) {
     int index = 0;
     for (; index < 5 && ((*(ch + index) >= 'a' && *(ch + index) <= 'z') ||
                          (*(ch + index) >= 'A' && *(ch + index) <= 'Z'));

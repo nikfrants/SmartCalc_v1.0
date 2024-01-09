@@ -12,7 +12,7 @@
 #define PI 3.141592653589793238462643383279
 #define REALLOC_SIZE 10
 #define STACK_MAX_SIZE 1000
-#define ROUND 1.0e-16 // e.g. 10 - variable near o with 1/10^15 will be implemented as zero
+#define ROUND 1.0e-16 // e.g. 4e-15 - variable near 0 with 4/10^15 will be implemented as zero
 // errors
 #define E_NO_ERRORS -100
 //      stack
@@ -51,6 +51,7 @@
 #define E_NO_DIGITS_NEAR_DOT -126
 
 #define E_ONLY_DIGITS_EXIST -127
+#define E_INCORRECT_VARIABLES -128
 // data types
 #define TYPE_DIGIT 1
 #define TYPE_FUNCTION 4
@@ -125,8 +126,7 @@ int stackPrintByIndex(const stack *st, int index);
 void stackPrintAll(const stack *st);
 stack evaluatePolishNotation(char *expression);
 parseData *parser(char *str, int *idx);
-
-calc_s calcPolishNotation(stack *data);
+calc_s calcPolishNotation(stack *data, variables arr1[]) ;
 void printParsedData(parseData *data, int size);
 calc_s calcDigits(parseData *data, calc_s a, calc_s b);
 calc_s new_calc_s(long double n, int err);
@@ -137,10 +137,6 @@ calc_s calcDigitsOp(parseData *data, calc_s a, calc_s b);
 calc_s calcDigitsFunc(parseData *data, calc_s a, calc_s b);
 int check_digits_in_str(char *str);
 int check_digits_near_dot(char *str);
-// variables getListVariables(stack *st, variables array[][], int *size);
-// void askVariables(variables * array, int size);
-
-
 long double get_variable(char* name);
 void fillvariables(stack *st, variables array[], int size) ;
 variables*  askVariables(variables array[], int size);
@@ -148,4 +144,6 @@ int var_in_array(variables array[], char *name);
 variables* searchVariable(stack *st, variables array[],int *arrayindex);
 int check(parseData* data, int size, char* str);
 char *notationToString(char s[]);
-calc_s calculate(char s[]) ;
+calc_s calculate(char s[], variables vars_In_Notatation[]) ;
+char * getPolish(char s[]);
+variables * getVariablesParsed( char s[],variables vars_In_Notatation[],int *size) ;

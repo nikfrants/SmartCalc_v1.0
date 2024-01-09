@@ -19,10 +19,10 @@ int main(int argc, char *argv[])
     QApplication a(argc, argv);
     SmartCalc w;
     w.show();
-    char  s[20] = "1+2";
-    long double ans;
-    ans = calculate(s).n;
-    std::cout << ans;
+    // char  s[20] = "1+2";
+    // long double ans;
+    // ans = calculate(s).n;
+    // std::cout << ans;
     return a.exec();
 }
 

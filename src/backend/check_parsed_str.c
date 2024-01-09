@@ -11,14 +11,14 @@ int check(parseData* data, int size, char* str) {
     return E_INCORRECT_EXPRESSION;
   }
   int error = E_NO_ERRORS;
-  error = check_brackets(data, size) ;
-  if ( error !=E_NO_ERRORS) return error;
-  error = check_operations(data, size) ;
-  if ( error !=E_NO_ERRORS) return error;
-  error = check_digits_near_dot(str) ;
-  if ( error !=E_NO_ERRORS) return error;
-  error = check_digits_in_str(str) ;
-  if ( error !=E_NO_ERRORS) return error;
+  error = check_brackets(data, size);
+  if (error != E_NO_ERRORS) return error;
+  error = check_operations(data, size);
+  if (error != E_NO_ERRORS) return error;
+  error = check_digits_near_dot(str);
+  if (error != E_NO_ERRORS) return error;
+  error = check_digits_in_str(str);
+  if (error != E_NO_ERRORS) return error;
   return error;
 }
 
@@ -30,8 +30,7 @@ int check_brackets(parseData* data, int size) {
     } else if (data[idx].type == TYPE_BRACKET && data[idx].op == ')') {
       balance--;
     }
-    if (balance < 0)
-      return E_INCORRECT_BRACKETS_SEQUENE;
+    if (balance < 0) return E_INCORRECT_BRACKETS_SEQUENE;
   }
   if (balance != 0) return E_INCORRECT_BRACKETS_SEQUENE;
   return E_NO_ERRORS;
@@ -82,8 +81,8 @@ int check_digits_in_str(char* str) {
   int flag_funcs_exist = 0;
   char* str1 = str;
   while (*str1) {
-    if (*str1 >= '0' && *str1 <= '9' || *str1 >= 'a' && *str1 <= 'z' || *str1 >= 'A' && *str1 <= 'Z') {
-
+    if (*str1 >= '0' && *str1 <= '9' || *str1 >= 'a' && *str1 <= 'z' ||
+        *str1 >= 'A' && *str1 <= 'Z') {
       flag_numbers_exist = 1;
       break;
     }
@@ -91,15 +90,18 @@ int check_digits_in_str(char* str) {
   }
   str1 = str;
   while (*str1) {
-    if (strchr("+p~-*/^", *str1)!=NULL) {
+    if (strchr("+p~-*/^", *str1) != NULL) {
       flag_operators_exist = 1;
       break;
     }
     str1++;
   }
   str1 = str;
+  char* strfuncs[] = {"sin",  "cos",  "tan", "asin", "acos",
+                      "atan", "sqrt", "ln",  "log"};
+
   while (*str1) {
-    if (strstr(str, "sincostanlogasinacosatansqrtln") != NULL) {
+    while (strchr(strfuncs, *str1) != NULL) {
       flag_funcs_exist = 1;
       break;
     }

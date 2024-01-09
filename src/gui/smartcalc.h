@@ -4,7 +4,8 @@
 
 #include <QMainWindow>
 #include <QVector>
-
+#include <string>
+#include <iostream>
 struct calcresult {
     long double n;
     int e;
@@ -23,7 +24,9 @@ public:
 
 private slots:
     void on_pushButton_E_calc_clicked();
-    calcresult calcpol();
+    void calculate_Polish();
+    void on_lineEdit_expression_textChanged(const QString &arg1);
+
 private:
     Ui::SmartCalc *ui;
     double xBegin, xEnd, h,X;

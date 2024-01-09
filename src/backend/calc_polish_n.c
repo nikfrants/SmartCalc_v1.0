@@ -31,9 +31,9 @@ const char *errortexts[] = {
     "Mod has one numbers",                                           // 24
     "No digits in str",                                              // 25
     "No digits near dot",                                            // 26
-    "Only digits in str"                                             // 27
+    "Only digits in str",                                            // 27
+    "Incorrect variables"                                            // 28
 };
-
 
 calc_s new_calc_s(long double n, int err) {
   calc_s calc;
@@ -43,11 +43,11 @@ calc_s new_calc_s(long double n, int err) {
 }
 calc_s calcDigits(parseData *data, calc_s a, calc_s b);
 
-calc_s calcPolishNotation(stack *data) {
+calc_s calcPolishNotation(stack *data, variables arr1[]) {
   struct variables varsArray[100] = {0};
   int arrsize = 0;
-  variables* arr;
-  arr = searchVariable(data, varsArray, &arrsize);
+  variables *arr = arr1;
+ // arr = searchVariable(data, varsArray, &arrsize);
   if (arrsize >= 0) {
     arr = askVariables(arr, arrsize);
     fillvariables(data, arr, arrsize);
@@ -92,60 +92,42 @@ calc_s calcPolishNotation(stack *data) {
 }
 
 // Todo DONE      multiple variables
-// Todo           multiple repeated variables
-// void searchVariable(stack *st, variables array[], int index) {
-//   stNode *temp = st->last;
-//   int stackindex = 0;
-//   int arrindex = 0;
-//   while ((size_t)stackindex < st->stSize) {
-//     if (temp->data.type == TYPE_VARIABLE) {
-//       stNode *searchvar = temp;
-//       strcpy( array[arrindex].name, temp->data.varName);
-//       if (strcmp(array[arrindex].name, temp->data.varName) == 0) {
-//         int adrressindex = 0;
-//         while (searchvar->prev != NULL) {
-//           if (strcmp(array[arrindex].name, searchvar->data.varName) == 0) {
-//             array[arrindex].adress[adrressindex] = &temp->data.number;
-//             adrressindex++;
-//           }
-//         }
-//       }
-//     }
-//
-//     temp = temp->prev;
-//     ++stackindex;
-//   }
-// }
-// void askVariables(variables array[][], int size) {
-//   for (int i = 0; i < size; ++i) {
-//     long double var = get_variable(array[i][0].name);
-//
-//     strcpy(array[i][0].name, "");
-//   }
-// }
-// void fillvariables(stack *st, variables *array, int size) {
-//   stNode *temp = st->last;
-//   for (int i = 0; i < size; ++i) {
-//     for (int j = 0; array(i * j) > 0; ++j) {
-//       *array(i * j).adress = array->value;
-//     }
-//   }
-// }
-// variables getListVariables(stack *st, variables array[][], int *size) {
-//   stNode *temp = st->last;
-//   int i = 0;
-//   *size = 0;
-//   while ((size_t)i < st->stSize) {
-//     if (temp->data.type == TYPE_VARIABLE) {
-//       strcpy(array[*size][].name, temp->data.varName);
-//       ++*size;
-//     }
-//     temp = temp->prev;
-//     ++i;
-//   }
-//   return array;
-// }
+// Todo DONE          multiple different repeated variables
+variables *getVariablesParsed(char s[], variables vars_In_Notatation[],
+                              int *size) {
+  parseData *newexpression = {NULL};
+  int error;
 
+  newexpression = parser(s, size);
+  error = check(newexpression, *size, s);
+  if (error != E_NO_ERRORS) {
+    // printf("Error - %s", errorDescription(error));
+    calc_s ans = {0, error};
+    return NULL;
+    // return ans.n;
+  }
+
+  stack notation, reversed;
+  stackInit(&notation), stackInit(&reversed);
+  notation = evaluatePolishNotation(s);
+  while (notation.stSize) push(&reversed, pop(&notation));
+  struct variables varsArray[100] = {0};
+  int arrsize = 0;
+  variables *arr;
+  vars_In_Notatation = searchVariable(&reversed, varsArray, &arrsize);
+  if (arrsize >= 0) {
+    vars_In_Notatation = askVariables(vars_In_Notatation, arrsize);
+  }
+
+  if (arrsize == 0 && vars_In_Notatation[0].name == '\000') *size = 0;
+  else
+    *size = arrsize+1;
+
+  freeStack(&notation);
+  freeStack(&reversed);
+  free(newexpression);
+  return vars_In_Notatation;
+}
 int var_in_array(variables array[], char *name) {
   for (int i = 0; i < 100; ++i) {
     if (strcmp(array[i].name, name) == 0) {
@@ -154,10 +136,10 @@ int var_in_array(variables array[], char *name) {
   }
   return 0;
 }
-variables*  askVariables(variables array[], int size) {
+variables *askVariables(variables array[], int size) {
   for (int i = 0; i <= size; ++i) {
-    long double var = get_variable(array[i].name);
-    for (int j = 0; array[i].adress[j] != 0; ++j) {
+    long double var = 0;  // = get_variable(array[i].name);
+    for (int j = 0; array[i].adress[j]; ++j) {
       array[i].value = var;
     }
   }
@@ -172,7 +154,7 @@ void fillvariables(stack *st, variables array[], int size) {
   }
 }
 
-variables* searchVariable(stack *st, variables array[],int *arrayindex) {
+variables *searchVariable(stack *st, variables array[], int *arrayindex) {
   /*
   search in stack new variable name
       if name not in variable arrays
@@ -182,7 +164,7 @@ variables* searchVariable(stack *st, variables array[],int *arrayindex) {
            add it to array.adress[i]
   */
   stNode *temp = st->root;
-   *arrayindex = -1;
+  *arrayindex = -1;
   int addressidx = 0;
   while (temp != NULL) {
     if (temp->data.type == TYPE_VARIABLE) {
@@ -197,14 +179,14 @@ variables* searchVariable(stack *st, variables array[],int *arrayindex) {
             array[*arrayindex].adress[addressidx] = &searchvar->data.number;
             ++addressidx;
           }
-        searchvar = searchvar->next;
+          searchvar = searchvar->next;
+        }
       }
     }
-  }
 
-  temp = temp->next;
-}
-return array;
+    temp = temp->next;
+  }
+  return array;
 }
 
 long double get_variable(char *name) {
@@ -265,5 +247,5 @@ calc_s calcDigitsFunc(parseData *data, calc_s a, calc_s b) {
 }
 char *errorDescription(int error) {
   int code = -error - 100;
-  return errortexts[code];
+  return (char *)errortexts[code];
 }
