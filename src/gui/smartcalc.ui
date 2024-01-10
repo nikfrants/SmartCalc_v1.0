@@ -639,7 +639,7 @@
      <string>sin</string>
     </property>
    </widget>
-   <widget class="QCustomPlot" name="widget" native="true">
+   <widget class="QCustomPlot" name="grid" native="true">
     <property name="geometry">
      <rect>
       <x>290</x>
@@ -690,7 +690,7 @@
    <zorder>pushButton_M_tan</zorder>
    <zorder>pushButton_M_sin</zorder>
    <zorder>lineEdit_expression</zorder>
-   <zorder>widget</zorder>
+   <zorder>grid</zorder>
   </widget>
  </widget>
  <customwidgets>
@@ -705,6 +705,9 @@
    <extends>QWidget</extends>
    <header>qcustomplot.h</header>
    <container>1</container>
+   <slots>
+    <slot>areachange()</slot>
+   </slots>
   </customwidget>
  </customwidgets>
  <resources/>
