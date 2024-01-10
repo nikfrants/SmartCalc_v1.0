@@ -75,6 +75,7 @@ void SmartCalc::calculate_Polish() {
     }
   }
 
+
   free(parsedExpression);
 
   ui->lineEdit_answer->setText(answer.c_str());
