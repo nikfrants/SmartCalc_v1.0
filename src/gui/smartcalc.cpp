@@ -19,13 +19,13 @@ SmartCalc::SmartCalc(QWidget* parent)
   ui->grid->setInteractions(QCP::iRangeDrag | QCP::iRangeZoom);
   // disable connecting dots with lines in grind plot
 
-
- // setLineStyle(QCPGraph::lsNone);
+  // setLineStyle(QCPGraph::lsNone);
   // wGraphic = new QCustomPlot();
   // ui->centralwidget->layout()->addWidget(wGraphic);
-   //connect(ui->grid, SIGNAL(QCustomPlot::plottableClick), this, SLOT(const QString& arg1));
+  // connect(ui->grid, SIGNAL(QCustomPlot::plottableClick), this, SLOT(const
+  // QString& arg1));
   // ui->gridLayout->addWidget(wGraphic,1,0,1,1);
- // ui->grid->installEventFilter(this);
+  // ui->grid->installEventFilter(this);
 
   // plotting
 }
@@ -45,81 +45,74 @@ void SmartCalc::plot() {
   x.clear();
   y.clear();
   ui->grid->addGraph();
-  QCPGraph *graph = ui->grid->graph(0); // Предполагая, что вы имеете один график
+  QCPGraph* graph =
+      ui->grid->graph(0);  // Предполагая, что вы имеете один график
   // Отключаем отображение линий между точками на графике
   ui->grid->graph(0)->clearData();
+  ui->grid->clearItems();
   ui->grid->replot();
 
-  //use dots instead of lines
-  // graph->setLineStyle(QCPGraph::lsNone);
-  // QCPScatterStyle scatterStyle;
-  // scatterStyle.setShape(QCPScatterStyle::ssCircle);
-  // scatterStyle.setPen(QPen(Qt::blue, 2));
-  // scatterStyle.setBrush(Qt::blue);
-  // scatterStyle.setSize(1);
-  // graph->setScatterStyle(scatterStyle); //
-  //
-  // QCPItemLine *line1 = new QCPItemLine(ui->grid);
-// //create a 10 lines in cyle and then add it to grid
-//   for (int i = 0; i < 10; i++) {
-//       QCPItemLine *line = new QCPItemLine(ui->grid);
-//       // Set the coordinates for the line
-//       line->start->setCoords(x1, y1); // Set the starting point coordinates (x1, y1)
-//       line->end->setCoords(x2, y2);   // Set the ending point coordinates (x2, y2)
-//
-//       // Customize the line properties (color, style, etc.)
-//       line->setPen(QPen(Qt::black));  // Set the line color to black
-//
-//       // Add the line to the grid
-//       ui->grid->addItem(line);
-//   }
+  // use dots instead of lines
+  graph->setLineStyle(QCPGraph::lsNone);
+  QCPScatterStyle scatterStyle;
+  scatterStyle.setShape(QCPScatterStyle::ssCircle);
+  scatterStyle.setPen(QPen(Qt::blue, 2));
+  scatterStyle.setBrush(Qt::blue);
+  scatterStyle.setSize(1);
+  graph->setScatterStyle(scatterStyle);
 
-
-  //
-  // // Устанавливаем координаты начала и конца для первого отрезка
-  // line1->start->setCoords(1, 2); // Начальные координаты отрезка (x, y)
-  // line1->end->setCoords(4, 5);   // Конечные координаты отрезка (x, y)
-  //
-  // // Устанавливаем цвет и стиль для первого отрезка
-  // line1->setPen(QPen(Qt::red));  // Цвет линии
-  //
-  // // Добавляем отрезки на график
-  // ui->grid->addItem(line1);
-
- // ui->grid->xAxis->setRange(-4, 4);
-  //ui->grid->yAxis->setRange(0, 9);
-  QCPAxisRect *axisRect = ui->grid->axisRect();
+  QCPAxisRect* axisRect = ui->grid->axisRect();
   QCPRange xrange = axisRect->axis(QCPAxis::atBottom)->range();
-//  QCPRange yrange = axisRect->axis(QCPAxis::atLeft)->range();
-  xBegin = ui->grid->xAxis->range().lower -(ui->grid->xAxis->range().upper -ui->grid->xAxis->range().lower)*3;
-  xEnd = ui->grid->xAxis->range().upper  + (ui->grid->xAxis->range().upper -ui->grid->xAxis->range().lower)*3;
-  h = (xEnd- xBegin)/50000;;
-   std::string expression = ui->lineEdit_expression->text().toStdString();
-  string readystr ;
+  //  QCPRange yrange = axisRect->axis(QCPAxis::atLeft)->range();
+  xBegin =
+      ui->grid->xAxis->range().lower -
+      (ui->grid->xAxis->range().upper - ui->grid->xAxis->range().lower) * 3;
+  xEnd = ui->grid->xAxis->range().upper +
+         (ui->grid->xAxis->range().upper - ui->grid->xAxis->range().lower) * 3;
+  h = (xEnd - xBegin) / 50000;
+  ;
+  std::string expression = ui->lineEdit_expression->text().toStdString();
+
   Point<int, int> p{};
   QVector<Point<long double, long double>> points;
   N = (xEnd - xBegin) / h + 2;
-
-  // readystr = replaceVars(expression, X);
-  // calc_s prev = parseAndCalc(readystr);
-  //
+  calc_s ans = {0, -100};
+  calc_s ans2 = {0, -100};
+  string readystr;
+  string readystr2;
+  string prevreadystr;
   for (X = xBegin; X <= xEnd; X += h) {
-
-    x.push_back(X);
     readystr = replaceVars(expression, X);
-    calc_s ans = parseAndCalc(readystr);
-    if(ans.e ==E_NO_ERRORS) {
-      y.push_back(ans.n);
-
+    // {
+    //   ans = parseAndCalc(readystr);
+    //   readystr2 = replaceVars(expression, X + h);
+    //   ans2 = parseAndCalc(readystr2);
+    //   if (ans.e == E_NO_ERRORS && ans2.e == E_NO_ERRORS) {
+    //     auto* line = new QCPItemLine(ui->grid);
+    //     line->start->setCoords(X, ans.n);
+    //     line->end->setCoords(X+h, ans2.n);
+    //     line->setPen(QPen(Qt::black));
+    //     ui->grid->addItem(line);
+    //
+    //     //   y.push_back(ans.n);
+    //   }
+    // }
+    {
+      calc_s ans = parseAndCalc(readystr);
+      if (ans.e == E_NO_ERRORS) {
+        x.push_back((X));
+        y.push_back(ans.n);
+      }
     }
-
   }
+
   // ui->grid->graph()->clearData();
 
   ui->grid->addGraph();
   ui->grid->graph(0)->addData(x, y);
   ui->grid->replot();
 }
+
 std::string longDoubleToString(long double n) {
   char buffer[100];
 
@@ -134,8 +127,7 @@ std::string longDoubleToString(long double n) {
 string SmartCalc::replaceVars(string expression, long double x) {
   string tmplt = "x";
   for (int i = 0; i < expression.size(); i++)
-    if (expression[i] == 'x')
-      expression.replace(i, 1, longDoubleToString(x));
+    if (expression[i] == 'x') expression.replace(i, 1, longDoubleToString(x));
   return expression;
 }
 calc_s SmartCalc::parseAndCalc(const std::string& expression) {
@@ -144,8 +136,8 @@ calc_s SmartCalc::parseAndCalc(const std::string& expression) {
   parseData* parsedExpression = {nullptr};
   parsedExpression = parser((char*)expression.c_str(), &size);
   error = check(parsedExpression, size, (char*)expression.c_str());
-  if (error != E_NO_ERRORS && error != E_ONLY_DIGITS_EXIST||
-      parsedExpression[0].type == E_INCORRECT_EXPRESSION ) {
+  if (error != E_NO_ERRORS && error != E_ONLY_DIGITS_EXIST ||
+      parsedExpression[0].type == E_INCORRECT_EXPRESSION) {
     calc_s ans = {0, error != E_NO_ERRORS ? error : E_INCORRECT_EXPRESSION};
     return ans;
   }
