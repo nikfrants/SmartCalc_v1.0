@@ -57,6 +57,9 @@
     <property name="inputMethodHints">
      <set>Qt::ImhNone</set>
     </property>
+    <property name="text">
+     <string>1+1</string>
+    </property>
    </widget>
    <widget class="QPushButton" name="pushButton_D_7">
     <property name="geometry">
@@ -527,6 +530,9 @@
     </property>
     <property name="text">
      <string>Lifetime calc</string>
+    </property>
+    <property name="checked">
+     <bool>true</bool>
     </property>
    </widget>
    <widget class="QPushButton" name="pushButton_M_log">

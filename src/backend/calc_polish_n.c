@@ -227,7 +227,7 @@ calc_s calcDigitsFunc(parseData *data, calc_s a, calc_s b) {
     return fabsl(b.n) <= 1 ? new_calc_s(acosl(b.n), 0)
                            : new_calc_s(NAN, E_NOT_IN_SCOPE_ACOS);
   } else if (strncmp(data->func, "tan", 3) == 0) {
-    return cosl(b.n) != 0 ? new_calc_s(tanl(b.n), 0)
+    return !(cosl(b.n)  > -ROUND && cosl(b.n) < ROUND)  ? new_calc_s(tanl(b.n), 0)
                           : new_calc_s(NAN, E_DIV_BY_ZERO);
   } else if (strncmp(data->func, "ln", 2) == 0) {
     return b.n >= 0 ? new_calc_s(logl(b.n), 0) : new_calc_s(NAN, E_NERATIVE_LN);

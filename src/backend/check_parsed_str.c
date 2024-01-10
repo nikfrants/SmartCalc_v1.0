@@ -98,15 +98,21 @@ int check_digits_in_str(char* str) {
   }
   str1 = str;
   char* strfuncs[] = {"sin",  "cos",  "tan", "asin", "acos",
-                      "atan", "sqrt", "ln",  "log"};
+                      "atan", "sqrt", "ln",  "log",  "mod"};
 
-  while (*str1) {
-    while (strchr(strfuncs, *str1) != NULL) {
+  for (int i = 0; i < sizeof(strfuncs)/sizeof(strfuncs[0]); i++) {
+    if (strstr(str1, strfuncs[i]) != NULL) {
       flag_funcs_exist = 1;
-      break;
+      break; // Если функция найдена, выходим из цикла
     }
-    str1++;
   }
+  // while (*str1) {
+  //   while (strchr(strfuncs, *str1) != NULL) {
+  //     flag_funcs_exist = 1;
+  //     break;
+  //   }
+  //   str1++;
+  // }
   if (!flag_numbers_exist) return E_NO_DIGITS_IN_STR;
   if (!flag_operators_exist && !flag_funcs_exist) return E_ONLY_DIGITS_EXIST;
   return E_NO_ERRORS;

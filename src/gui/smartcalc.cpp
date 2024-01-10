@@ -23,6 +23,18 @@ void SmartCalc::on_pushButton_E_calc_clicked() {
   calculate_Polish();
   // здесь я собираюсь использовать функцию newprint
 }
+std::string longDoubleToString(long double n) {
+  char buffer[100];
+
+  int bufferSize = snprintf(buffer, 100, "%.10Lf", n);
+
+  if (bufferSize >= 0 && bufferSize < 100) {
+    return std::string(buffer);
+  } else {
+    return "Error: Unable to convert long double to string";
+  }
+}
+
 void SmartCalc::calculate_Polish() {
   std::string infotext;
   std::string Xvalues = ui->lineEdit_X_value->text().toStdString();
@@ -60,12 +72,13 @@ void SmartCalc::calculate_Polish() {
       answer = NAN;
       infotext = errorDescription(ans.e);
     } else {
-      answer = to_string(ans.n);
+      answer = longDoubleToString(ans.n);
 
       infotext = notationStr;
     }
     free(parsedExpression);
-
+    freeStack(&notation);
+    freeStack(&reversed);
 
   }
   ui->lineEdit_answer->setText(answer.c_str());
@@ -154,116 +167,214 @@ std::vector<long double> SmartCalc::getVariables(const std::string& Xvalues) {
   delete[] cstr;
   return varsInGui;
 }
-
-variables* SmartCalc::checkVariables(variables vars_In_Notatation[]) {
-  char s[300];
-  calc_s ans = {0, E_NO_ERRORS};
-  QString expr = ui->lineEdit_expression->text();
-  strcpy(s, expr.toStdString().c_str());
-
-  int size, idx = 0;
-  variables arr[100] = {};
-  variables varsInGui[100] = {0};
-  vars_In_Notatation = getVariablesParsed(s, arr, &size);
-
-  std::string listvars = ui->lineEdit_X_value->text().toStdString();
-  std::string str = ui->lineEdit_X_value->text().toStdString();
-  variables array[100];
-  int arraysize;
-  parseData* parsed = parser((char*)listvars.c_str(), &arraysize);
-  if (parsed[0].type != E_INCORRECT_EXPRESSION &&
-      !containsVariables(parsed, arraysize) && str.empty()) {
-    //  strcpy(vars_In_Notatation[0].name, "\000");
-    //  vars_In_Notatation->value = 0;
-  } else if (!containsVariables(parsed, arraysize) && str.empty()) {
-    char* cstr = new char[str.length() + 1];
-    strcpy(cstr, str.c_str());
-    char* token = strtok(cstr, " ,");
-    while (token != nullptr && idx < 100 &&
-           vars_In_Notatation[idx].name[0] != '\000') {
-      varsInGui[idx].value = std::strtold(token, nullptr);
-      //    varsInGui[idx].value = std::atof(token);
-      //  varsInGui[idx].value = std::stold(token);
-      idx++;
-      token = strtok(nullptr, " ,");
-    }
-    delete[] cstr;
-    if (size != idx) {
-      strcpy(vars_In_Notatation[0].name, "error");
-      vars_In_Notatation->value = -1;
-      return vars_In_Notatation;
-    } else if (size)
-      for (int i = 0; vars_In_Notatation[i].name[0] != '\000'; i++)
-        vars_In_Notatation[i].value = varsInGui[i].value;
-
-  } else {
-    strcpy(vars_In_Notatation[0].name, "error");
-    vars_In_Notatation->value = -1;
-  }
-  return vars_In_Notatation;
-}
-
 void SmartCalc::on_lineEdit_expression_textChanged(const QString& arg1) {
   if (ui->checkBox_lifetime_calc->checkState() == Qt::Checked)
     calculate_Polish();
 }
-
-void SmartCalc::on_lineEdit_X_value_textChanged(const QString& arg1) {
-  if (ui->checkBox_lifetime_calc->checkState() == Qt::Checked)
-    calculate_Polish();
+void SmartCalc::on_lineEdit_X_value_textChanged(const QString &arg1)
+{
+    if (ui->checkBox_lifetime_calc->checkState() == Qt::Checked)
+      calculate_Polish();
 }
-//
-// void SmartCalc::calculate_Polish1() {
-//   variables vars[100] = {0};
-//   char s[300] = {0};
-//   parseData* newexpression = {nullptr};
-//   int size, error;
-//   strcpy(s, ui->lineEdit_expression->text().toStdString().c_str());
-//   newexpression = parser(s, &size);
-//   error = check(newexpression, size, s);
-//   if (error != E_NO_ERRORS) {
-//     // printf("Error - %s", errorDescription(error));
-//     ui->lineEdit_infotext->setText(errorDescription(error));
-//     // return ans.n;
-//   } else {
-//     if (containsVariables(newexpression, size) == 0 &&
-//           !ui->lineEdit_X_value->text().toStdString().empty()||
-//           containsVariables(newexpression, size) == 1 &&
-//            ui->lineEdit_X_value->text().toStdString().empty() ) {
-//       ui->lineEdit_infotext->setText(errorDescription(E_INCORRECT_VARIABLES));}
-//     else {
-//       variables* fromgui = checkVariables(vars);
-//       char *polish = new char[300];
-//
-//       if (getPolish(s, polish) == "Expression is incorrect") {
-//         delete [] polish;
-//         ui->lineEdit_infotext->setText(errorDescription(E_INCORRECT_EXPRESSION));
-//       } else {
-//         delete [] polish;
-//         if (fromgui && fromgui[0].value != -1 && fromgui[0].name !=
-//         "error")
-//         {
-//
-//           strcpy(s, ui->lineEdit_expression->text().toStdString().c_str());
-//           calc_s ans = calculate(s, fromgui);
-//           if (ans.e != E_NO_ERRORS)
-//             ui->lineEdit_infotext->setText(errorDescription(ans.e));
-//           else {
-//             char *temp1 =(char*) malloc(sizeof(char*)*300);
-//             for(int i = 0; i < 300; ++i) *(temp1+i) = '\000';
-//             getPolish(s,  temp1);
-//             // ui->lineEdit_infotext->setText(polish);
-//             ui->lineEdit_infotext->setText(temp1);
-//             free(temp1);
-//           }
-//           ui->lineEdit_answer->setText(std::to_string(ans.n).c_str());
-//         } else {
-//           ui->lineEdit_infotext->setText(errorDescription(E_INCORRECT_VARIABLES));
-//         }
-//       }
-//
-//     }
-//   }
-//   free(newexpression);
-//
-// }
+
+void SmartCalc::on_pushButton_D_1_clicked()
+{
+    changeStringAdd("1");
+}
+
+void SmartCalc::changeStringAdd(const string& str) {
+  string curr  = ui->lineEdit_expression->text().toStdString();
+  ui->lineEdit_expression->setText((curr+str).c_str());
+}
+
+
+
+
+
+
+void SmartCalc::on_pushButton_D_0_clicked()
+{
+        changeStringAdd("0");
+}
+
+
+void SmartCalc::on_pushButton_D_dot_clicked()
+{
+    changeStringAdd(".");
+}
+
+
+void SmartCalc::on_pushButton_M_div_clicked()
+{
+        changeStringAdd("/");
+}
+
+
+void SmartCalc::on_pushButton_D_2_clicked()
+{
+        changeStringAdd("2");
+}
+
+
+void SmartCalc::on_pushButton_D_3_clicked()
+{
+        changeStringAdd("3");
+}
+
+
+void SmartCalc::on_pushButton_M_mul_clicked()
+{
+        changeStringAdd("*");
+}
+
+
+void SmartCalc::on_pushButton_D_4_clicked()
+{
+        changeStringAdd("4");
+}
+
+
+void SmartCalc::on_pushButton_D_5_clicked()
+{
+            changeStringAdd("5");
+}
+
+
+void SmartCalc::on_pushButton_D_6_clicked()
+{
+            changeStringAdd("6");
+}
+
+
+void SmartCalc::on_pushButton_M_sub_clicked()
+{
+            changeStringAdd("-");
+}
+
+
+void SmartCalc::on_pushButton_D_7_clicked()
+{
+            changeStringAdd("7");
+}
+
+
+void SmartCalc::on_pushButton_D_8_clicked()
+{
+            changeStringAdd("8");
+}
+
+
+void SmartCalc::on_pushButton_D_9_clicked()
+{
+            changeStringAdd("9");
+}
+
+
+void SmartCalc::on_pushButton_M_add_clicked()
+{
+            changeStringAdd("+");
+}
+
+
+void SmartCalc::on_pushButton_bracket_o_clicked()
+{
+        changeStringAdd("(");
+}
+
+
+void SmartCalc::on_pushButton_bracket_c_clicked()
+{
+            changeStringAdd(")");
+}
+
+
+void SmartCalc::on_pushButton_constant_e_clicked()
+{
+            changeStringAdd("e");
+}
+
+
+void SmartCalc::on_pushButton_constant_pi_clicked()
+{
+            changeStringAdd("pi");
+}
+
+
+void SmartCalc::on_pushButton_M_mod_clicked()
+{
+            changeStringAdd("mod");
+}
+
+
+void SmartCalc::on_pushButton_M_2sqrt_clicked()
+{
+            changeStringAdd("sqrt");
+}
+
+
+void SmartCalc::on_pushButton_M_pow_clicked()
+{
+            changeStringAdd("^");
+}
+
+
+void SmartCalc::on_pushButton_E_clean_clicked()
+{
+  ui->lineEdit_expression->setText("");
+
+}
+
+
+void SmartCalc::on_pushButton_M_asin_clicked()
+{
+            changeStringAdd("asin");
+}
+
+
+void SmartCalc::on_pushButton_M_acos_clicked()
+{
+            changeStringAdd("acos");
+}
+
+
+void SmartCalc::on_pushButton_M_atan_clicked()
+{
+            changeStringAdd("atan");
+}
+
+
+void SmartCalc::on_pushButton_M_log_clicked()
+{
+            changeStringAdd("log");
+}
+
+
+void SmartCalc::on_pushButton_M_sin_clicked()
+{
+            changeStringAdd("sin");
+}
+
+
+void SmartCalc::on_pushButton_M_cos_clicked()
+{
+            changeStringAdd("cos");
+}
+
+
+void SmartCalc::on_pushButton_M_tan_clicked()
+{
+            changeStringAdd("tan");
+}
+
+
+void SmartCalc::on_pushButton_M_ln_clicked()
+{
+            changeStringAdd("ln");
+}
+
+
+void SmartCalc::on_pushButton_V_graph_clicked()
+{
+            changeStringAdd("plot");
+}
+
