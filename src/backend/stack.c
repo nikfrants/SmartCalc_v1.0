@@ -173,11 +173,13 @@ void printParsedData(parseData *data, int size) {
   }
 }
 
-char *notationToString(char s[]) {
+char *notationToString(char s[], char *str[]) {
   stack notation, reversed;
   stackInit(&notation);
   notation = evaluatePolishNotation(s);
-  static char str[1000] = {0};
+ // char str[1000] = {0};
+  //for(int i = 0; i < 1000; ++i) str[i] = '\000';
+
   stNode *temp = notation.last;
   for (int i = 0; temp; ++i) {
     char buf[150];
@@ -192,11 +194,12 @@ char *notationToString(char s[]) {
     if (temp->data.type == TYPE_OPERATOR)
       sprintf(buf, "%c", temp->data.op);
     // strcpy(&str[i], buf);
-    str[i - 1] = ' ';
-    for (int j = 0; buf[j]; ++j, ++i) str[i] = buf[j];
+    *str[i - 1] = ' ';
+    for (int j = 0; buf[j]; ++j, ++i)
+      *str[i] = buf[j];
 
     temp = temp->prev;
   }
   freeStack(&notation);
-  return str;
+  return *str;
 }

@@ -73,6 +73,7 @@
 //   //
 //   // 2 - mod - 3
 //   // 5 - sin cos tan asin acos atan sqrt ln log - 6
+
 typedef struct calc_s {
   long double n;
   int e;
@@ -81,7 +82,7 @@ typedef struct variables {
   char name[5];
   long double value;
   long double *adress[10];
-
+  int adresscount;
 } variables;
 
 typedef struct parseData {
@@ -126,7 +127,7 @@ int stackPrintByIndex(const stack *st, int index);
 void stackPrintAll(const stack *st);
 stack evaluatePolishNotation(char *expression);
 parseData *parser(char *str, int *idx);
-calc_s calcPolishNotation(stack *data, variables arr1[]) ;
+calc_s calcPolishNotation(stack *data, variables *arr1[], int arrsize);
 void printParsedData(parseData *data, int size);
 calc_s calcDigits(parseData *data, calc_s a, calc_s b);
 calc_s new_calc_s(long double n, int err);
@@ -138,12 +139,13 @@ calc_s calcDigitsFunc(parseData *data, calc_s a, calc_s b);
 int check_digits_in_str(char *str);
 int check_digits_near_dot(char *str);
 long double get_variable(char* name);
-void fillvariables(stack *st, variables array[], int size) ;
+void fillvariables(stack *st, variables *array[], int size) ;
 variables*  askVariables(variables array[], int size);
 int var_in_array(variables array[], char *name);
 variables* searchVariable(stack *st, variables array[],int *arrayindex);
 int check(parseData* data, int size, char* str);
-char *notationToString(char s[]);
+char *notationToString(char s[], char *str[] );
 calc_s calculate(char s[], variables vars_In_Notatation[]) ;
-char * getPolish(char s[]);
+char * getPolish(char s[],char polish[]);
 variables * getVariablesParsed( char s[],variables vars_In_Notatation[],int *size) ;
+int containsVariables(parseData* data, int size);

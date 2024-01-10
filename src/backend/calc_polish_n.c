@@ -43,14 +43,11 @@ calc_s new_calc_s(long double n, int err) {
 }
 calc_s calcDigits(parseData *data, calc_s a, calc_s b);
 
-calc_s calcPolishNotation(stack *data, variables arr1[]) {
+calc_s calcPolishNotation(stack *data, variables *arr1[], int arrsize) {
   struct variables varsArray[100] = {0};
-  int arrsize = 0;
-  variables *arr = arr1;
- // arr = searchVariable(data, varsArray, &arrsize);
-  if (arrsize >= 0) {
-    arr = askVariables(arr, arrsize);
-    fillvariables(data, arr, arrsize);
+
+  if (arrsize>=0) {
+    fillvariables(data, arr1, arrsize);
   }
   stack ans;
   calc_s calc;
@@ -146,10 +143,10 @@ variables *askVariables(variables array[], int size) {
   return array;
 }
 
-void fillvariables(stack *st, variables array[], int size) {
-  for (int i = 0; i <= size; ++i) {
-    for (int j = 0; array[i].adress[j] != 0; ++j) {
-      *array[i].adress[j] = array[i].value;
+void fillvariables(stack *st, variables *array[], int size) {
+  for (int i = 0; i < size; ++i) {
+    for (int j = 1; j<=array[i]->adresscount; ++j) {
+      *array[i]->adress[j] = array[i]->value;
     }
   }
 }

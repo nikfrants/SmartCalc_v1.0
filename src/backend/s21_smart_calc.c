@@ -10,41 +10,44 @@
 
 #include "stack.h"
 #define ARR_SIZE 100
-
+// calc_s calculate(char s[], variables vars_In_Notatation[]) {
+//
+//
+// }
 calc_s calculate(char s[], variables vars_In_Notatation[]) {
   // int main(){
-  print("hi\n");
-  // char s[300];
-  int size, error;
-
-  // strcpy(s,s);
-
-  parseData* newexpression = {NULL};
-
-  newexpression = parser(s, &size);
-  error = check(newexpression, size, s);
-  if (error != E_NO_ERRORS) {
+  // print("hi\n");
+  // // char s[300];
+  // int size, error;
+  //
+  // // strcpy(s,s);
+  //
+  // parseData* parsedExpression = {NULL};
+  //
+  // parsedExpression = parser(s, &size);
+  // error = check(parsedExpression, size, s);
+  // if (error != E_NO_ERRORS) {
     // printf("Error - %s", errorDescription(error));
-    calc_s ans ={0,error};
-    return ans;
-    // return ans.n;
-  }
-  stack notation, reversed;
-  stackInit(&notation), stackInit(&reversed);
-  notation = evaluatePolishNotation(s);
-  while (notation.stSize) push(&reversed, pop(&notation));
-
-  calc_s ans = calcPolishNotation(&reversed, vars_In_Notatation);
-  // printf("\nresult: %.15LF\nerror - %s", ans.n, errorDescription(ans.e));
-  // print("\n\n");
-  freeStack(&notation);
-  notation = evaluatePolishNotation(s);
-  char* str = notationToString(s);
-  // printf("%s", str);
-  freeStack(&notation);
-  freeStack(&reversed);
-  free(newexpression);
-  return ans;
+    calc_s ans ={0,-100};
+ //    return ans;
+ //    // return ans.n;
+ //  }
+ //  stack notation, reversed;
+ //  stackInit(&notation), stackInit(&reversed);
+ //  notation = evaluatePolishNotation(s);
+ //  while (notation.stSize) push(&reversed, pop(&notation));
+ //
+ // // calc_s ans = calcPolishNotation(&reversed, vars_In_Notatation);
+ //  // printf("\nresult: %.15LF\nerror - %s", ans.n, errorDescription(ans.e));
+ //  // print("\n\n");
+ //  freeStack(&notation);
+ //  notation = evaluatePolishNotation(s);
+ // // char* str = notationToString(s);
+ //  // printf("%s", str);
+ //  freeStack(&notation);
+ //  freeStack(&reversed);
+ //  free(parsedExpression);
+ return ans;
   // return ans.n;
 }
 

@@ -4,7 +4,7 @@
 #include "stack.h"
 
 
-char * getPolish(char s[]) {
+char * getPolish(char s[], char str[]) {
   int size, error;
 
   // strcpy(s,s);
@@ -24,9 +24,11 @@ char * getPolish(char s[]) {
   notation = evaluatePolishNotation(s);
   while (notation.stSize) push(&reversed, pop(&notation));
 
-  char* str = notationToString(s);
+  notationToString(s,&str);
 
+//  strcpy(str,notationToString(s,&str));
   // printf("%s", str);
+
   freeStack(&notation);
   freeStack(&reversed);
   free(newexpression);

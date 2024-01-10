@@ -44,10 +44,10 @@ set(BACK_LIB
         ../backend/check_parsed_str.c
         ../backend/parser.c
         ../backend/polish_notation.c
-        ../backend/stack.c
         ../backend/stack.h
+        ../backend/stack.c
 )
-add_library(calc_polish STATIC ${BACK_LIB} )
+add_library(calc_polish STATIC  ${BACK_LIB} )
 target_link_libraries(calc_polish subunit m)
 #set_source_files_properties(${BACK_LIB} PROPERTIES LANGUAGE C)
 #
