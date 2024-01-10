@@ -28,16 +28,22 @@ void SmartCalc::calculate_Polish() {
   std::string Xvalues = ui->lineEdit_X_value->text().toStdString();
   std::string answer;
   std::string expression = ui->lineEdit_expression->text().toStdString();
-  int size, error;
+  int size, error, xExists = 0;
+  string tmplt = "x";
+  for (int i = 0; i < expression.size(); i++) {
+    if (expression[i] == 'x') {xExists=1;
+      expression.replace(i, 1, ui->lineEdit_X_value->text().toStdString());
+    }
+  }
   parseData* parsedExpression = {nullptr};
   parsedExpression = parser((char*)expression.c_str(), &size);  // TODO CLEAR
   error = check(parsedExpression, size, (char*)expression.c_str());
   if (error != E_NO_ERRORS ||
-      parsedExpression[0].type == E_INCORRECT_EXPRESSION) {
+      parsedExpression[0].type == E_INCORRECT_EXPRESSION || xExists == 1 && Xvalues.empty()) {
     // printf("Error - %s", errorDescription(error));
     calc_s ans = {0,
-                  error != E_NO_ERRORS ? E_NO_ERRORS : E_INCORRECT_EXPRESSION};
-    infotext = errorDescription(error);
+                  error != E_NO_ERRORS ? error : E_INCORRECT_EXPRESSION};
+    infotext = errorDescription(ans.e);
     answer = NAN;
     // return ans.n;
   } else {
@@ -47,36 +53,21 @@ void SmartCalc::calculate_Polish() {
     notation = evaluatePolishNotation((char*)expression.c_str());
     while (notation.stSize) push(&reversed, pop(&notation));
     string notationStr = polishToString(&reversed);
-    std::vector<long double> XvaluesArray = getVariables(Xvalues);
-    variables* varFromPolish[100];
-    int varFromPolishIdx = 0;
-    ;
-    if (!Xvalues.empty())
-        getVariablesFromPolish(&reversed, varFromPolish, &varFromPolishIdx);
-      std::vector<std::string> vars = Variables(parsedExpression, size);
-    if (XvaluesArray.size() != varFromPolishIdx) {
+    calc_s ans = calcPolishNotation(&reversed);
+    freeStack(&notation);
+    freeStack(&reversed);
+    if (ans.e != E_NO_ERRORS) {
       answer = NAN;
-      infotext = errorDescription(E_INCORRECT_VARIABLES);
+      infotext = errorDescription(ans.e);
     } else {
-      for (int i = 0; i < XvaluesArray.size(); ++i)
-        varFromPolish[i]->value = XvaluesArray[i];
-      calc_s ans =
-          calcPolishNotation(&reversed, varFromPolish, varFromPolishIdx);
-      freeStack(&notation);
-      freeStack(&reversed);
-      if (ans.e != E_NO_ERRORS) {
-        answer = NAN;
-        infotext = errorDescription(ans.e);
-      } else {
-        answer = to_string(ans.n);
+      answer = to_string(ans.n);
 
-        infotext = notationStr;
-      }
+      infotext = notationStr;
     }
+    free(parsedExpression);
+
+
   }
-
-  free(parsedExpression);
-
   ui->lineEdit_answer->setText(answer.c_str());
   ui->lineEdit_infotext->setText(infotext.c_str());
 }
@@ -249,7 +240,8 @@ void SmartCalc::on_lineEdit_X_value_textChanged(const QString& arg1) {
 //         ui->lineEdit_infotext->setText(errorDescription(E_INCORRECT_EXPRESSION));
 //       } else {
 //         delete [] polish;
-//         if (fromgui && fromgui[0].value != -1 && fromgui[0].name != "error")
+//         if (fromgui && fromgui[0].value != -1 && fromgui[0].name !=
+//         "error")
 //         {
 //
 //           strcpy(s, ui->lineEdit_expression->text().toStdString().c_str());

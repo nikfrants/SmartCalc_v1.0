@@ -43,12 +43,12 @@ calc_s new_calc_s(long double n, int err) {
 }
 calc_s calcDigits(parseData *data, calc_s a, calc_s b);
 
-calc_s calcPolishNotation(stack *data, variables *arr1[], int arrsize) {
+calc_s calcPolishNotation(stack *data) {
   struct variables varsArray[100] = {0};
-
-  if (arrsize>=0) {
-    fillvariables(data, arr1, arrsize);
-  }
+  //
+  // if (arrsize>=0) {
+  //   fillvariables(data, arr1, arrsize);
+  // }
   stack ans;
   calc_s calc;
   stackInit(&ans);

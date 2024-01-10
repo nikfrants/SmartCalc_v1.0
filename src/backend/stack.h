@@ -127,7 +127,7 @@ int stackPrintByIndex(const stack *st, int index);
 void stackPrintAll(const stack *st);
 stack evaluatePolishNotation(char *expression);
 parseData *parser(char *str, int *idx);
-calc_s calcPolishNotation(stack *data, variables *arr1[], int arrsize);
+calc_s calcPolishNotation(stack *data) ;
 void printParsedData(parseData *data, int size);
 calc_s calcDigits(parseData *data, calc_s a, calc_s b);
 calc_s new_calc_s(long double n, int err);
