@@ -98,6 +98,7 @@ std::vector<std::string> SmartCalc::Variables(parseData* data, int size) {
   }
   return ans;
 }
+
 void getVariablesFromPolish(stack* polish, variables* array[],
                             int* arrayindex) {
   stNode* temp = polish->root;
