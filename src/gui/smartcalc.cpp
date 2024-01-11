@@ -17,17 +17,6 @@ SmartCalc::SmartCalc(QWidget* parent)
   ui->grid->setInteraction(QCP::iRangeZoom, true);
   ui->grid->setInteraction(QCP::iRangeDrag, true);
   ui->grid->setInteractions(QCP::iRangeDrag | QCP::iRangeZoom);
-  // disable connecting dots with lines in grind plot
-
-  // setLineStyle(QCPGraph::lsNone);
-  // wGraphic = new QCustomPlot();
-  // ui->centralwidget->layout()->addWidget(wGraphic);
-  // connect(ui->grid, SIGNAL(QCustomPlot::plottableClick), this, SLOT(const
-  // QString& arg1));
-  // ui->gridLayout->addWidget(wGraphic,1,0,1,1);
-  // ui->grid->installEventFilter(this);
-
-  // plotting
 }
 // void SmartCalc::slotMouseMove(const QString& arg1) {
 //   /* Если при передвижении мыши, ей кнопки нажаты,
@@ -89,9 +78,7 @@ void SmartCalc::plot() {
   N = (xEnd - xBegin) / h + 2;
   calc_s ans = {0, -100};
   calc_s ans2 = {0, -100};
-  string readystr;
-  string readystr2;
-  string prevreadystr;
+  string readystr, readystr2, prevreadystr;
   for (X = xBegin; X <= xEnd; X += h) {
     readystr = replaceVars(expression, X);
     // { // LINES
@@ -116,7 +103,7 @@ void SmartCalc::plot() {
       }
     }
   }
-
+//
   // ui->grid->graph()->clearData();
 
   ui->grid->addGraph();
@@ -172,9 +159,8 @@ void SmartCalc::on_pushButton_E_calc_clicked() {
 }
 
 void SmartCalc::calculate_Polish() {
-  std::string infotext;
+  std::string infotext, answer;
   std::string Xvalues = ui->lineEdit_X_value->text().toStdString();
-  std::string answer;
   std::string expression = ui->lineEdit_expression->text().toStdString();
   int size, error, xExists = 0;
   string tmplt = "x";
@@ -190,13 +176,10 @@ void SmartCalc::calculate_Polish() {
   if (error != E_NO_ERRORS ||
       parsedExpression[0].type == E_INCORRECT_EXPRESSION ||
       xExists == 1 && Xvalues.empty()) {
-    // printf("Error - %s", errorDescription(error));
     calc_s ans = {0, error != E_NO_ERRORS ? error : E_INCORRECT_EXPRESSION};
     infotext = errorDescription(ans.e);
     answer = NAN;
-    // return ans.n;
   } else {
-    // infotext=
     stack notation, reversed;
     stackInit(&notation), stackInit(&reversed);
     notation = evaluatePolishNotation((char*)expression.c_str());
@@ -210,12 +193,9 @@ void SmartCalc::calculate_Polish() {
       infotext = errorDescription(ans.e);
     } else {
       answer = longDoubleToString(ans.n);
-
       infotext = notationStr;
     }
     free(parsedExpression);
-    freeStack(&notation);
-    freeStack(&reversed);
   }
   ui->lineEdit_answer->setText(answer.c_str());
   ui->lineEdit_infotext->setText(infotext.c_str());

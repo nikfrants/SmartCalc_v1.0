@@ -218,7 +218,13 @@ int Other(char* ch, parseData* currstr, int* parseidx, int* stringParseindex) {
 }
 parseData* parser(char* str, int* strPrsidx) {
   *strPrsidx = 0;
-  parseData* data = malloc(500 * sizeof(parseData));
+
+  parseData* data = malloc(20000 * sizeof(parseData));
+  if(*str == '\000') {
+    data[0].type = E_INCORRECT_EXPRESSION;
+    *strPrsidx = 0;
+    return data;
+  }
   int prseidx = 0;
   while ((long unsigned int)*strPrsidx < strlen(str)) {
     int other = 0;
