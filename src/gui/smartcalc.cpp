@@ -71,7 +71,7 @@ void SmartCalc::plot() {
          (ui->grid->xAxis->range().upper - ui->grid->xAxis->range().lower) * 3;
 
   // DOTS
-  h = (xEnd - xBegin) / 50000;
+  h = (xEnd - xBegin) / 40000;
   ;
   // LINES
   // h = (xEnd - xBegin) / 5000;
@@ -384,6 +384,63 @@ void SmartCalc::on_pushButton_M_ln_clicked() { changeStringAdd("ln"); }
 
 void SmartCalc::on_pushButton_V_graph_clicked() {// changeStringAdd("plot");
   plot();
+  calcCredit();
+
 }
 
+
+
+void SmartCalc::on_pushButton_V_graph_2_clicked()
+{
+  calcCredit();
+    // ui->centralwidget->resize(1200,461);
+  if(this->width() == 1200)
+    this->resize(701,461);
+  else
+    this->resize(1200,461);
+
+}
+
+void SmartCalc::calcCredit() {
+  // (М * (1 + М) ^ S) / ((1 + М) ^ S — 1)
+
+  float credit_sum1 = ui->doubleSpinBox_credit_summ_1->text().toFloat();
+  float S = ui->spinBox_credit_range_2->text().toFloat();
+  float M = ui->doubleSpinBox_paym_3->text().toFloat()/1200;
+  if(credit_sum1!=0 && S!=0 && M!=0) {
+    float k  = (M * powf(1 + M,S) / (powf(1 + M, S) - 1));
+    float annuetpay = credit_sum1 * k;
+    float opwerpay =  fabs(annuetpay*S - credit_sum1);
+
+  int credit_type = 0;
+  if (ui->credit_check_box_1->isChecked()) {
+    credit_type = 1;
+  } else if (ui->credit_check_box_2->isChecked()) {
+    credit_type = 2;
+  }
+
+    ui->credit_text_1->setText(std::to_string(annuetpay).c_str());
+    ui->credit_text_2->setText(std::to_string(opwerpay).c_str());
+    ui->credit_text_3->setText(std::to_string( annuetpay*S).c_str());
+  }
+  // float month= ui->
+
+}
+
+void SmartCalc::on_doubleSpinBox_paym_3_valueChanged(const QString &arg1)
+{
+  calcCredit();
+}
+
+
+void SmartCalc::on_spinBox_credit_range_2_valueChanged(const QString &arg1)
+{
+  calcCredit();
+}
+
+
+void SmartCalc::on_doubleSpinBox_credit_summ_1_valueChanged(const QString &arg1)
+{
+  calcCredit();
+}
 
