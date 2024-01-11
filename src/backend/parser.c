@@ -198,9 +198,9 @@ int Other(char* ch, parseData* currstr, int* parseidx, int* stringParseindex) {
     ++*parseidx;
     return 0;
   }
-  if ((*ch >= 'x' && *ch <= 'z') ){//|| (*ch >= 'A' && *ch <= 'Z')) {
+  if ((*ch == 'x' || *ch == 'X') ) {//|| (*ch >= 'A' && *ch <= 'Z')) {
     int index = 0;
-    for (; index < 5 && ((*(ch + index) >= 'a' && *(ch + index) <= 'z') ||
+    for (; index < 1 && ((*(ch + index) >= 'a' && *(ch + index) <= 'z') ||
                          (*(ch + index) >= 'A' && *(ch + index) <= 'Z'));
          ++index)
       currstr->varName[index] = *(ch + index);
