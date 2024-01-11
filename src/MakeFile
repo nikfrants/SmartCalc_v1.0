@@ -1,77 +1,107 @@
-CC = gcc
-CFLAGS = -Wall -Werror -Wextra -std=c11
-VALGRIND_FLAGS = --log-file="valgrind.txt" --tool=memcheck --leak-check=yes
-UNAME_S = $(shell uname -s)
 
-SRC_PROJECT = ${wildcard *.c}
-SRC_TEST = ${wildcard tests/*.c}
+flafs_c			=-Wall -Werror -Wextra -std=c11
+# flags_check=-lcheck
+flags_check		=$(shell pkg-config --libs check)
+flags_gcov		=--coverage
+flags_sanitize	=#-fsanitize=address -static-libasan -g
+flags_valgrid	=	CK_FORK=no valgrind --trace-children=yes \
+					--track-fds=yes --leak-check=full \
+					--track-origins=yes --log-file=valgrind-out.txt --show-leak-kinds=all
 
-SRC_PROJECT_REPORT = parser.c stack.c
-SRC_TEST_REPORT = tests/test.c tests/test_stack.c tests/test_parser.c
 
-VALGR_PROJECT = parser.c stack.c polish_notation.c calc_polish_n.c
-VALGR_REPORT = tests/test.c tests/test_stack.c tests/test_parser.c
-
-OBJ_PROJECT = ${patsubst %.c,%.o,$(SRC_PROJECT)}
-OBJ_TEST = ${patsubst tests/%.c,tests/%.o,$(SRC_TEST)}
-
-ifeq ($(UNAME_S),Linux)
-	TEST_CHECK_F= -lcheck -lsubunit -lm -lrt -lpthread
-	OPEN_CMD = xdg-open
+dir_tests		= backend/tests/
+dir_calc_src	= gui
+dir_build		= ../build
+static_lib 		= s21_SmartCalc.a
+dir_qt 			= gui
+qt_project_name = SmartCalc
+DIRECTORY 		= gui/
+ifeq ($(shell uname), Linux)
+	flafs_c		+= -U__STRICT_ANSI__
+	flags_check +=-lpthread -lrt -lsubunit -lm
 endif
 
-ifeq ($(UNAME_S),Darwin)
-	TEST_CHECK_F= -lcheck
-	OPEN_CMD = open
+all: install run
+
+install:
+	cd gui/ && cmake $(CURDIR)/gui && make
+
+run:
+	./gui/SmartCalc
+
+uninstall:
+	rm -rf ../$(dir_build)
+
+
+dist:
+	make install
+	[ -d ../$(qt_project_name) ] || mkdir -p ../$(qt_project_name)
+	cp -r ./* ../$(qt_project_name)/
+	tar cvzf ../SmartCalc_v1.0.tgz ../$(qt_project_name)/
+	rm -rf ../$(qt_project_name)/
+# 	make uninstall
+
+dvi:
+ifeq ($(shell uname), Linux)
+	open dvi.html
+else
+	open dvi.html
 endif
 
-all: clean s21_smart_calc.a test
 
-s21_smart_calc.a: $(OBJ_PROJECT)
-	ar rcs s21_smart_calc.a $(OBJ_PROJECT)
-
-test: clean $(OBJ_PROJECT) $(OBJ_TEST)
-	$(CC) $(VALGR_PROJECT) $(VALGR_REPORT) $(TEST_CHECK_F) -o test
+test: clean
+	checkmk clean_mode=1 ${dir_tests}/*.check > test.c
+	gcc ${flags_sanitize} ${flafs_c} ${wildcard ${dir_calc_src}/*.c} test.c -o test ${flags_check}
+	rm -rf test.c
 	./test
 
 
-#gcc -Wall -Werror -Wextra -std=c11 parser.c s21_smart_calc.c stack.c tests/test.c
-#tests/test_parser.c tests/test_stack.c
-#-lcheck -lsubunit -lm -lrt -lpthread --coverage -o test_coverage
-
 gcov_report: clean
-	$(CC) $(CFLAGS) $(SRC_PROJECT_REPORT) $(SRC_TEST_REPORT) $(TEST_CHECK_F) --coverage -o test_coverage
-	./test_coverage
-	lcov -c -d . --output-file test_coverage.info
-	genhtml test_coverage.info --output-directory html_report
-	$(OPEN_CMD) ./html_report/index.html
-
-valgrind: clean test
-	valgrind $(VALGRIND_FLAGS) ./test
-	grep -n "ERROR SUMMARY" valgrind.txt
-	grep -n "leaks" valgrind.txt
-
-%.o: %.c
-	$(CC) $(CFLAGS) -c $< -o $@
-
-tests/%.o: backend/tests
-	$(CC) $(CFLAGS) -c $< -o $@
-
-clang:
-	clang-format -i *.c *.h tests/*.c tests/*.h
+	checkmk clean_mode=1 ${dir_tests}/*.check > test.c
+	gcc ${flafs_c} ${wildcard ${dir_calc_src}/*.c} test.c -o test ${flags_check} ${flags_gcov}
+	./test
+	lcov --capture --directory . --output-file report.info
+	genhtml report.info --output-directory report
+	make clean
+ifeq ($(shell uname), Linux)
+	firefox report/index.html
+else
+	open report/index.html
+endif
 
 
-clang-check:
-	clang-format -n *.c *.h tests/*.c tests/*.h
+${static_lib}:
+	rm -rf ${static_lib}
+	gcc ${flags_sanitize} ${flafs_c} -c ${wildcard ${dir_calc_src}/*.c}
+	ar rc ${static_lib} *.o
+	ranlib ${static_lib}
+	rm *.o
+
+
+
+
 
 clean:
-	rm -rf test
-	rm -rf tests/*.o
-	rm -rf *.o
-	rm -rf *.a
-	rm -rf *.gcda
-	rm -rf *.gcno
-	rm -rf *.info
-	rm -rf html_report
-	rm -rf valgrind.txt
-	rm -rf test_coverage
+	rm -rf a.out unit_test gcov_test *.gcda *.gcno *.info ${static_lib} *.o  test.c valgrind-out.txt
+clean_all: clean
+	rm -rf report test main $(dir_qt)/build-smart_calc ../SmartCalc_v1.0.tgz $(dir_qt)/build-sm_clc-Desktop-Debug
+
+
+
+
+valgrind: clean
+	checkmk clean_mode=1 ${dir_tests}/*.check > test.c
+	gcc ${flafs_c} ${wildcard ${dir_calc_src}/*.c} test.c -o test ${flags_check}
+	rm -rf test.c
+	${flags_valgrid} ./test
+
+check_clang_format:
+	cp ../materials/linters/.clang-format .
+	clang-format -n ./${dir_calc_src}/*.c ./$(dir_qt)/${qt_project_name}/*.cpp
+	rm -f .clang-format
+
+fix_clang_format:
+	cp ../materials/linters/.clang-format .
+	clang-format -i ./${dir_calc_src}/*.c ./$(dir_qt)/${qt_project_name}/*.cpp
+	rm -f .clang-format
+

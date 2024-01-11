@@ -13,7 +13,6 @@ void initNode(stNode *node, parseData val) {
   node->data.type = val.type;
   node->next = NULL;
   node->prev = NULL;
-
   node->data.lenth = val.lenth;
   node->data.priority = val.priority;
   strcpy(node->data.func, val.func);
@@ -84,9 +83,8 @@ parseData pop(stack *st) {
   }
   return initData(0, 0, E_STACK_UNDERFLOW, -10);
 }
-stNode *top(const stack *st) { // Todo top return parseData as
+stNode *top(const stack *st) { // Todo top return parseData
   if (st->stSize > 0) {
-    // stNode *new = creatNode(st->root->data);
     return st->root;
   }
   return NULL;
@@ -177,8 +175,6 @@ char *notationToString(char s[], char *str) {
   stack notation;//, reversed;
   stackInit(&notation);
   notation = evaluatePolishNotation(s);
- // char str[1000] = {0};
-  //for(int i = 0; i < 1000; ++i) str[i] = '\000';
 int idx  = 0;
   stNode *temp = notation.last;
   for (int i = 0; temp; ++i) {
@@ -194,11 +190,9 @@ int idx  = 0;
       sprintf(buf, "%s", temp->data.varName);
     if (temp->data.type == TYPE_OPERATOR)
       sprintf(buf, "%c", temp->data.op);
-    // strcpy(&str[i], buf);
     str[i - 1] = ' ';
     for (int j = 0; buf[j]; ++j, ++i)
       str[i] = buf[j];
-
     temp = temp->prev;
     idx=i;;
   }
@@ -221,8 +215,6 @@ char *parsedToString(char *str, parseData *data,int size) {
       sprintf(buf, "%s", data[i].varName);
     if (data[i].type == TYPE_OPERATOR)
       sprintf(buf, "%c", data[i].op);
-//    *str[i - 1] = ' ';
-//    strcpy((str+i), buf);
     for (int j = 0; buf[j]; ++j, ++i)
        str[i] = buf[j];
     idx=i;

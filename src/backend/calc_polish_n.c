@@ -44,11 +44,6 @@ calc_s new_calc_s(long double n, int err) {
 calc_s calcDigits(parseData *data, calc_s a, calc_s b);
 
 calc_s calcPolishNotation(stack *data) {
- // struct variables varsArray[100] = {0};
-  //
-  // if (arrsize>=0) {
-  //   fillvariables(data, arr1, arrsize);
-  // }
   stack ans;
   calc_s calc;
   stackInit(&ans);
@@ -59,7 +54,6 @@ calc_s calcPolishNotation(stack *data) {
         data->root->data.type == TYPE_VARIABLE) {
       if (data->root->data.type == TYPE_VARIABLE) {
         parseData temp = pop(data);
-        //  temp.number = get_variable(temp.varName);
         temp.type = TYPE_DIGIT;
         temp.priority = -1;
         push(&ans, temp);
@@ -74,18 +68,68 @@ calc_s calcPolishNotation(stack *data) {
         a = initData(NAN, 0, 0, 0);
       if (a.type == E_STACK_UNDERFLOW)
         return new_calc_s(NAN, E_INCORRECT_POLISH_NOTATION);
-
       calc = calcDigits(&op, new_calc_s(a.number, 0), new_calc_s(b.number, 0));
-
       if (isnan(calc.n)) return calc;
       if (calc.n > -ROUND && calc.n < ROUND) calc.n = 0;
       push(&ans, initData(calc.n, op.op, TYPE_DIGIT, 0));
     }
   }
-
   const calc_s answer = new_calc_s(top(&ans)->data.number, -100);
   freeStack(&ans);
   return answer;
+}
+
+calc_s calcDigits(parseData *data, calc_s a, calc_s b) {
+//  calc_s ans;
+  if (data->type == TYPE_OPERATOR) return calcDigitsOp(data, a, b);
+  if (data->type == TYPE_FUNCTION) return calcDigitsFunc(data, b);
+  return new_calc_s(NAN, E_EXPECTED_OPERATION_GOT_DIGIT);
+}
+calc_s calcDigitsOp(parseData *data, calc_s a, calc_s b) {
+ // calc_s ans;
+  if (data->op == '+') return new_calc_s(a.n + b.n, 0);
+  if (data->op == '-') return new_calc_s(a.n - b.n, 0);
+  if (data->op == '*') return new_calc_s(a.n * b.n, 0);
+  if (data->op == '/')
+    return b.n != 0 ? new_calc_s(a.n / b.n, 0) : new_calc_s(NAN, E_DIV_BY_ZERO);
+  if (data->op == '^') return new_calc_s(powl(a.n, b.n), 0);
+  if (data->op == 'm')
+    return b.n != 0 ? new_calc_s(fmodl(a.n, b.n), 0)
+                    : new_calc_s(NAN, E_DIV_BY_ZERO);
+  if (data->op == '~') return new_calc_s(-b.n, 0);
+  if (data->op == 'p') return new_calc_s(+b.n, 0);
+  return new_calc_s(NAN, E_UNEXIST_OPERATION);
+}
+calc_s calcDigitsFunc(parseData *data, calc_s b) {
+  if (strncmp(data->func, "cos", 3) == 0) {
+    return new_calc_s(cosl(b.n), 0);
+  } else if (strncmp(data->func, "sin", 3) == 0) {
+    return new_calc_s(sinl(b.n), 0);
+  } else if (strncmp(data->func, "asin", 4) == 0) {
+    return fabsl(b.n) <= 1 ? new_calc_s(asinl(b.n), 0)
+                           : new_calc_s(NAN, E_NOT_IN_SCOPE_ASIN);
+  } else if (strncmp(data->func, "acos", 4) == 0) {
+    return fabsl(b.n) <= 1 ? new_calc_s(acosl(b.n), 0)
+                           : new_calc_s(NAN, E_NOT_IN_SCOPE_ACOS);
+  }else if (strncmp(data->func, "atan", 4) == 0) {
+    return  new_calc_s(atanl(b.n), 0);
+  } else if (strncmp(data->func, "tan", 3) == 0) {
+    return !(cosl(b.n)  > -ROUND && cosl(b.n) < ROUND)  ? new_calc_s(tanl(b.n), 0)
+                          : new_calc_s(NAN, E_DIV_BY_ZERO);
+  } else if (strncmp(data->func, "ln", 2) == 0) {
+    return b.n >= 0 ? new_calc_s(logl(b.n), 0) : new_calc_s(NAN, E_NERATIVE_LN);
+  } else if (strncmp(data->func, "log", 3) == 0) {
+    return b.n >= 0 ? new_calc_s(log10l(b.n), 0)
+                    : new_calc_s(NAN, E_NERATIVE_LOG10);
+  } else if (strncmp(data->func, "sqrt", 4) == 0) {
+    return b.n >= 0 ? new_calc_s(sqrtl(b.n), 0)
+                    : new_calc_s(NAN, E_NERATIVE_SQRT);
+  }
+  return new_calc_s(NAN, E_UNEXIST_FUNCTION);
+}
+char *errorDescription(int error) {
+  int code = -error - 100;
+  return (char *)errortexts[code];
 }
 
 // Todo DONE      multiple variables
@@ -192,60 +236,3 @@ calc_s calcPolishNotation(stack *data) {
 //   scanf("%Lf", &var);
 //   return var;
 // }
-calc_s calcDigits(parseData *data, calc_s a, calc_s b) {
-//  calc_s ans;
-  if (data->type == TYPE_OPERATOR) return calcDigitsOp(data, a, b);
-  if (data->type == TYPE_FUNCTION) return calcDigitsFunc(data, b);
-  return new_calc_s(NAN, E_EXPECTED_OPERATION_GOT_DIGIT);
-}
-calc_s calcDigitsOp(parseData *data, calc_s a, calc_s b) {
- // calc_s ans;
-  if (data->op == '+') return new_calc_s(a.n + b.n, 0);
-  if (data->op == '-') return new_calc_s(a.n - b.n, 0);
-  if (data->op == '*') return new_calc_s(a.n * b.n, 0);
-  if (data->op == '/')
-    return b.n != 0 ? new_calc_s(a.n / b.n, 0) : new_calc_s(NAN, E_DIV_BY_ZERO);
-  if (data->op == '^') return new_calc_s(powl(a.n, b.n), 0);
-  if (data->op == 'm')
-    return b.n != 0 ? new_calc_s(fmodl(a.n, b.n), 0)
-                    : new_calc_s(NAN, E_DIV_BY_ZERO);
-  if (data->op == '~') return new_calc_s(-b.n, 0);
-  if (data->op == 'p') return new_calc_s(+b.n, 0);
-  return new_calc_s(NAN, E_UNEXIST_OPERATION);
-}
-calc_s calcDigitsFunc(parseData *data, calc_s b) {
- // calc_s ans;
-
-  if (strncmp(data->func, "cos", 3) == 0) {
-    return new_calc_s(cosl(b.n), 0);
-  } else if (strncmp(data->func, "sin", 3) == 0) {
-    return new_calc_s(sinl(b.n), 0);
-  } else if (strncmp(data->func, "asin", 4) == 0) {
-    return fabsl(b.n) <= 1 ? new_calc_s(asinl(b.n), 0)
-                           : new_calc_s(NAN, E_NOT_IN_SCOPE_ASIN);
-  } else if (strncmp(data->func, "acos", 4) == 0) {
-    return fabsl(b.n) <= 1 ? new_calc_s(acosl(b.n), 0)
-                           : new_calc_s(NAN, E_NOT_IN_SCOPE_ACOS);
-  }else if (strncmp(data->func, "atan", 4) == 0) {
-    return  new_calc_s(atanl(b.n), 0);
-
-  } else if (strncmp(data->func, "tan", 3) == 0) {
-    return !(cosl(b.n)  > -ROUND && cosl(b.n) < ROUND)  ? new_calc_s(tanl(b.n), 0)
-                          : new_calc_s(NAN, E_DIV_BY_ZERO);
-  } else if (strncmp(data->func, "ln", 2) == 0) {
-    return b.n >= 0 ? new_calc_s(logl(b.n), 0) : new_calc_s(NAN, E_NERATIVE_LN);
-  } else if (strncmp(data->func, "log", 3) == 0) {
-    return b.n >= 0 ? new_calc_s(log10l(b.n), 0)
-                    : new_calc_s(NAN, E_NERATIVE_LOG10);
-  } else if (strncmp(data->func, "sqrt", 4) == 0) {
-    return b.n >= 0 ? new_calc_s(sqrtl(b.n), 0)
-                    : new_calc_s(NAN, E_NERATIVE_SQRT);
-  }
-  // } else if (strncmp(data->func, "exp", 3) == 0) {
-  //   return expl(b);
-  return new_calc_s(NAN, E_UNEXIST_FUNCTION);
-}
-char *errorDescription(int error) {
-  int code = -error - 100;
-  return (char *)errortexts[code];
-}

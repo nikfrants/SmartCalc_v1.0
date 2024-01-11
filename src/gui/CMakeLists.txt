@@ -52,12 +52,6 @@ target_link_libraries(calc_polish subunit m)
 #        ${TEST_SOURCES}
 #)
 #
-add_executable(Only_Back
-        ${BACK_LIB} ../backend/s21_smart_calc_back.c
-)
-add_executable(Back_test
-        ${TEST_PART}  ${BACK_LIB}
-)
 if (${QT_VERSION_MAJOR} GREATER_EQUAL 6)
     qt_add_executable(SmartCalc
             MANUAL_FINALIZATION
@@ -73,6 +67,13 @@ endif ()
 #set_target_properties(calc_polish PROPERTIES LINKER_LANGUAGE C)
 #set_target_properties(calc_polish PROPERTIES LANGUAGE C)
 #set_target_properties(Only_Back PROPERTIES LANGUAGE C)
+
+#add_executable(Only_Back
+#        ${BACK_LIB} ../backend/s21_smart_calc_back.c
+#)
+add_executable(Back_test
+        ${TEST_PART}  ${BACK_LIB}
+)
 target_link_libraries(SmartCalc   PRIVATE
         Qt${QT_VERSION_MAJOR}::Widgets Qt${QT_VERSION_MAJOR}::PrintSupport
         /usr/lib/x86_64-linux-gnu/libQt5PrintSupport.so.5.15.10
@@ -89,7 +90,7 @@ set_target_properties(SmartCalc PROPERTIES
 )
 target_link_libraries(Back_test check subunit m)
 
-target_link_libraries(Only_Back subunit m)
+#target_link_libraries(Only_Back subunit m)
 
 
 

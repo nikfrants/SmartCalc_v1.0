@@ -11,8 +11,8 @@
 #define E 2.71828182845904523536
 #define PI 3.141592653589793238462643383279
 #define REALLOC_SIZE 10
-#define STACK_MAX_SIZE 1000
-#define ROUND 1.0e-35 // e.g. 4e-15 - variable near 0 with 4/10^15 will be implemented as zero
+// #define STACK_MAX_SIZE 1000
+#define ROUND 1.0e-35 // e.g. 4e-15 - variable near 0 with ( 4/10^15 ) will be implemented as zero
 // errors
 #define E_NO_ERRORS -100
 //      stack
@@ -122,7 +122,7 @@ void initNode(stNode *node, parseData val);
 parseData initData(long double val, char symbol, int type, int priority);
 void freeStack(stack *st);
 void print(char *string);
-void stackPrintValue(const parseData value, int useName);
+void stackPrintValue(parseData value, int useName);
 int stackPrintByIndex(const stack *st, int index);
 void stackPrintAll(const stack *st);
 stack evaluatePolishNotation(char *expression);

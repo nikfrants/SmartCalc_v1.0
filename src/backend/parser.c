@@ -7,35 +7,23 @@
 
 
 #include "stack.h"
-// int containsVariables(parseData* data, int size) {
-//   int ans = 0;
-//   for (int idx = 0; idx < size; ++idx) {
-//     if (data[idx].type == TYPE_VARIABLE) {
-//      return 1;
-//     }
-//   }
-//   return 0;
-// }
+
 long double atold(char m[]) {
   int i = 0;
   long double number = 0.0;
   int sign = 1;
-
   if (m[i] == '-') {
     sign = -1;
     i++;
   }
-
   for (; m[i] != '.'; i++) {
     number = number * 10 + (m[i] - '0');
   }
-
   long double fraction = 1.0l;
   for (i = i + 1; m[i] != '\0'; i++) {
     fraction /= 10;
     number = number + (m[i] - '0') * fraction;
   }
-
   return sign * number;
 }
 
@@ -44,14 +32,12 @@ int isDigit(char* ch, parseData* currstr, int* parseidx,
   if (*ch == '\000') {
     return 0;
   }
-
   currstr[0].lenth = 0;
   if ((*ch >= '0' && *ch <= '9') ||
       (*ch == '.' && *parseidx > 0 && currstr[-1].type == TYPE_DIGIT)) {
     char string[300] = {'\0'};
     int flagfloat = 0;
     int idx1 = 0;
-
     while ((*ch >= '0' && *ch <= '9') || *ch == '.') {
       if (*ch == '.') flagfloat = 1;
       string[idx1] = *ch;
@@ -66,7 +52,7 @@ int isDigit(char* ch, parseData* currstr, int* parseidx,
       currstr[0].number = atoll(string);
     currstr[0].type = 1;
     currstr[0].priority = -1;
-    // 0 //todo change to 0. shift numericto right
+    // 0 //todo change to 0. shift numeric to right Done
     *stringParseindex += currstr[0].lenth;
     ++*parseidx;
     return 0;
@@ -79,7 +65,7 @@ int isFunction(char* ch, parseData* currstr, int* parseidx,
     return 0;
   }
   currstr[0].lenth = 0;
-  ////
+  // ToDo упростить
   if (strncmp(ch, "cos", 3) == 0 || strncmp(ch, "sin", 3) == 0 ||
       strncmp(ch, "tan", 3) == 0 || strncmp(ch, "acos", 4) == 0 ||
       strncmp(ch, "asin", 4) == 0 || strncmp(ch, "atan", 4) == 0 ||
@@ -243,3 +229,12 @@ parseData* parser(char* str, int* strPrsidx) {
   *strPrsidx = prseidx;
   return data;
 }
+// int containsVariables(parseData* data, int size) {
+//   int ans = 0;
+//   for (int idx = 0; idx < size; ++idx) {
+//     if (data[idx].type == TYPE_VARIABLE) {
+//      return 1;
+//     }
+//   }
+//   return 0;
+// }

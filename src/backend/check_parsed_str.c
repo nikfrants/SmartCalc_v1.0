@@ -4,7 +4,6 @@
 
 #include "stack.h"
 
-// int check_parsed_str(stack* st) {}
 
 int check(parseData* data, int size, char* str) {
   if (data[0].type == E_INCORRECT_EXPRESSION) {
@@ -63,7 +62,6 @@ int check_operations(parseData* data, int size) {
 }
 int check_digits_near_dot(char* str) {
   char* str1 = str;
-  ;
   while (*(str1 + 1)) {
     if (*str1 == '.' && *(str1 + 1) == '.') return E_TWO_DOT_NEARBODY;
     str1++;
@@ -108,18 +106,6 @@ int check_digits_in_str(char* str) {
       break; // Если функция найдена, выходим из цикла
     }
   }
-  // str1 = str;
-  // while (*str1) {
-  //   if ((strncmp(str1, "mod", 3) == 0) && *(str-1) == ' ' ))
-  //
-  // }
-  // while (*str1) {
-  //   while (strchr(strfuncs, *str1) != NULL) {
-  //     flag_funcs_exist = 1;
-  //     break;
-  //   }
-  //   str1++;
-  // }
   if (!flag_numbers_exist) return E_NO_DIGITS_IN_STR;
   if (!flag_operators_exist && !flag_funcs_exist) return E_ONLY_DIGITS_EXIST;
   return E_NO_ERRORS;
