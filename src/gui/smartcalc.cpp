@@ -141,6 +141,7 @@ int counter = 5;;
         prevX.n = X;
         prevY.n = ans.n;
 
+
         X += scale;
         readystr = replaceVars(expression, X);
         calc_s ans = parseAndCalc(readystr);
