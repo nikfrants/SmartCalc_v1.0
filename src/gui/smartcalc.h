@@ -40,9 +40,10 @@ public:
     ~SmartCalc();
 
 private slots:
-
+  void calcCredit() ;
     void on_pushButton_E_calc_clicked();
     void calculate_Polish();
+
     // void on_lineEdit_expression_textChanged(const QString &arg1);
   //  variables* SmartCalc::checkVariables();
   // variables* checkVariables(variables vars_In_Notatation[]);
@@ -89,6 +90,14 @@ private slots:
   void on_pushButton_M_tan_clicked();
   void on_pushButton_M_ln_clicked();
   void on_pushButton_V_graph_clicked();
+
+  void on_pushButton_V_graph_2_clicked();
+
+  void on_doubleSpinBox_paym_3_valueChanged(const QString &arg1);
+
+  void on_spinBox_credit_range_2_valueChanged(const QString &arg1);
+
+  void on_doubleSpinBox_credit_summ_1_valueChanged(const QString &arg1);
 
 private:
     Ui::SmartCalc *ui;
