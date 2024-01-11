@@ -51,6 +51,8 @@ int check_operations(parseData* data, int size) {
         return E_TWO_DIVISION_NEARBODY;
       if (data[idx].op == 'm' && data[idx + 1].op == 'm')
         return E_TWO_MOD_NEARBODY;
+      if( data[idx].op == '+' &&data[idx+1].op == 'm' )
+        return E_MOD_HAS_ONE_NUMBERS;
     }  // return E_TWO_OPERATORS_NEARBODY;
     if (data[idx].type == TYPE_FUNCTION &&
         data[idx + 1].type == TYPE_FUNCTION) {
@@ -106,6 +108,11 @@ int check_digits_in_str(char* str) {
       break; // Если функция найдена, выходим из цикла
     }
   }
+  // str1 = str;
+  // while (*str1) {
+  //   if ((strncmp(str1, "mod", 3) == 0) && *(str-1) == ' ' ))
+  //
+  // }
   // while (*str1) {
   //   while (strchr(strfuncs, *str1) != NULL) {
   //     flag_funcs_exist = 1;

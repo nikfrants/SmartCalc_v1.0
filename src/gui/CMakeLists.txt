@@ -17,10 +17,11 @@ set (TEST_PART
         ../backend/tests/test.c
         ../backend/tests/test_parser.c
         ../backend/tests/test_stack.c
+        ../backend/tests/test_check_parsed.c
+        ../backend/tests/test_calc_polish_n.c
 )
 set(BACK_LIB
         ../backend/calc_polish_n.c
-        ../backend/s21_smart_calc.c
         ../backend/check_parsed_str.c
         ../backend/parser.c
         ../backend/polish_notation.c
@@ -38,15 +39,6 @@ set(PROJECT_SOURCES
 
 )
 
-set(BACK_LIB
-        ../backend/calc_polish_n.c
-        ../backend/s21_smart_calc.c
-        ../backend/check_parsed_str.c
-        ../backend/parser.c
-        ../backend/polish_notation.c
-        ../backend/stack.h
-        ../backend/stack.c
-)
 add_library(calc_polish STATIC  ${BACK_LIB} )
 target_link_libraries(calc_polish subunit m)
 #set_source_files_properties(${BACK_LIB} PROPERTIES LANGUAGE C)

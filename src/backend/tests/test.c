@@ -14,12 +14,17 @@ void run_test(Suite *thesuit) {
 int main() {
   printf("================= TESTING =================\n\n");
   Suite *stack = Stack();
-
-
   Suite *parser = Parser();
-  run_test(stack);  // Запуск тестов из тестового кейса
+  Suite *check_parsed = Check_parsed();
+  Suite *calc_polish_n = Calc_polish_n();
 
+
+
+
+  run_test(stack);
   run_test(parser);
+  run_test(check_parsed);
+  run_test(calc_polish_n);
   printf("================= END =================\n");
   return 0;
 }

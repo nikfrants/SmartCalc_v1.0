@@ -12,5 +12,7 @@
 #
 Suite *Stack();
 Suite *Parser();
+Suite *Check_parsed();
+Suite *Calc_polish_n();
 
 #endif

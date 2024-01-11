@@ -7,15 +7,15 @@
 
 
 #include "stack.h"
-int containsVariables(parseData* data, int size) {
-  int ans = 0;
-  for (int idx = 0; idx < size; ++idx) {
-    if (data[idx].type == TYPE_VARIABLE) {
-     return 1;
-    }
-  }
-  return 0;
-}
+// int containsVariables(parseData* data, int size) {
+//   int ans = 0;
+//   for (int idx = 0; idx < size; ++idx) {
+//     if (data[idx].type == TYPE_VARIABLE) {
+//      return 1;
+//     }
+//   }
+//   return 0;
+// }
 long double atold(char m[]) {
   int i = 0;
   long double number = 0.0;

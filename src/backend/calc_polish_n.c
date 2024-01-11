@@ -90,108 +90,108 @@ calc_s calcPolishNotation(stack *data) {
 
 // Todo DONE      multiple variables
 // Todo DONE          multiple different repeated variables
-variables *getVariablesParsed(char s[], variables vars_In_Notatation[],
-                              int *size) {
-  parseData *newexpression = {NULL};
-  int error;
-
-  newexpression = parser(s, size);
-  error = check(newexpression, *size, s);
-  if (error != E_NO_ERRORS) {
-    // printf("Error - %s", errorDescription(error));
-    calc_s ans = {0, error};
-    return NULL;
-    // return ans.n;
-  }
-
-  stack notation, reversed;
-  stackInit(&notation), stackInit(&reversed);
-  notation = evaluatePolishNotation(s);
-  while (notation.stSize) push(&reversed, pop(&notation));
-  struct variables varsArray[100] = {0};
-  int arrsize = 0;
-  variables *arr;
-  vars_In_Notatation = searchVariable(&reversed, varsArray, &arrsize);
-  if (arrsize >= 0) {
-    vars_In_Notatation = askVariables(vars_In_Notatation, arrsize);
-  }
-
-  if (arrsize == 0 && vars_In_Notatation[0].name == '\000') *size = 0;
-  else
-    *size = arrsize+1;
-
-  freeStack(&notation);
-  freeStack(&reversed);
-  free(newexpression);
-  return vars_In_Notatation;
-}
-int var_in_array(variables array[], char *name) {
-  for (int i = 0; i < 100; ++i) {
-    if (strcmp(array[i].name, name) == 0) {
-      return 1;
-    }
-  }
-  return 0;
-}
-variables *askVariables(variables array[], int size) {
-  for (int i = 0; i <= size; ++i) {
-    long double var = 0;  // = get_variable(array[i].name);
-    for (int j = 0; array[i].adress[j]; ++j) {
-      array[i].value = var;
-    }
-  }
-  return array;
-}
-
-void fillvariables(stack *st, variables *array[], int size) {
-  for (int i = 0; i < size; ++i) {
-    for (int j = 1; j<=array[i]->adresscount; ++j) {
-      *array[i]->adress[j] = array[i]->value;
-    }
-  }
-}
-
-variables *searchVariable(stack *st, variables array[], int *arrayindex) {
-  /*
-  search in stack new variable name
-      if name not in variable arrays
-        add it and
-        search in stack this variable adress by name
-        if matched
-           add it to array.adress[i]
-  */
-  stNode *temp = st->root;
-  *arrayindex = -1;
-  int addressidx = 0;
-  while (temp != NULL) {
-    if (temp->data.type == TYPE_VARIABLE) {
-      if (!var_in_array(array, temp->data.varName)) {
-        ++*arrayindex;
-        stNode *searchvar = temp;
-        strcpy(array[*arrayindex].name, temp->data.varName);
-        addressidx = 0;
-        while (searchvar != NULL) {
-          if (searchvar->data.type == TYPE_VARIABLE &&
-              strcmp(array[*arrayindex].name, searchvar->data.varName) == 0) {
-            array[*arrayindex].adress[addressidx] = &searchvar->data.number;
-            ++addressidx;
-          }
-          searchvar = searchvar->next;
-        }
-      }
-    }
-
-    temp = temp->next;
-  }
-  return array;
-}
-
-long double get_variable(char *name) {
-  long double var;
-  printf("input variable %s = ", name);
-  scanf("%Lf", &var);
-  return var;
-}
+// variables *getVariablesParsed(char s[], variables vars_In_Notatation[],
+//                               int *size) {
+//   parseData *newexpression = {NULL};
+//   int error;
+//
+//   newexpression = parser(s, size);
+//   error = check(newexpression, *size, s);
+//   if (error != E_NO_ERRORS) {
+//     // printf("Error - %s", errorDescription(error));
+//     calc_s ans = {0, error};
+//     return NULL;
+//     // return ans.n;
+//   }
+//
+//   stack notation, reversed;
+//   stackInit(&notation), stackInit(&reversed);
+//   notation = evaluatePolishNotation(s);
+//   while (notation.stSize) push(&reversed, pop(&notation));
+//   struct variables varsArray[100] = {0};
+//   int arrsize = 0;
+//   variables *arr;
+//   vars_In_Notatation = searchVariable(&reversed, varsArray, &arrsize);
+//   if (arrsize >= 0) {
+//     vars_In_Notatation = askVariables(vars_In_Notatation, arrsize);
+//   }
+//
+//   if (arrsize == 0 && vars_In_Notatation[0].name == '\000') *size = 0;
+//   else
+//     *size = arrsize+1;
+//
+//   freeStack(&notation);
+//   freeStack(&reversed);
+//   free(newexpression);
+//   return vars_In_Notatation;
+// }
+// int var_in_array(variables array[], char *name) {
+//   for (int i = 0; i < 100; ++i) {
+//     if (strcmp(array[i].name, name) == 0) {
+//       return 1;
+//     }
+//   }
+//   return 0;
+// }
+// variables *askVariables(variables array[], int size) {
+//   for (int i = 0; i <= size; ++i) {
+//     long double var = 0;  // = get_variable(array[i].name);
+//     for (int j = 0; array[i].adress[j]; ++j) {
+//       array[i].value = var;
+//     }
+//   }
+//   return array;
+// }
+//
+// void fillvariables(stack *st, variables *array[], int size) {
+//   for (int i = 0; i < size; ++i) {
+//     for (int j = 1; j<=array[i]->adresscount; ++j) {
+//       *array[i]->adress[j] = array[i]->value;
+//     }
+//   }
+// }
+//
+// variables *searchVariable(stack *st, variables array[], int *arrayindex) {
+//   /*
+//   search in stack new variable name
+//       if name not in variable arrays
+//         add it and
+//         search in stack this variable adress by name
+//         if matched
+//            add it to array.adress[i]
+//   */
+//   stNode *temp = st->root;
+//   *arrayindex = -1;
+//   int addressidx = 0;
+//   while (temp != NULL) {
+//     if (temp->data.type == TYPE_VARIABLE) {
+//       if (!var_in_array(array, temp->data.varName)) {
+//         ++*arrayindex;
+//         stNode *searchvar = temp;
+//         strcpy(array[*arrayindex].name, temp->data.varName);
+//         addressidx = 0;
+//         while (searchvar != NULL) {
+//           if (searchvar->data.type == TYPE_VARIABLE &&
+//               strcmp(array[*arrayindex].name, searchvar->data.varName) == 0) {
+//             array[*arrayindex].adress[addressidx] = &searchvar->data.number;
+//             ++addressidx;
+//           }
+//           searchvar = searchvar->next;
+//         }
+//       }
+//     }
+//
+//     temp = temp->next;
+//   }
+//   return array;
+// }
+//
+// long double get_variable(char *name) {
+//   long double var;
+//   printf("input variable %s = ", name);
+//   scanf("%Lf", &var);
+//   return var;
+// }
 calc_s calcDigits(parseData *data, calc_s a, calc_s b) {
   calc_s ans;
   if (data->type == TYPE_OPERATOR) return calcDigitsOp(data, a, b);
@@ -226,6 +226,9 @@ calc_s calcDigitsFunc(parseData *data, calc_s a, calc_s b) {
   } else if (strncmp(data->func, "acos", 4) == 0) {
     return fabsl(b.n) <= 1 ? new_calc_s(acosl(b.n), 0)
                            : new_calc_s(NAN, E_NOT_IN_SCOPE_ACOS);
+  }else if (strncmp(data->func, "atan", 4) == 0) {
+    return  new_calc_s(atanl(b.n), 0);
+
   } else if (strncmp(data->func, "tan", 3) == 0) {
     return !(cosl(b.n)  > -ROUND && cosl(b.n) < ROUND)  ? new_calc_s(tanl(b.n), 0)
                           : new_calc_s(NAN, E_DIV_BY_ZERO);

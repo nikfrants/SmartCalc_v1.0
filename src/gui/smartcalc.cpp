@@ -52,7 +52,7 @@ void SmartCalc::plot() {
   ui->grid->clearItems();
   ui->grid->replot();
 
-  // use dots instead of lines
+  //DOTS   use dots instead of lines. comment if lines are needed
   graph->setLineStyle(QCPGraph::lsNone);
   QCPScatterStyle scatterStyle;
   scatterStyle.setShape(QCPScatterStyle::ssCircle);
@@ -69,8 +69,13 @@ void SmartCalc::plot() {
       (ui->grid->xAxis->range().upper - ui->grid->xAxis->range().lower) * 3;
   xEnd = ui->grid->xAxis->range().upper +
          (ui->grid->xAxis->range().upper - ui->grid->xAxis->range().lower) * 3;
+
+ // DOTS
   h = (xEnd - xBegin) / 50000;
   ;
+  // LINES
+  // h = (xEnd - xBegin) / 5000;
+
   std::string expression = ui->lineEdit_expression->text().toStdString();
 
   Point<int, int> p{};
@@ -83,7 +88,7 @@ void SmartCalc::plot() {
   string prevreadystr;
   for (X = xBegin; X <= xEnd; X += h) {
     readystr = replaceVars(expression, X);
-    // {
+    // { // LINES
     //   ans = parseAndCalc(readystr);
     //   readystr2 = replaceVars(expression, X + h);
     //   ans2 = parseAndCalc(readystr2);
@@ -97,7 +102,7 @@ void SmartCalc::plot() {
     //     //   y.push_back(ans.n);
     //   }
     // }
-    {
+    { // DOTS
       calc_s ans = parseAndCalc(readystr);
       if (ans.e == E_NO_ERRORS) {
         x.push_back((X));
@@ -226,37 +231,37 @@ std::vector<std::string> SmartCalc::Variables(parseData* data, int size) {
   }
   return ans;
 }
-void getVariablesFromPolish(stack* polish, variables* array[],
-                            int* arrayindex) {
-  stNode* temp = polish->root;
-  *arrayindex = -1;
-  // for(int i = 0; i < 100;++i) {
-  //   for(auto & adres : array[i]->adress)
-  //   adres = nullptr;
-  // }
-  int addressidx = 0;
-  while (temp != nullptr) {
-    if (temp->data.type == TYPE_VARIABLE) {
-      if (!var_in_array(*array, temp->data.varName)) {
-        ++*arrayindex;
-        stNode* searchvar = temp;
-        strcpy(array[*arrayindex]->name, temp->data.varName);
-        addressidx = 1;
-        while (searchvar != nullptr) {
-          if (searchvar->data.type == TYPE_VARIABLE &&
-              strcmp(array[*arrayindex]->name, searchvar->data.varName) == 0) {
-            array[*arrayindex]->adress[addressidx] = &searchvar->data.number;
-            array[*arrayindex]->adresscount = addressidx;
-            ++addressidx;
-          }
-          searchvar = searchvar->next;
-        }
-      }
-    }
-    temp = temp->next;
-  }
-  *arrayindex += 1;
-}
+// void getVariablesFromPolish(stack* polish, variables* array[],
+//                             int* arrayindex) {
+//   stNode* temp = polish->root;
+//   *arrayindex = -1;
+//   // for(int i = 0; i < 100;++i) {
+//   //   for(auto & adres : array[i]->adress)
+//   //   adres = nullptr;
+//   // }
+//   int addressidx = 0;
+//   while (temp != nullptr) {
+//     if (temp->data.type == TYPE_VARIABLE) {
+//       if (!var_in_array(*array, temp->data.varName)) {
+//         ++*arrayindex;
+//         stNode* searchvar = temp;
+//         strcpy(array[*arrayindex]->name, temp->data.varName);
+//         addressidx = 1;
+//         while (searchvar != nullptr) {
+//           if (searchvar->data.type == TYPE_VARIABLE &&
+//               strcmp(array[*arrayindex]->name, searchvar->data.varName) == 0) {
+//             array[*arrayindex]->adress[addressidx] = &searchvar->data.number;
+//             array[*arrayindex]->adresscount = addressidx;
+//             ++addressidx;
+//           }
+//           searchvar = searchvar->next;
+//         }
+//       }
+//     }
+//     temp = temp->next;
+//   }
+//   *arrayindex += 1;
+// }
 std::string SmartCalc::polishToString(stack* parsedExpression) {
   std::string s;
   stNode* temp = parsedExpression->last;

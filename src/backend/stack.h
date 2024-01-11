@@ -12,7 +12,7 @@
 #define PI 3.141592653589793238462643383279
 #define REALLOC_SIZE 10
 #define STACK_MAX_SIZE 1000
-#define ROUND 1.0e-16 // e.g. 4e-15 - variable near 0 with 4/10^15 will be implemented as zero
+#define ROUND 1.0e-35 // e.g. 4e-15 - variable near 0 with 4/10^15 will be implemented as zero
 // errors
 #define E_NO_ERRORS -100
 //      stack
@@ -144,8 +144,9 @@ variables*  askVariables(variables array[], int size);
 int var_in_array(variables array[], char *name);
 variables* searchVariable(stack *st, variables array[],int *arrayindex);
 int check(parseData* data, int size, char* str);
-char *notationToString(char s[], char *str[] );
+char *notationToString(char s[], char *str );
 calc_s calculate(char s[], variables vars_In_Notatation[]) ;
 char * getPolish(char s[],char polish[]);
 variables * getVariablesParsed( char s[],variables vars_In_Notatation[],int *size) ;
 int containsVariables(parseData* data, int size);
+char *parsedToString(char *str, parseData *data,int size);

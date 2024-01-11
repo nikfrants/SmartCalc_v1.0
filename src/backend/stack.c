@@ -173,13 +173,13 @@ void printParsedData(parseData *data, int size) {
   }
 }
 
-char *notationToString(char s[], char *str[]) {
+char *notationToString(char s[], char *str) {
   stack notation, reversed;
   stackInit(&notation);
   notation = evaluatePolishNotation(s);
  // char str[1000] = {0};
   //for(int i = 0; i < 1000; ++i) str[i] = '\000';
-
+int idx  = 0;
   stNode *temp = notation.last;
   for (int i = 0; temp; ++i) {
     char buf[150];
@@ -194,12 +194,37 @@ char *notationToString(char s[], char *str[]) {
     if (temp->data.type == TYPE_OPERATOR)
       sprintf(buf, "%c", temp->data.op);
     // strcpy(&str[i], buf);
-    *str[i - 1] = ' ';
+    str[i - 1] = ' ';
     for (int j = 0; buf[j]; ++j, ++i)
-      *str[i] = buf[j];
+      str[i] = buf[j];
 
     temp = temp->prev;
+    idx=i;;
   }
+  str[idx] = '\000';
   freeStack(&notation);
+  return str;
+}
+char *parsedToString(char *str, parseData *data,int size) {
+  int idx = 0;
+  for (int i = 0; i<size; ) {
+    char buf[150];
+    if (data[i].type == TYPE_DIGIT)
+      if (fmodl(data[i].number, (int)data[i].number) == 0)
+        sprintf(buf, "%.0LF", data[i].number);
+      else
+        sprintf(buf, "%.10LF", data[i].number);
+    if (data[i].type == TYPE_FUNCTION) sprintf(buf, "%s", data[i].func);
+    if (data[i].type == TYPE_VARIABLE)
+      sprintf(buf, "%s", data[i].varName);
+    if (data[i].type == TYPE_OPERATOR)
+      sprintf(buf, "%c", data[i].op);
+//    *str[i - 1] = ' ';
+//    strcpy((str+i), buf);
+    for (int j = 0; buf[j]; ++j, ++i)
+       str[i] = buf[j];
+    idx=i;
+  }
+  str[idx] = '\000';
   return *str;
 }
