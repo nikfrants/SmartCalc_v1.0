@@ -83,8 +83,8 @@ int check_digits_in_str(char* str) {
   int flag_funcs_exist = 0;
   char* str1 = str;
   while (*str1) {
-    if (*str1 >= '0' && *str1 <= '9' || *str1 >= 'a' && *str1 <= 'z' ||
-        *str1 >= 'A' && *str1 <= 'Z') {
+    if ((*str1 >= '0' && *str1 <= '9') || (*str1 >= 'a' && *str1 <= 'z') ||
+        (*str1 >= 'A' && *str1 <= 'Z')) {
       flag_numbers_exist = 1;
       break;
     }
@@ -102,7 +102,7 @@ int check_digits_in_str(char* str) {
   char* strfuncs[] = {"sin",  "cos",  "tan", "asin", "acos",
                       "atan", "sqrt", "ln",  "log",  "mod"};
 
-  for (int i = 0; i < sizeof(strfuncs)/sizeof(strfuncs[0]); i++) {
+  for (int i = 0; i < (int)(sizeof(strfuncs)/sizeof(strfuncs[0])); i++) {
     if (strstr(str1, strfuncs[i]) != NULL) {
       flag_funcs_exist = 1;
       break; // Если функция найдена, выходим из цикла

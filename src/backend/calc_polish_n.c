@@ -44,7 +44,7 @@ calc_s new_calc_s(long double n, int err) {
 calc_s calcDigits(parseData *data, calc_s a, calc_s b);
 
 calc_s calcPolishNotation(stack *data) {
-  struct variables varsArray[100] = {0};
+ // struct variables varsArray[100] = {0};
   //
   // if (arrsize>=0) {
   //   fillvariables(data, arr1, arrsize);
@@ -193,13 +193,13 @@ calc_s calcPolishNotation(stack *data) {
 //   return var;
 // }
 calc_s calcDigits(parseData *data, calc_s a, calc_s b) {
-  calc_s ans;
+//  calc_s ans;
   if (data->type == TYPE_OPERATOR) return calcDigitsOp(data, a, b);
-  if (data->type == TYPE_FUNCTION) return calcDigitsFunc(data, a, b);
+  if (data->type == TYPE_FUNCTION) return calcDigitsFunc(data, b);
   return new_calc_s(NAN, E_EXPECTED_OPERATION_GOT_DIGIT);
 }
 calc_s calcDigitsOp(parseData *data, calc_s a, calc_s b) {
-  calc_s ans;
+ // calc_s ans;
   if (data->op == '+') return new_calc_s(a.n + b.n, 0);
   if (data->op == '-') return new_calc_s(a.n - b.n, 0);
   if (data->op == '*') return new_calc_s(a.n * b.n, 0);
@@ -213,8 +213,8 @@ calc_s calcDigitsOp(parseData *data, calc_s a, calc_s b) {
   if (data->op == 'p') return new_calc_s(+b.n, 0);
   return new_calc_s(NAN, E_UNEXIST_OPERATION);
 }
-calc_s calcDigitsFunc(parseData *data, calc_s a, calc_s b) {
-  calc_s ans;
+calc_s calcDigitsFunc(parseData *data, calc_s b) {
+ // calc_s ans;
 
   if (strncmp(data->func, "cos", 3) == 0) {
     return new_calc_s(cosl(b.n), 0);

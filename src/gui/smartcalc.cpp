@@ -365,8 +365,6 @@ void SmartCalc::on_pushButton_M_ln_clicked() { changeStringAdd("ln"); }
 
 void SmartCalc::on_pushButton_V_graph_clicked() {// changeStringAdd("plot");
   plot();
-  calcCredit();
-
 }
 
 
@@ -375,10 +373,14 @@ void SmartCalc::on_pushButton_V_graph_2_clicked()
 {
   calcCredit();
     // ui->centralwidget->resize(1200,461);
-  if(this->width() == 1200)
+  if(this->width() == 1200) {
     this->resize(701,461);
-  else
+    ui->pushButton_V_graph_2->setText("Ещё→");
+  }
+  else {
     this->resize(1200,461);
+    ui->pushButton_V_graph_2->setText("Ещё←");
+  }
 
 }
 
@@ -393,12 +395,12 @@ void SmartCalc::calcCredit() {
     float annuetpay = credit_sum1 * k;
     float opwerpay =  fabs(annuetpay*S - credit_sum1);
 
-  int credit_type = 0;
-  if (ui->credit_check_box_1->isChecked()) {
-    credit_type = 1;
-  } else if (ui->credit_check_box_2->isChecked()) {
-    credit_type = 2;
-  }
+  // int credit_type = 0;
+  // if (ui->credit_check_box_1->isChecked()) {
+  //   credit_type = 1;
+  // } else if (ui->credit_check_box_2->isChecked()) {
+  //   credit_type = 2;
+  // }
 
     ui->credit_text_1->setText(std::to_string(annuetpay).c_str());
     ui->credit_text_2->setText(std::to_string(opwerpay).c_str());

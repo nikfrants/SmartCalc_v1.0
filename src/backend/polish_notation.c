@@ -50,16 +50,16 @@ stack evaluatePolishNotation(char* expression) {
       ++strIndex;
     }
     if (strIndex < size && (inputStr[strIndex].type == TYPE_FUNCTION ||
-                            inputStr[strIndex].type == TYPE_BRACKET &&
-                                inputStr[strIndex].op == '(')) {
+                            (inputStr[strIndex].type == TYPE_BRACKET &&
+                                inputStr[strIndex].op == '('))) {
       push(&processed, inputStr[strIndex]);
       ++strIndex;
     }
     if (strIndex < size && inputStr[strIndex].type == TYPE_OPERATOR) {
       while (processed.stSize &&
              (top(&processed)->data.priority > inputStr[strIndex].priority ||
-              top(&processed)->data.priority == inputStr[strIndex].priority &&
-                  is_left_associative(inputStr[strIndex].op))) {
+             ( top(&processed)->data.priority == inputStr[strIndex].priority &&
+                  is_left_associative(inputStr[strIndex].op)))) {
         push(&polishNotation, pop(&processed));
       }
       push(&processed, inputStr[strIndex]), ++strIndex;

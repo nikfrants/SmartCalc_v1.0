@@ -49,11 +49,11 @@ START_TEST(top_1) {
   stackInit(&st);
   push(&st, initData(1, 0, 0, 0));
   parseData node1;
-  parseData node2;
+  //parseData node2;
   node1 = top(&st)->data;
   ck_assert_int_eq(node1.number, 1);
-  node2 = pop(&st);
-  ck_assert_int_eq(top(&st), NULL);
+  pop(&st);
+  ck_assert_ptr_null(top(&st));
   ck_assert_int_eq(node1.type, 0);
   // free(node1);
   // free(node2);
@@ -97,7 +97,7 @@ START_TEST(notatnion_to_str) {
   stack st;
   stackInit(&st);
   char s[200] = "-cos(4)+(((sin(4)+tan(4)+sqrt(4))+ln(4)+log(4)+asin(4))+acos(4)+atan(4))+1-1*1/1^1mod1";
-  int size;
+ // int size;
   st = evaluatePolishNotation(s);
   char ans [200];
   char correct[200] = "4 cos ~ 4 sin 4 tan + 4 sqrt + 4 ln + 4 log + 4 asin + 4 acos + 4 atan + + 1 + 1 1 * 1 1 ^ / 1 m -";

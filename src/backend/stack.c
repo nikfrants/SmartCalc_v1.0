@@ -174,7 +174,7 @@ void printParsedData(parseData *data, int size) {
 }
 
 char *notationToString(char s[], char *str) {
-  stack notation, reversed;
+  stack notation;//, reversed;
   stackInit(&notation);
   notation = evaluatePolishNotation(s);
  // char str[1000] = {0};
@@ -183,11 +183,12 @@ int idx  = 0;
   stNode *temp = notation.last;
   for (int i = 0; temp; ++i) {
     char buf[150];
-      if (temp->data.type == TYPE_DIGIT)
+      if (temp->data.type == TYPE_DIGIT) {
         if (fmodl(temp->data.number, (int)temp->data.number) == 0)
           sprintf(buf, "%.0LF", temp->data.number);
         else
           sprintf(buf, "%.2LF", temp->data.number);
+      }
     if (temp->data.type == TYPE_FUNCTION) sprintf(buf, "%s", temp->data.func);
     if (temp->data.type == TYPE_VARIABLE)
       sprintf(buf, "%s", temp->data.varName);
@@ -209,11 +210,12 @@ char *parsedToString(char *str, parseData *data,int size) {
   int idx = 0;
   for (int i = 0; i<size; ) {
     char buf[150];
-    if (data[i].type == TYPE_DIGIT)
+    if (data[i].type == TYPE_DIGIT) {
       if (fmodl(data[i].number, (int)data[i].number) == 0)
         sprintf(buf, "%.0LF", data[i].number);
       else
         sprintf(buf, "%.10LF", data[i].number);
+    }
     if (data[i].type == TYPE_FUNCTION) sprintf(buf, "%s", data[i].func);
     if (data[i].type == TYPE_VARIABLE)
       sprintf(buf, "%s", data[i].varName);
@@ -226,5 +228,5 @@ char *parsedToString(char *str, parseData *data,int size) {
     idx=i;
   }
   str[idx] = '\000';
-  return *str;
+  return str;
 }

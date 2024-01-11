@@ -135,7 +135,7 @@ char *errorDescription(int error);
 int check_brackets(parseData *data, int size);
 int check_operations(parseData *data, int size);
 calc_s calcDigitsOp(parseData *data, calc_s a, calc_s b);
-calc_s calcDigitsFunc(parseData *data, calc_s a, calc_s b);
+calc_s calcDigitsFunc(parseData *data, calc_s b);
 int check_digits_in_str(char *str);
 int check_digits_near_dot(char *str);
 long double get_variable(char* name);
