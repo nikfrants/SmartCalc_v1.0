@@ -52,7 +52,7 @@ void SmartCalc::plot() {
   ui->grid->clearItems();
   ui->grid->replot();
 
-  //DOTS   use dots instead of lines. comment if lines are needed
+  // DOTS   use dots instead of lines. comment if lines are needed
   graph->setLineStyle(QCPGraph::lsNone);
   QCPScatterStyle scatterStyle;
   scatterStyle.setShape(QCPScatterStyle::ssCircle);
@@ -70,14 +70,20 @@ void SmartCalc::plot() {
   xEnd = ui->grid->xAxis->range().upper +
          (ui->grid->xAxis->range().upper - ui->grid->xAxis->range().lower) * 3;
 
- // DOTS
+  // DOTS
   h = (xEnd - xBegin) / 50000;
   ;
   // LINES
   // h = (xEnd - xBegin) / 5000;
 
   std::string expression = ui->lineEdit_expression->text().toStdString();
-
+  // ToDo возможность задавать ppi
+  // h должно динамически меняться в зависимости от поведения функции
+  // если разница координат слишком больша относительно ppi, то h уменьшается
+  // и наоборот, если разница между координатами точек слишком маленькая, то h
+  // увеличивается
+  // (это поможет красиво отрисовывать tan(x) например)
+  int ppi = 300;
   Point<int, int> p{};
   QVector<Point<long double, long double>> points;
   N = (xEnd - xBegin) / h + 2;
@@ -102,7 +108,7 @@ void SmartCalc::plot() {
     //     //   y.push_back(ans.n);
     //   }
     // }
-    { // DOTS
+    {  // DOTS
       calc_s ans = parseAndCalc(readystr);
       if (ans.e == E_NO_ERRORS) {
         x.push_back((X));
@@ -249,7 +255,8 @@ std::vector<std::string> SmartCalc::Variables(parseData* data, int size) {
 //         addressidx = 1;
 //         while (searchvar != nullptr) {
 //           if (searchvar->data.type == TYPE_VARIABLE &&
-//               strcmp(array[*arrayindex]->name, searchvar->data.varName) == 0) {
+//               strcmp(array[*arrayindex]->name, searchvar->data.varName) == 0)
+//               {
 //             array[*arrayindex]->adress[addressidx] = &searchvar->data.number;
 //             array[*arrayindex]->adresscount = addressidx;
 //             ++addressidx;
