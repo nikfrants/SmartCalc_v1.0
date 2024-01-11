@@ -53,11 +53,12 @@ void SmartCalc::plot() {
   QCPAxisRect* axisRect = ui->grid->axisRect();
   QCPRange xrange = axisRect->axis(QCPAxis::atBottom)->range();
   //  QCPRange yrange = axisRect->axis(QCPAxis::atLeft)->range();
-  xBegin = ui->grid->xAxis->range().lower;// -      (ui->grid->xAxis->range().upper - ui->grid->xAxis->range().lower) * 3;
-  xEnd = ui->grid->xAxis->range().upper;// +         (ui->grid->xAxis->range().upper - ui->grid->xAxis->range().lower) * 3;
-  auto yBegin = ui->grid->yAxis->range().lower ;//-      (ui->grid->yAxis->range().upper - ui->grid->yAxis->range().lower) * 3;
-  auto yEnd =  ui->grid->yAxis->range().upper;// +      (ui->grid->yAxis->range().upper - ui->grid->yAxis->range().lower) * 3;
-  ;
+  xBegin =
+      ui->grid->xAxis->range().lower -
+      (ui->grid->xAxis->range().upper - ui->grid->xAxis->range().lower) * 3;
+  xEnd = ui->grid->xAxis->range().upper +
+         (ui->grid->xAxis->range().upper - ui->grid->xAxis->range().lower) * 3;
+
   // DOTS
   h = (xEnd - xBegin) / 40000;
   ;
@@ -77,14 +78,11 @@ void SmartCalc::plot() {
   N = (xEnd - xBegin) / h + 2;
   calc_s ans = {0, -100};
   calc_s ans2 = {0, -100};
-  calc_s prevX = {0, -100};
-  calc_s prevY = {0, -100};
-int counter = 5;;
-  calc_s drawX = {0, -100};
-  calc_s drawY = {0, -100};
-  string readystr, readystr2, prevreadystr;
-  double scale = h;
-  for (X = xBegin; X <= xEnd;) {
+  string readystr;
+  string readystr2;
+  string prevreadystr;
+  for (X = xBegin; X <= xEnd; X += h) {
+    readystr = replaceVars(expression, X);
     // { // LINES
     //   ans = parseAndCalc(readystr);
     //   readystr2 = replaceVars(expression, X + h);
@@ -99,107 +97,21 @@ int counter = 5;;
     //     //   y.push_back(ans.n);
     //   }
     // }
-
-    // DOTS
-    calc_s ans = parseAndCalc(readystr);
-    if ( (abs(prevX.n - X) + abs(prevY.n - ans.n)) > abs(xEnd - xBegin) / 50) {
-      X -= scale;
-      scale = scale / 3;
-
-      prevY.n = ans.n;
-      prevX.n = X;
-      X += scale;
-      readystr = replaceVars(expression, X);
+    {  // DOTS
       calc_s ans = parseAndCalc(readystr);
-      if (X < xBegin || X > xEnd || ans.n > yEnd || ans.n < yBegin) {
-        prevX.n = X;
-        prevY.n = ans.n;
-
-       // X += scale;
-        readystr = replaceVars(expression, X);
-        calc_s ans = parseAndCalc(readystr);
-        if (ans.e == E_NO_ERRORS) {
-          x.push_back((X));
-          y.push_back(ans.n);
-          X += scale;
-        }
-      }
-
-    }
-
-    else if ( (abs(prevX.n - X) + abs(prevY.n - ans.n)) <  abs(xEnd - xBegin) / 30000) {
-      X -= scale;
-      scale = scale * 1.05;
-
-      prevX.n = X;
-      prevY.n = ans.n;
-
-      X += scale;
-      readystr = replaceVars(expression, X);
-      calc_s ans = parseAndCalc(readystr);
-      if (X < xBegin || X > xEnd || ans.n > yEnd || ans.n < yBegin) {
-        prevX.n = X;
-        prevY.n = ans.n;
-
-        X += scale;
-        readystr = replaceVars(expression, X);
-        calc_s ans = parseAndCalc(readystr);
-        if (ans.e == E_NO_ERRORS) {
-          x.push_back((X));
-          y.push_back(ans.n);
-          X += scale;
-        } else {
-          X += scale;
-        }
-      }
-    } else {
-      prevX.n = X;
-      prevY = ans;
-      readystr = replaceVars(expression, X);
-      calc_s ans = parseAndCalc(readystr);
-
       if (ans.e == E_NO_ERRORS) {
-
         x.push_back((X));
         y.push_back(ans.n);
-        X += scale;
-        if ((abs(drawX.n - X) >abs(xEnd - xBegin) / 10)  &&  abs(drawY.n - ans.n) >abs(xEnd - xBegin) / 10)
-            {
-          ui->grid->graph(0)->addData(x, y);
-          ui->grid->replot();
-          drawX.n = X;
-          drawY.n = ans.n;
-        }
-
-        readystr = replaceVars(expression, X);
-      } else {
-        // X-=scale;
-        if (scale > 1)
-          scale = scale * 1.05;
-        else
-          scale = scale / (scale * 1.05);
-        X += scale;
-     }
-
-      if (prevY.n < yBegin || prevY.n > yEnd) {
-        if (scale > 1)
-          scale = scale * 1.05;
-        else
-          scale = scale / (scale * 1.05);
-        X += scale;
       }
     }
-    // if(scale >abs(xEnd - xBegin) / 1000 )
-    //   scale = abs(xEnd - xBegin) / 1000;
   }
-  //
+
   // ui->grid->graph()->clearData();
 
   ui->grid->addGraph();
   ui->grid->graph(0)->addData(x, y);
   ui->grid->replot();
 }
-
 std::string longDoubleToString(long double n) {
   char buffer[100];
 
