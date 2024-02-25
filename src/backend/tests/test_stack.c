@@ -3,6 +3,7 @@
 //
 
 #include <check.h>
+
 #include "test.h"
 
 //
@@ -78,9 +79,9 @@ START_TEST(print_all_1) {
 
   stackPrintByIndex(&st, 2);
   stackPrintAll(&st);
-  for(int i = 0 ; i < 5 ; i++){
+  for (int i = 0; i < 5; i++) {
     parseData data = pop(&st);
-    printParsedData(&data,  1);
+    printParsedData(&data, 1);
   }
   freeStack(&st);
 }
@@ -88,11 +89,15 @@ START_TEST(print_all_1) {
 START_TEST(notatnion_to_str) {
   stack st;
   stackInit(&st);
-  char s[200] = "-cos(4)+(((sin(4)+tan(4)+sqrt(4))+ln(4)+log(4)+asin(4))+acos(4)+atan(4))+1-1*1/1^1mod1";
- // int size;
+  char s[200] =
+      "-cos(4)+(((sin(4)+tan(4)+sqrt(4))+ln(4)+log(4)+asin(4))+acos(4)+atan(4))"
+      "+1-1*1/1^1mod1";
+  // int size;
   st = evaluatePolishNotation(s);
-  char ans [200];
-  char correct[200] = "4 cos ~ 4 sin 4 tan + 4 sqrt + 4 ln + 4 log + 4 asin + 4 acos + 4 atan + + 1 + 1 1 * 1 1 ^ / 1 m -";
+  char ans[200];
+  char correct[200] =
+      "4 cos ~ 4 sin 4 tan + 4 sqrt + 4 ln + 4 log + 4 asin + 4 acos + 4 atan "
+      "+ + 1 + 1 1 * 1 1 ^ / 1 m -";
   notationToString(s, ans);
   ck_assert_str_eq(ans, correct);
   freeStack(&st);

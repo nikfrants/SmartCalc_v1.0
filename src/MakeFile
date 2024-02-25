@@ -1,3 +1,10 @@
+CC=gcc
+STDFLAGS=-Wall -Werror -Wextra -std=c11 #-fsanitize=address
+TST_CFLAGS:= -g $(STDFLAGS)
+GCOV_FLAGS?=-fprofile-arcs -ftest-coverage
+LINUX_FLAGS=-lsubunit -lrt -lpthread -lm
+LIBS=-lcheck
+VALGRIND_FLAGS=--trace-children=yes --track-fds=yes --track-origins=yes --leak-check=full --show-leak-kinds=all --verbose
 
 flafs_c			=-Wall -Werror -Wextra -std=c11
 # flags_check=-lcheck
@@ -7,14 +14,15 @@ flags_sanitize	=#-fsanitize=address -static-libasan -g
 flags_valgrid	=	CK_FORK=no valgrind --trace-children=yes \
 					--track-fds=yes --leak-check=full \
 					--track-origins=yes --log-file=valgrind-out.txt --show-leak-kinds=all
+TEST_FILES = $(wildcard backend/tests/*.c)
+SRC_FILES = $(wildcard backend/*.c)
 
-
-dir_tests		= backend/tests/
-dir_calc_src	= gui
+dir_tests		= gui/backend/tests/
+dir_calc_src	= gui/backend/
 dir_build		= ../build
 static_lib 		= s21_SmartCalc.a
 dir_qt 			= gui
-qt_project_name = SmartCalc
+qt_project_name = ../build/
 DIRECTORY 		= gui/
 ifeq ($(shell uname), Linux)
 	flafs_c		+= -U__STRICT_ANSI__
@@ -23,85 +31,46 @@ endif
 
 all: install run
 
+#install:
+#	cd gui/ && cmake $(CURDIR)/gui && make
 install:
-	cd gui/ && cmake $(CURDIR)/gui && make
+	cmake -S gui/. -B ../build
+	cmake --build ../build --target SmartCalc --config Release  --clean-first
 
 run:
-	./gui/SmartCalc
+	../build/SmartCalc
 
 uninstall:
-	rm -rf ../$(dir_build)
+	rm -rf ../build
 
 
-dist:
-	make install
+dist: install
 	[ -d ../$(qt_project_name) ] || mkdir -p ../$(qt_project_name)
-	cp -r ./* ../$(qt_project_name)/
-	tar cvzf ../SmartCalc_v1.0.tgz ../$(qt_project_name)/
-	rm -rf ../$(qt_project_name)/
-# 	make uninstall
+	cp -r ../build/* ../$(qt_project_name)/
+	tar cvzf ../SmartCalc_v1.0.tgz -C ../ $(qt_project_name)
+	rm -rf ../$(qt_project_name)
+	#make uninstall
 
 dvi:
-ifeq ($(shell uname), Linux)
-	open dvi.html
-else
-	open dvi.html
-endif
 
+	open html/index.html
 
-test: clean
-	checkmk clean_mode=1 ${dir_tests}/*.check > test.c
-	gcc ${flags_sanitize} ${flafs_c} ${wildcard ${dir_calc_src}/*.c} test.c -o test ${flags_check}
-	rm -rf test.c
-	./test
-
+test: #clean
+	cmake -S gui/. -B ../build/tests
+	cmake --build ../build/tests --target Back_test --config Release  --clean-first
 
 gcov_report: clean
-	checkmk clean_mode=1 ${dir_tests}/*.check > test.c
-	gcc ${flafs_c} ${wildcard ${dir_calc_src}/*.c} test.c -o test ${flags_check} ${flags_gcov}
-	./test
-	lcov --capture --directory . --output-file report.info
-	genhtml report.info --output-directory report
-	make clean
-ifeq ($(shell uname), Linux)
-	firefox report/index.html
-else
-	open report/index.html
-endif
-
-
-${static_lib}:
-	rm -rf ${static_lib}
-	gcc ${flags_sanitize} ${flafs_c} -c ${wildcard ${dir_calc_src}/*.c}
-	ar rc ${static_lib} *.o
-	ranlib ${static_lib}
-	rm *.o
-
-
-
-
+	$(CC) $(STDFLAGS) $(GCOV_FLAGS)  $(TEST_FILES) $(SRC_FILES) -o Back_test $(LIBS) $(LINUX_FLAGS)
+	./Back_test
+	gcov *.gcda
+	gcovr --html-details -o report.html
+	open report.html
 
 clean:
-	rm -rf a.out unit_test gcov_test *.gcda *.gcno *.info ${static_lib} *.o  test.c valgrind-out.txt
+	rm -rf a.out  Back_test unit_test gcov_test *.gcda *.gcno *.gcov *.info ${static_lib} *.o  test.c valgrind-out.txt *.css
 clean_all: clean
-	rm -rf report test main $(dir_qt)/build-smart_calc ../SmartCalc_v1.0.tgz $(dir_qt)/build-sm_clc-Desktop-Debug
-
-
-
-
-valgrind: clean
-	checkmk clean_mode=1 ${dir_tests}/*.check > test.c
-	gcc ${flafs_c} ${wildcard ${dir_calc_src}/*.c} test.c -o test ${flags_check}
-	rm -rf test.c
-	${flags_valgrid} ./test
-
-check_clang_format:
-	cp ../materials/linters/.clang-format .
-	clang-format -n ./${dir_calc_src}/*.c ./$(dir_qt)/${qt_project_name}/*.cpp
-	rm -f .clang-format
+	rm -rf report test main $(dir_qt)/build-smart_calc ../SmartCalc_v1.0.tgz $(dir_qt)/build-sm_clc-Desktop-Debug  report*.html
 
 fix_clang_format:
-	cp ../materials/linters/.clang-format .
-	clang-format -i ./${dir_calc_src}/*.c ./$(dir_qt)/${qt_project_name}/*.cpp
+	clang-format -i *.cpp  gui/*.cpp gui/*.h backend/*.c backend/*.h backend/tests/*.c backend/tests/*.h
 	rm -f .clang-format
-

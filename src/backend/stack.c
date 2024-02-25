@@ -56,6 +56,10 @@ stNode *createNode(parseData data) {
   return tmp;
 }
 
+/// \brief добавляет элемент в стек
+/// \param st - указатель на стек
+/// \param data - данные которые будут добавлены в стек
+/// \return 0
 int push(stack *st, parseData data) {
   stNode *node = malloc(sizeof(stNode));
   initNode(node, data);
@@ -106,26 +110,32 @@ void freeStack(stack *st) {
 
 void stackPrintValue(const parseData value, int useName) {
   if (value.type == 0) {
-    if (useName) print("T0Numr_");
+    if (useName)
+      print("T0Numr_");
     printf("%Lg ", value.number);
   }
   if (value.type == 1) {
-    if (useName) print("T1undefined_");
+    if (useName)
+      print("T1undefined_");
     printf("%0.40Lg ", value.number);
   }
   if (value.type == 2) {
-    if (useName) print("T2undefined_");
+    if (useName)
+      print("T2undefined_");
   } /* printf("%Lg ", value.number);*/
   if (value.type == 3) {
-    if (useName) print("T3op_");
+    if (useName)
+      print("T3op_");
     printf("%c ", value.op);
   }
   if (value.type == 4) {
-    if (useName) print("T4Func_");
+    if (useName)
+      print("T4Func_");
     printf("%s ", value.func);
   }
   if (value.type == 5) {
-    if (useName) print("T5Var_");
+    if (useName)
+      print("T5Var_");
     printf("%s ", value.varName);
   }
 }
@@ -159,7 +169,8 @@ void print(char *s) { printf("%s\n", s); }
 
 void printParsedData(parseData *data, int size) {
   for (int i = 0; i < size; ++i) {
-    if (data[i].type == TYPE_DIGIT) printf("%Lg ", data[i].number);
+    if (data[i].type == TYPE_DIGIT)
+      printf("%Lg ", data[i].number);
     if (data[i].type == TYPE_BRACKET)
       printf("%c ", data[i].op);
     else if (data[i].type == TYPE_OPERATOR)
@@ -172,20 +183,21 @@ void printParsedData(parseData *data, int size) {
 }
 
 char *notationToString(char s[], char *str) {
-  stack notation;//, reversed;
+  stack notation; //, reversed;
   stackInit(&notation);
   notation = evaluatePolishNotation(s);
-int idx  = 0;
+  int idx = 0;
   stNode *temp = notation.last;
   for (int i = 0; temp; ++i) {
     char buf[150];
-      if (temp->data.type == TYPE_DIGIT) {
-        if (fmodl(temp->data.number, (int)temp->data.number) == 0)
-          sprintf(buf, "%.0LF", temp->data.number);
-        else
-          sprintf(buf, "%.2LF", temp->data.number);
-      }
-    if (temp->data.type == TYPE_FUNCTION) sprintf(buf, "%s", temp->data.func);
+    if (temp->data.type == TYPE_DIGIT) {
+      if (fmodl(temp->data.number, (int)temp->data.number) == 0)
+        sprintf(buf, "%.0LF", temp->data.number);
+      else
+        sprintf(buf, "%.2LF", temp->data.number);
+    }
+    if (temp->data.type == TYPE_FUNCTION)
+      sprintf(buf, "%s", temp->data.func);
     if (temp->data.type == TYPE_VARIABLE)
       sprintf(buf, "%s", temp->data.varName);
     if (temp->data.type == TYPE_OPERATOR)
@@ -194,15 +206,17 @@ int idx  = 0;
     for (int j = 0; buf[j]; ++j, ++i)
       str[i] = buf[j];
     temp = temp->prev;
-    idx=i;;
+    idx = i;
+    ;
   }
   str[idx] = '\000';
   freeStack(&notation);
   return str;
 }
-char *parsedToString(char *str, parseData *data,int size) {
+
+char *parsedToString(char *str, parseData *data, int size) {
   int idx = 0;
-  for (int i = 0; i<size; ) {
+  for (int i = 0; i < size;) {
     char buf[150];
     if (data[i].type == TYPE_DIGIT) {
       if (fmodl(data[i].number, (int)data[i].number) == 0)
@@ -210,14 +224,15 @@ char *parsedToString(char *str, parseData *data,int size) {
       else
         sprintf(buf, "%.10LF", data[i].number);
     }
-    if (data[i].type == TYPE_FUNCTION) sprintf(buf, "%s", data[i].func);
+    if (data[i].type == TYPE_FUNCTION)
+      sprintf(buf, "%s", data[i].func);
     if (data[i].type == TYPE_VARIABLE)
       sprintf(buf, "%s", data[i].varName);
     if (data[i].type == TYPE_OPERATOR)
       sprintf(buf, "%c", data[i].op);
     for (int j = 0; buf[j]; ++j, ++i)
-       str[i] = buf[j];
-    idx=i;
+      str[i] = buf[j];
+    idx = i;
   }
   str[idx] = '\000';
   return str;

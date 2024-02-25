@@ -4,35 +4,35 @@
 #include "stack.h"
 
 const char *errortexts[] = {
-    "No errors",                                                     // 0
-    "Stack overflow",                                                // 1
-    "Stack underflow",                                               // 2
-    "Division by zero",                                              // 3
-    "Encountered zero inside tangent function",                      // 4
-    "Negative argument inside natural logarithm function",           // 5
-    "Negative argument inside base 10 logarithm function",           // 6
-    "Negative argument inside square root function",                 // 7
-    "Value not in the domain of arccosine function",                 // 8
-    "Value not in the domain of arcsine function",                   // 9
-    "Encountered unknown or unsupported operation",                  // 10
-    "Incorrect polish notation",                                     // 11
-    "Expected operation but got digit while processing expression",  // 12
-    "Function does not exist",                                       // 13
-    "Error during conversion to Polish notation",                    // 14
-    "Expression is incorrect",                                       // 15
-    "Two operators near each other",                                 // 16
-    "Two functions near each other",                                 // 17
-    "Incorrect brackets sequence",                                   // 18
-    "Two multiples near each other",                                 // 19
-    "Two powers near each other",                                    // 20
-    "Two divisions near each other",                                 // 21
-    "Two mod near each other",                                       // 22
-    "Two dots near each other",                                      // 23
-    "Mod has one numbers",                                           // 24
-    "No digits in str",                                              // 25
-    "No digits near dot",                                            // 26
-    "Only digits in str",                                            // 27
-    "Incorrect variables"                                            // 28
+    "No errors",                                                    // 0
+    "Stack overflow",                                               // 1
+    "Stack underflow",                                              // 2
+    "Division by zero",                                             // 3
+    "Encountered zero inside tangent function",                     // 4
+    "Negative argument inside natural logarithm function",          // 5
+    "Negative argument inside base 10 logarithm function",          // 6
+    "Negative argument inside square root function",                // 7
+    "Value not in the domain of arccosine function",                // 8
+    "Value not in the domain of arcsine function",                  // 9
+    "Encountered unknown or unsupported operation",                 // 10
+    "Incorrect polish notation",                                    // 11
+    "Expected operation but got digit while processing expression", // 12
+    "Function does not exist",                                      // 13
+    "Error during conversion to Polish notation",                   // 14
+    "Expression is incorrect",                                      // 15
+    "Two operators near each other",                                // 16
+    "Two functions near each other",                                // 17
+    "Incorrect brackets sequence",                                  // 18
+    "Two multiples near each other",                                // 19
+    "Two powers near each other",                                   // 20
+    "Two divisions near each other",                                // 21
+    "Two mod near each other",                                      // 22
+    "Two dots near each other",                                     // 23
+    "Mod has one numbers",                                          // 24
+    "No digits in str",                                             // 25
+    "No digits near dot",                                           // 26
+    "Only digits in str",                                           // 27
+    "Incorrect variables"                                           // 28
 };
 
 calc_s new_calc_s(long double n, int err) {
@@ -69,8 +69,10 @@ calc_s calcPolishNotation(stack *data) {
       if (a.type == E_STACK_UNDERFLOW)
         return new_calc_s(NAN, E_INCORRECT_POLISH_NOTATION);
       calc = calcDigits(&op, new_calc_s(a.number, 0), new_calc_s(b.number, 0));
-      if (isnan(calc.n)) return calc;
-      if (calc.n > -ROUND && calc.n < ROUND) calc.n = 0;
+      if (isnan(calc.n))
+        return calc;
+      if (calc.n > -ROUND && calc.n < ROUND)
+        calc.n = 0;
       push(&ans, initData(calc.n, op.op, TYPE_DIGIT, 0));
     }
   }
@@ -80,24 +82,32 @@ calc_s calcPolishNotation(stack *data) {
 }
 
 calc_s calcDigits(parseData *data, calc_s a, calc_s b) {
-//  calc_s ans;
-  if (data->type == TYPE_OPERATOR) return calcDigitsOp(data, a, b);
-  if (data->type == TYPE_FUNCTION) return calcDigitsFunc(data, b);
+  //  calc_s ans;
+  if (data->type == TYPE_OPERATOR)
+    return calcDigitsOp(data, a, b);
+  if (data->type == TYPE_FUNCTION)
+    return calcDigitsFunc(data, b);
   return new_calc_s(NAN, E_EXPECTED_OPERATION_GOT_DIGIT);
 }
 calc_s calcDigitsOp(parseData *data, calc_s a, calc_s b) {
- // calc_s ans;
-  if (data->op == '+') return new_calc_s(a.n + b.n, 0);
-  if (data->op == '-') return new_calc_s(a.n - b.n, 0);
-  if (data->op == '*') return new_calc_s(a.n * b.n, 0);
+  // calc_s ans;
+  if (data->op == '+')
+    return new_calc_s(a.n + b.n, 0);
+  if (data->op == '-')
+    return new_calc_s(a.n - b.n, 0);
+  if (data->op == '*')
+    return new_calc_s(a.n * b.n, 0);
   if (data->op == '/')
     return b.n != 0 ? new_calc_s(a.n / b.n, 0) : new_calc_s(NAN, E_DIV_BY_ZERO);
-  if (data->op == '^') return new_calc_s(powl(a.n, b.n), 0);
+  if (data->op == '^')
+    return new_calc_s(powl(a.n, b.n), 0);
   if (data->op == 'm')
     return b.n != 0 ? new_calc_s(fmodl(a.n, b.n), 0)
                     : new_calc_s(NAN, E_DIV_BY_ZERO);
-  if (data->op == '~') return new_calc_s(-b.n, 0);
-  if (data->op == 'p') return new_calc_s(+b.n, 0);
+  if (data->op == '~')
+    return new_calc_s(-b.n, 0);
+  if (data->op == 'p')
+    return new_calc_s(+b.n, 0);
   return new_calc_s(NAN, E_UNEXIST_OPERATION);
 }
 calc_s calcDigitsFunc(parseData *data, calc_s b) {
@@ -111,11 +121,12 @@ calc_s calcDigitsFunc(parseData *data, calc_s b) {
   } else if (strncmp(data->func, "acos", 4) == 0) {
     return fabsl(b.n) <= 1 ? new_calc_s(acosl(b.n), 0)
                            : new_calc_s(NAN, E_NOT_IN_SCOPE_ACOS);
-  }else if (strncmp(data->func, "atan", 4) == 0) {
-    return  new_calc_s(atanl(b.n), 0);
+  } else if (strncmp(data->func, "atan", 4) == 0) {
+    return new_calc_s(atanl(b.n), 0);
   } else if (strncmp(data->func, "tan", 3) == 0) {
-    return !(cosl(b.n)  > -ROUND && cosl(b.n) < ROUND)  ? new_calc_s(tanl(b.n), 0)
-                          : new_calc_s(NAN, E_DIV_BY_ZERO);
+    return !(cosl(b.n) > -ROUND && cosl(b.n) < ROUND)
+               ? new_calc_s(tanl(b.n), 0)
+               : new_calc_s(NAN, E_DIV_BY_ZERO);
   } else if (strncmp(data->func, "ln", 2) == 0) {
     return b.n >= 0 ? new_calc_s(logl(b.n), 0) : new_calc_s(NAN, E_NERATIVE_LN);
   } else if (strncmp(data->func, "log", 3) == 0) {
@@ -216,7 +227,8 @@ char *errorDescription(int error) {
 //         addressidx = 0;
 //         while (searchvar != NULL) {
 //           if (searchvar->data.type == TYPE_VARIABLE &&
-//               strcmp(array[*arrayindex].name, searchvar->data.varName) == 0) {
+//               strcmp(array[*arrayindex].name, searchvar->data.varName) == 0)
+//               {
 //             array[*arrayindex].adress[addressidx] = &searchvar->data.number;
 //             ++addressidx;
 //           }

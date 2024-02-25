@@ -11,7 +11,7 @@ extern "C" {
 }
 #endif
 using namespace std;
-SmartCalc::SmartCalc(QWidget* parent)
+SmartCalc::SmartCalc(QWidget *parent)
     : QMainWindow(parent), ui(new Ui::SmartCalc) {
   ui->setupUi(this);
   ui->grid->setInteraction(QCP::iRangeZoom, true);
@@ -30,12 +30,13 @@ SmartCalc::SmartCalc(QWidget* parent)
 //     // plot();
 //   }
 // }
+
 void SmartCalc::plot() {
   x.clear();
   y.clear();
   ui->grid->addGraph();
-  QCPGraph* graph =
-      ui->grid->graph(0);  // Предполагая, что вы имеете один график
+  QCPGraph *graph =
+      ui->grid->graph(0); // Предполагая, что вы имеете один график
   // Отключаем отображение линий между точками на графике
   ui->grid->graph(0)->clearData();
   ui->grid->clearItems();
@@ -50,7 +51,7 @@ void SmartCalc::plot() {
   scatterStyle.setSize(1);
   graph->setScatterStyle(scatterStyle);
 
-  QCPAxisRect* axisRect = ui->grid->axisRect();
+  QCPAxisRect *axisRect = ui->grid->axisRect();
   QCPRange xrange = axisRect->axis(QCPAxis::atBottom)->range();
   //  QCPRange yrange = axisRect->axis(QCPAxis::atLeft)->range();
   xBegin =
@@ -60,7 +61,7 @@ void SmartCalc::plot() {
          (ui->grid->xAxis->range().upper - ui->grid->xAxis->range().lower) * 3;
 
   // DOTS
-  h = (xEnd - xBegin) / 40000;
+  h = (xEnd - xBegin) / 30000;
   ;
   // LINES
   // h = (xEnd - xBegin) / 5000;
@@ -97,7 +98,7 @@ void SmartCalc::plot() {
     //     //   y.push_back(ans.n);
     //   }
     // }
-    {  // DOTS
+    { // DOTS
       calc_s ans = parseAndCalc(readystr);
       if (ans.e == E_NO_ERRORS) {
         x.push_back((X));
@@ -112,6 +113,10 @@ void SmartCalc::plot() {
   ui->grid->graph(0)->addData(x, y);
   ui->grid->replot();
 }
+// \brief Convert long double to string
+// \param  n long double
+// \return string representation of long double
+
 std::string longDoubleToString(long double n) {
   char buffer[100];
 
@@ -123,18 +128,21 @@ std::string longDoubleToString(long double n) {
     return "Error: Unable to convert long double to string";
   }
 }
+
 string SmartCalc::replaceVars(string expression, long double x) {
   string tmplt = "x";
   for (int i = 0; i < expression.size(); i++)
-    if (expression[i] == 'x') expression.replace(i, 1, longDoubleToString(x));
+    if (expression[i] == 'x')
+      expression.replace(i, 1, longDoubleToString(x));
   return expression;
 }
-calc_s SmartCalc::parseAndCalc(const std::string& expression) {
+
+calc_s SmartCalc::parseAndCalc(const std::string &expression) {
   int size, error, xExists = 0;
 
-  parseData* parsedExpression = {nullptr};
-  parsedExpression = parser((char*)expression.c_str(), &size);
-  error = check(parsedExpression, size, (char*)expression.c_str());
+  parseData *parsedExpression = {nullptr};
+  parsedExpression = parser((char *)expression.c_str(), &size);
+  error = check(parsedExpression, size, (char *)expression.c_str());
   if (error != E_NO_ERRORS && error != E_ONLY_DIGITS_EXIST ||
       parsedExpression[0].type == E_INCORRECT_EXPRESSION) {
     calc_s ans = {0, error != E_NO_ERRORS ? error : E_INCORRECT_EXPRESSION};
@@ -142,8 +150,9 @@ calc_s SmartCalc::parseAndCalc(const std::string& expression) {
   }
   stack notation, reversed;
   stackInit(&notation), stackInit(&reversed);
-  notation = evaluatePolishNotation((char*)expression.c_str());
-  while (notation.stSize) push(&reversed, pop(&notation));
+  notation = evaluatePolishNotation((char *)expression.c_str());
+  while (notation.stSize)
+    push(&reversed, pop(&notation));
   string notationStr = polishToString(&reversed);
   calc_s ans = calcPolishNotation(&reversed);
 
@@ -153,7 +162,7 @@ calc_s SmartCalc::parseAndCalc(const std::string& expression) {
   return ans;
 }
 SmartCalc::~SmartCalc() { delete ui; }
-void getVariablesFromPolish(stack* polish, variables* array[], int* arrayindex);
+void getVariablesFromPolish(stack *polish, variables *array[], int *arrayindex);
 void SmartCalc::on_pushButton_E_calc_clicked() {
   calculate_Polish();
   // здесь я собираюсь использовать функцию newprint
@@ -171,9 +180,9 @@ void SmartCalc::calculate_Polish() {
       expression.replace(i, 1, ui->lineEdit_X_value->text().toStdString());
     }
   }
-  parseData* parsedExpression = {nullptr};
-  parsedExpression = parser((char*)expression.c_str(), &size);  // TODO CLEAR
-  error = check(parsedExpression, size, (char*)expression.c_str());
+  parseData *parsedExpression = {nullptr};
+  parsedExpression = parser((char *)expression.c_str(), &size); // TODO CLEAR
+  error = check(parsedExpression, size, (char *)expression.c_str());
   if (error != E_NO_ERRORS ||
       parsedExpression[0].type == E_INCORRECT_EXPRESSION ||
       xExists == 1 && Xvalues.empty()) {
@@ -183,8 +192,9 @@ void SmartCalc::calculate_Polish() {
   } else {
     stack notation, reversed;
     stackInit(&notation), stackInit(&reversed);
-    notation = evaluatePolishNotation((char*)expression.c_str());
-    while (notation.stSize) push(&reversed, pop(&notation));
+    notation = evaluatePolishNotation((char *)expression.c_str());
+    while (notation.stSize)
+      push(&reversed, pop(&notation));
     string notationStr = polishToString(&reversed);
     calc_s ans = calcPolishNotation(&reversed);
     freeStack(&notation);
@@ -201,13 +211,15 @@ void SmartCalc::calculate_Polish() {
   ui->lineEdit_answer->setText(answer.c_str());
   ui->lineEdit_infotext->setText(infotext.c_str());
 }
-int isInVector(vector<string> s, string* temp) {
-  for (const auto& i : s) {
-    if (i == *temp) return 1;
+
+int isInVector(vector<string> s, string *temp) {
+  for (const auto &i : s) {
+    if (i == *temp)
+      return 1;
   }
   return 0;
 }
-std::vector<std::string> SmartCalc::Variables(parseData* data, int size) {
+std::vector<std::string> SmartCalc::Variables(parseData *data, int size) {
   vector<string> ans;
   string temp;
 
@@ -250,9 +262,10 @@ std::vector<std::string> SmartCalc::Variables(parseData* data, int size) {
 //   }
 //   *arrayindex += 1;
 // }
-std::string SmartCalc::polishToString(stack* parsedExpression) {
+
+std::string SmartCalc::polishToString(stack *parsedExpression) {
   std::string s;
-  stNode* temp = parsedExpression->last;
+  stNode *temp = parsedExpression->last;
   for (int i = 0; temp; ++i) {
     char buf[150];
     if (temp->data.type == TYPE_DIGIT)
@@ -260,23 +273,26 @@ std::string SmartCalc::polishToString(stack* parsedExpression) {
         sprintf(buf, "%.0LF ", temp->data.number);
       else
         sprintf(buf, "%.2LF ", temp->data.number);
-    if (temp->data.type == TYPE_FUNCTION) sprintf(buf, "%s", temp->data.func);
+    if (temp->data.type == TYPE_FUNCTION)
+      sprintf(buf, "%s", temp->data.func);
     if (temp->data.type == TYPE_VARIABLE)
       sprintf(buf, "%s ", temp->data.varName);
-    if (temp->data.type == TYPE_OPERATOR) sprintf(buf, "%c ", temp->data.op);
+    if (temp->data.type == TYPE_OPERATOR)
+      sprintf(buf, "%c ", temp->data.op);
     // strcpy(&str[i], buf);
     // s[0]=' ';
-    for (int j = 0; buf[j]; ++j, ++i) s += buf[j];
+    for (int j = 0; buf[j]; ++j, ++i)
+      s += buf[j];
     temp = temp->prev;
   }
   return s;
 }
-std::vector<long double> SmartCalc::getVariables(const std::string& Xvalues) {
+std::vector<long double> SmartCalc::getVariables(const std::string &Xvalues) {
   int idx = 0;
   std::vector<long double> varsInGui;
-  char* cstr = new char[Xvalues.length() + 1];
+  char *cstr = new char[Xvalues.length() + 1];
   strcpy(cstr, Xvalues.c_str());
-  char* token = strtok(cstr, " ,");
+  char *token = strtok(cstr, " ,");
   while (token != nullptr && idx < 100) {
     varsInGui.push_back(std::strtold(token, nullptr));
     idx++;
@@ -285,18 +301,18 @@ std::vector<long double> SmartCalc::getVariables(const std::string& Xvalues) {
   delete[] cstr;
   return varsInGui;
 }
-void SmartCalc::on_lineEdit_expression_textChanged(const QString& arg1) {
+void SmartCalc::on_lineEdit_expression_textChanged(const QString &arg1) {
   if (ui->checkBox_lifetime_calc->checkState() == Qt::Checked)
     calculate_Polish();
 }
-void SmartCalc::on_lineEdit_X_value_textChanged(const QString& arg1) {
+void SmartCalc::on_lineEdit_X_value_textChanged(const QString &arg1) {
   if (ui->checkBox_lifetime_calc->checkState() == Qt::Checked)
     calculate_Polish();
 }
 
 void SmartCalc::on_pushButton_D_1_clicked() { changeStringAdd("1"); }
 
-void SmartCalc::changeStringAdd(const string& str) {
+void SmartCalc::changeStringAdd(const string &str) {
   string curr = ui->lineEdit_expression->text().toStdString();
   ui->lineEdit_expression->setText((curr + str).c_str());
 }
@@ -363,25 +379,20 @@ void SmartCalc::on_pushButton_M_tan_clicked() { changeStringAdd("tan"); }
 
 void SmartCalc::on_pushButton_M_ln_clicked() { changeStringAdd("ln"); }
 
-void SmartCalc::on_pushButton_V_graph_clicked() {// changeStringAdd("plot");
+void SmartCalc::on_pushButton_V_graph_clicked() { // changeStringAdd("plot");
   plot();
 }
 
-
-
-void SmartCalc::on_pushButton_V_graph_2_clicked()
-{
+void SmartCalc::on_pushButton_V_graph_2_clicked() {
   calcCredit();
-    // ui->centralwidget->resize(1200,461);
-  if(this->width() == 1200) {
-    this->resize(701,461);
+  // ui->centralwidget->resize(1200,461);
+  if (this->width() == 1200) {
+    this->resize(701, 461);
     ui->pushButton_V_graph_2->setText("Ещё→");
-  }
-  else {
-    this->resize(1200,461);
+  } else {
+    this->resize(1200, 461);
     ui->pushButton_V_graph_2->setText("Ещё←");
   }
-
 }
 
 void SmartCalc::calcCredit() {
@@ -389,41 +400,35 @@ void SmartCalc::calcCredit() {
 
   float credit_sum1 = ui->doubleSpinBox_credit_summ_1->text().toFloat();
   float S = ui->spinBox_credit_range_2->text().toFloat();
-  float M = ui->doubleSpinBox_paym_3->text().toFloat()/1200;
-  if(credit_sum1!=0 && S!=0 && M!=0) {
-    float k  = (M * powf(1 + M,S) / (powf(1 + M, S) - 1));
+  float M = ui->doubleSpinBox_paym_3->text().toFloat() / 1200;
+  if (credit_sum1 != 0 && S != 0 && M != 0) {
+    float k = (M * powf(1 + M, S) / (powf(1 + M, S) - 1));
     float annuetpay = credit_sum1 * k;
-    float opwerpay =  fabs(annuetpay*S - credit_sum1);
+    float opwerpay = fabs(annuetpay * S - credit_sum1);
 
-  // int credit_type = 0;
-  // if (ui->credit_check_box_1->isChecked()) {
-  //   credit_type = 1;
-  // } else if (ui->credit_check_box_2->isChecked()) {
-  //   credit_type = 2;
-  // }
+    // int credit_type = 0;
+    // if (ui->credit_check_box_1->isChecked()) {
+    //   credit_type = 1;
+    // } else if (ui->credit_check_box_2->isChecked()) {
+    //   credit_type = 2;
+    // }
 
     ui->credit_text_1->setText(std::to_string(annuetpay).c_str());
     ui->credit_text_2->setText(std::to_string(opwerpay).c_str());
-    ui->credit_text_3->setText(std::to_string( annuetpay*S).c_str());
+    ui->credit_text_3->setText(std::to_string(annuetpay * S).c_str());
   }
   // float month= ui->
-
 }
 
-void SmartCalc::on_doubleSpinBox_paym_3_valueChanged(const QString &arg1)
-{
+void SmartCalc::on_doubleSpinBox_paym_3_valueChanged(const QString &arg1) {
   calcCredit();
 }
 
-
-void SmartCalc::on_spinBox_credit_range_2_valueChanged(const QString &arg1)
-{
+void SmartCalc::on_spinBox_credit_range_2_valueChanged(const QString &arg1) {
   calcCredit();
 }
 
-
-void SmartCalc::on_doubleSpinBox_credit_summ_1_valueChanged(const QString &arg1)
-{
+void SmartCalc::on_doubleSpinBox_credit_summ_1_valueChanged(
+    const QString &arg1) {
   calcCredit();
 }
-

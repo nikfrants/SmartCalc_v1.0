@@ -18,9 +18,6 @@ int main() {
   Suite *check_parsed = Check_parsed();
   Suite *calc_polish_n = Calc_polish_n();
 
-
-
-
   run_test(stack);
   run_test(parser);
   run_test(check_parsed);

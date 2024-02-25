@@ -5,7 +5,6 @@
 // parse string
 // and return array of separeted elements
 
-
 #include "stack.h"
 
 long double atold(char m[]) {
@@ -27,8 +26,8 @@ long double atold(char m[]) {
   return sign * number;
 }
 
-int isDigit(char* ch, parseData* currstr, int* parseidx,
-            int* stringParseindex) {
+int isDigit(char *ch, parseData *currstr, int *parseidx,
+            int *stringParseindex) {
   if (*ch == '\000') {
     return 0;
   }
@@ -39,7 +38,8 @@ int isDigit(char* ch, parseData* currstr, int* parseidx,
     int flagfloat = 0;
     int idx1 = 0;
     while ((*ch >= '0' && *ch <= '9') || *ch == '.') {
-      if (*ch == '.') flagfloat = 1;
+      if (*ch == '.')
+        flagfloat = 1;
       string[idx1] = *ch;
       ch++;
       currstr[0].lenth++;
@@ -59,8 +59,8 @@ int isDigit(char* ch, parseData* currstr, int* parseidx,
   }
   return 1;
 }
-int isFunction(char* ch, parseData* currstr, int* parseidx,
-               int* stringParseindex) {
+int isFunction(char *ch, parseData *currstr, int *parseidx,
+               int *stringParseindex) {
   if (*ch == '\000') {
     return 0;
   }
@@ -71,7 +71,7 @@ int isFunction(char* ch, parseData* currstr, int* parseidx,
       strncmp(ch, "asin", 4) == 0 || strncmp(ch, "atan", 4) == 0 ||
       strncmp(ch, "sqrt", 4) == 0 || strncmp(ch, "ln", 2) == 0 ||
       strncmp(ch, "log", 3) == 0) {
-    if (*ch == 'c') {  // strncmp(ch, "cos", 3) == 0;
+    if (*ch == 'c') { // strncmp(ch, "cos", 3) == 0;
       strcpy(currstr[0].func, "cos");
       currstr[0].lenth = 3;
     } else if (*ch == 't') {
@@ -107,8 +107,8 @@ int isFunction(char* ch, parseData* currstr, int* parseidx,
   }
   return 1;
 }
-int isOperator(char* ch, parseData* currstr, int* parseidx,
-               int* stringParseindex) {
+int isOperator(char *ch, parseData *currstr, int *parseidx,
+               int *stringParseindex) {
   if (*ch == '\000') {
     return 0;
   }
@@ -116,44 +116,45 @@ int isOperator(char* ch, parseData* currstr, int* parseidx,
   if (*ch == '+' || *ch == '-' || *ch == '*' || *ch == '/' || *ch == '^' ||
       *ch == '~' || *ch == 'm' || *ch == '(' || *ch == ')') {
     int increaseIfMod = 0;
-    if (strncmp(ch, "mod", 3) == 0) increaseIfMod = 2;
+    if (strncmp(ch, "mod", 3) == 0)
+      increaseIfMod = 2;
     currstr[0].op = *ch;
     currstr[0].type = TYPE_OPERATOR;
     switch (*ch) {
-      case '(':
-      case ')':
-        currstr[0].priority = 0;
-        currstr[0].type = TYPE_BRACKET;
-        break;
-      case '+':
-      case '-':
-        if (*parseidx == 0 && ((*ch == '+' || *ch == '-'))) {
-          currstr[0].op = *ch == '+' ? 'p' : '~';
-          currstr[0].priority = 4;
-        }
-        if (*parseidx > 0 && (((*parseidx == 0 && (*ch == '+' || *ch == '-')) ||
-                               currstr[-1].type == TYPE_OPERATOR ||
-                               currstr[-1].type == TYPE_BRACKET) &&
-                              strchr("+p~-*/^(", currstr[-1].op))) {
-          currstr[0].op = *ch == '+' ? 'p' : '~';
-          currstr[0].priority = 4;
-        } else
-          currstr[0].priority = 1;
-        break;
-      case '/':
-      case '*':
-      case 'm':  // mod
-        currstr[0].priority = 2;
-        break;
-      case '^':
-        currstr[0].priority = 3;
-        break;
-      case '~':
+    case '(':
+    case ')':
+      currstr[0].priority = 0;
+      currstr[0].type = TYPE_BRACKET;
+      break;
+    case '+':
+    case '-':
+      if (*parseidx == 0 && ((*ch == '+' || *ch == '-'))) {
+        currstr[0].op = *ch == '+' ? 'p' : '~';
         currstr[0].priority = 4;
-        break;
-      default:
-        currstr[0].priority = -2;  // error?
-        break;
+      }
+      if (*parseidx > 0 && (((*parseidx == 0 && (*ch == '+' || *ch == '-')) ||
+                             currstr[-1].type == TYPE_OPERATOR ||
+                             currstr[-1].type == TYPE_BRACKET) &&
+                            strchr("+p~-*/^(", currstr[-1].op))) {
+        currstr[0].op = *ch == '+' ? 'p' : '~';
+        currstr[0].priority = 4;
+      } else
+        currstr[0].priority = 1;
+      break;
+    case '/':
+    case '*':
+    case 'm': // mod
+      currstr[0].priority = 2;
+      break;
+    case '^':
+      currstr[0].priority = 3;
+      break;
+    case '~':
+      currstr[0].priority = 4;
+      break;
+    default:
+      currstr[0].priority = -2; // error?
+      break;
     }
     currstr[0].lenth += 1 + increaseIfMod;
     *stringParseindex += currstr[0].lenth;
@@ -162,7 +163,7 @@ int isOperator(char* ch, parseData* currstr, int* parseidx,
   }
   return 1;
 }
-int Other(char* ch, parseData* currstr, int* parseidx, int* stringParseindex) {
+int Other(char *ch, parseData *currstr, int *parseidx, int *stringParseindex) {
   if (*ch == '\000') {
     return 0;
   }
@@ -184,7 +185,7 @@ int Other(char* ch, parseData* currstr, int* parseidx, int* stringParseindex) {
     ++*parseidx;
     return 0;
   }
-  if ((*ch == 'x' || *ch == 'X') ) {//|| (*ch >= 'A' && *ch <= 'Z')) {
+  if ((*ch == 'x' || *ch == 'X')) { //|| (*ch >= 'A' && *ch <= 'Z')) {
     int index = 0;
     for (; index < 1 && ((*(ch + index) >= 'a' && *(ch + index) <= 'z') ||
                          (*(ch + index) >= 'A' && *(ch + index) <= 'Z'));
@@ -202,11 +203,11 @@ int Other(char* ch, parseData* currstr, int* parseidx, int* stringParseindex) {
   //   else incorrect expression  error
   return -1;
 }
-parseData* parser(char* str, int* strPrsidx) {
+parseData *parser(char *str, int *strPrsidx) {
   *strPrsidx = 0;
 
-  parseData* data = malloc(20000 * sizeof(parseData));
-  if(*str == '\000') {
+  parseData *data = malloc(20000 * sizeof(parseData));
+  if (*str == '\000') {
     data[0].type = E_INCORRECT_EXPRESSION;
     *strPrsidx = 0;
     return data;
@@ -224,7 +225,8 @@ parseData* parser(char* str, int* strPrsidx) {
       return data;
     }
   }
-  if(data[prseidx-1].type == TYPE_OPERATOR || data[prseidx-1].type == TYPE_FUNCTION)
+  if (data[prseidx - 1].type == TYPE_OPERATOR ||
+      data[prseidx - 1].type == TYPE_FUNCTION)
     data[0].type = E_INCORRECT_EXPRESSION;
   *strPrsidx = prseidx;
   return data;

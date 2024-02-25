@@ -12,12 +12,13 @@
 
 //
 START_TEST(parse_all) {
-  char s[300] =
-      "-cos(4)+sin(4)+tan(4)+sqrt(4) -123456.9876543+ln(4)+log(4)+asin(4)+acos(4)+atan(4)+1-1*"
-      "1/1^1mod1~1+pi-e+ +x+sin(10)";
-  parseData* newexpression = {NULL};
+  char s[300] = "-cos(4)+sin(4)+tan(4)+sqrt(4) "
+                "-123456.9876543+ln(4)+log(4)+asin(4)+acos(4)+atan(4)+1-1*"
+                "1/1^1mod1~1+pi-e+ +x+sin(10)";
+  parseData *newexpression = {NULL};
   char correctans[300] =
-      "~coscoscos+tantantan-123456.9876543000acos+atan+1-1*1/1^1m1~1+3.1415926536";
+      "~coscoscos+tantantan-123456.9876543000acos+atan+1-1*1/"
+      "1^1m1~1+3.1415926536";
   int size;
   char strexpr[300];
   newexpression = parser(s, &size);
@@ -324,9 +325,9 @@ END_TEST
 // }
 // END_TEST
 
-Suite* Parser() {
-  Suite* s = suite_create("Parser");
-  TCase* tc_create = tcase_create("Parser");
+Suite *Parser() {
+  Suite *s = suite_create("Parser");
+  TCase *tc_create = tcase_create("Parser");
   // tcase_add_test(tc_create, parse_cos);
   // tcase_add_test(tc_create, parse_tan);
   // tcase_add_test(tc_create, parse_sin);

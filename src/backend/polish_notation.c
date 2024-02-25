@@ -4,14 +4,15 @@
 #include "stack.h"
 
 int is_left_associative(char op) {
-  if (op && (op == '^' || op == '~')) return 0;
+  if (op && (op == '^' || op == '~'))
+    return 0;
   return 1;
 }
-stack evaluatePolishNotation(char* expression) {
+stack evaluatePolishNotation(char *expression) {
   int strIndex = 0, size = 0;
   stack polishNotation, processed;
   stackInit(&polishNotation), stackInit(&processed);
-  parseData* inputStr = parser(expression, &size);
+  parseData *inputStr = parser(expression, &size);
   while (strIndex < size) {
     if (inputStr[strIndex].type == TYPE_DIGIT ||
         inputStr[strIndex].type == TYPE_VARIABLE) {
@@ -20,15 +21,15 @@ stack evaluatePolishNotation(char* expression) {
     }
     if (strIndex < size && (inputStr[strIndex].type == TYPE_FUNCTION ||
                             (inputStr[strIndex].type == TYPE_BRACKET &&
-                                inputStr[strIndex].op == '('))) {
+                             inputStr[strIndex].op == '('))) {
       push(&processed, inputStr[strIndex]);
       ++strIndex;
     }
     if (strIndex < size && inputStr[strIndex].type == TYPE_OPERATOR) {
       while (processed.stSize &&
              (top(&processed)->data.priority > inputStr[strIndex].priority ||
-             ( top(&processed)->data.priority == inputStr[strIndex].priority &&
-                  is_left_associative(inputStr[strIndex].op)))) {
+              (top(&processed)->data.priority == inputStr[strIndex].priority &&
+               is_left_associative(inputStr[strIndex].op)))) {
         push(&polishNotation, pop(&processed));
       }
       push(&processed, inputStr[strIndex]), ++strIndex;

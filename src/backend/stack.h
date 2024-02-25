@@ -5,14 +5,16 @@
 #ifndef SMART_CALC_H
 #define SMART_CALC_H
 
-#endif  // SMART_CALC_H
+#endif // SMART_CALC_H
 
 // constants
 #define E 2.71828182845904523536
 #define PI 3.141592653589793238462643383279
 #define REALLOC_SIZE 10
 // #define STACK_MAX_SIZE 1000
-#define ROUND 1.0e-35 // e.g. 4e-15 - variable near 0 with ( 4/10^15 ) will be implemented as zero
+#define ROUND  1.0e-35 \
+ // e.g. 4e-15 - variable near 0 with ( 4/10^15 ) will be implemented
+          // as zero
 // errors
 #define E_NO_ERRORS -100
 //      stack
@@ -59,12 +61,9 @@
 #define TYPE_BRACKET 2
 #define TYPE_VARIABLE 5
 
-
-
-
+#include <math.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <math.h>
 #include <string.h>
 
 //   // 1 2 2 3 3 4 5
@@ -86,12 +85,12 @@ typedef struct variables {
 } variables;
 
 typedef struct parseData {
-  long double number;  // type 1
-  char op;             // type 3 operator
+  long double number; // type 1
+  char op;            // type 3 operator
   int type;
 
-  char func[5];     // type 4 func
-  char varName[5];  // type 5 variable
+  char func[5];    // type 4 func
+  char varName[5]; // type 5 variable
   int lenth;
   int priority;
 } parseData;
@@ -127,7 +126,7 @@ int stackPrintByIndex(const stack *st, int index);
 void stackPrintAll(const stack *st);
 stack evaluatePolishNotation(char *expression);
 parseData *parser(char *str, int *idx);
-calc_s calcPolishNotation(stack *data) ;
+calc_s calcPolishNotation(stack *data);
 void printParsedData(parseData *data, int size);
 calc_s calcDigits(parseData *data, calc_s a, calc_s b);
 calc_s new_calc_s(long double n, int err);
@@ -138,15 +137,16 @@ calc_s calcDigitsOp(parseData *data, calc_s a, calc_s b);
 calc_s calcDigitsFunc(parseData *data, calc_s b);
 int check_digits_in_str(char *str);
 int check_digits_near_dot(char *str);
-long double get_variable(char* name);
-void fillvariables(stack *st, variables *array[], int size) ;
-variables*  askVariables(variables array[], int size);
+long double get_variable(char *name);
+void fillvariables(stack *st, variables *array[], int size);
+variables *askVariables(variables array[], int size);
 int var_in_array(variables array[], char *name);
-variables* searchVariable(stack *st, variables array[],int *arrayindex);
-int check(parseData* data, int size, char* str);
-char *notationToString(char s[], char *str );
-calc_s calculate(char s[], variables vars_In_Notatation[]) ;
-char * getPolish(char s[],char polish[]);
-variables * getVariablesParsed( char s[],variables vars_In_Notatation[],int *size) ;
-int containsVariables(parseData* data, int size);
-char *parsedToString(char *str, parseData *data,int size);
+variables *searchVariable(stack *st, variables array[], int *arrayindex);
+int check(parseData *data, int size, char *str);
+char *notationToString(char s[], char *str);
+
+char *getPolish(char s[], char polish[]);
+variables *getVariablesParsed(char s[], variables vars_In_Notatation[],
+                              int *size);
+int containsVariables(parseData *data, int size);
+char *parsedToString(char *str, parseData *data, int size);
